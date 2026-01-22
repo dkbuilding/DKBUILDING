@@ -1,15 +1,16 @@
 {
   "version": 2,
+  "buildCommand": "cd apps/backend && pnpm install && pnpm run build",
   "builds": [
     {
-      "src": "server.js",
+      "src": "apps/backend/server.js",
       "use": "@vercel/node"
     }
   ],
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "server.js"
+      "dest": "apps/backend/server.js"
     }
   ],
   "env": {
