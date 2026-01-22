@@ -1,0 +1,7 @@
+onlyBuiltDependencies:
+  - better-sqlite3
+
+overrides:
+  body-parser@>=2.2.0 <2.2.1: '>=2.2.1'
+  jws@<3.2.3: '>=3.2.3'
+  qs@<6.14.1: '>=6.14.1'

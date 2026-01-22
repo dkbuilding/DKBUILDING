@@ -1,0 +1,176 @@
+{
+  "business": {
+    "name": "DK BUILDING",
+    "legalName": "DK BUILDING",
+    "description": "Expert en construction : charpentes métalliques, bardages, couvertures, photovoltaïque et terrassement",
+    "siren": "947998555",
+    "vatId": "FR06947998555",
+    "foundingDate": "2023-01-10"
+  },
+  "location": {
+    "address": {
+      "street": "59 Rue Pierre Cormary",
+      "city": "Albi",
+      "postalCode": "81000",
+      "department": "Tarn",
+      "region": "Occitanie",
+      "country": "France",
+      "countryCode": "FR",
+      "regionCode": "FR-81"
+    },
+    "coordinates": {
+      "latitude": 43.9298,
+      "longitude": 2.1480,
+      "elevation": 130,
+      "timezone": "Europe/Paris",
+      "currency": "EUR"
+    },
+    "contact": {
+      "phone": "+33768113839",
+      "email": "contact@dkbuilding.fr",
+      "website": "https://dkbuilding.fr"
+    }
+  },
+  "serviceArea": {
+    "primary": {
+      "center": {
+        "latitude": 43.9298,
+        "longitude": 2.1480
+      },
+      "radius": 50000,
+      "description": "Zone d'intervention principale - 50km autour d'Albi"
+    },
+    "departments": [
+      {
+        "name": "Tarn",
+        "code": "81",
+        "priority": 1,
+        "cities": ["Albi", "Castres", "Gaillac", "Carmaux", "Lavaur"]
+      },
+      {
+        "name": "Haute-Garonne",
+        "code": "31",
+        "priority": 2,
+        "cities": ["Toulouse"]
+      },
+      {
+        "name": "Tarn-et-Garonne",
+        "code": "82",
+        "priority": 2,
+        "cities": ["Montauban"]
+      },
+      {
+        "name": "Aveyron",
+        "code": "12",
+        "priority": 2,
+        "cities": ["Rodez"]
+      }
+    ],
+    "cities": [
+      {
+        "name": "Albi",
+        "coordinates": { "latitude": 43.9298, "longitude": 2.1480 },
+        "department": "Tarn",
+        "priority": 1,
+        "isHeadquarters": true
+      },
+      {
+        "name": "Toulouse",
+        "coordinates": { "latitude": 43.6047, "longitude": 1.4442 },
+        "department": "Haute-Garonne",
+        "priority": 2,
+        "isHeadquarters": false
+      },
+      {
+        "name": "Montauban",
+        "coordinates": { "latitude": 44.0167, "longitude": 1.3542 },
+        "department": "Tarn-et-Garonne",
+        "priority": 2,
+        "isHeadquarters": false
+      },
+      {
+        "name": "Rodez",
+        "coordinates": { "latitude": 44.3506, "longitude": 2.5736 },
+        "department": "Aveyron",
+        "priority": 2,
+        "isHeadquarters": false
+      },
+      {
+        "name": "Castres",
+        "coordinates": { "latitude": 43.6047, "longitude": 2.2403 },
+        "department": "Tarn",
+        "priority": 2,
+        "isHeadquarters": false
+      },
+      {
+        "name": "Gaillac",
+        "coordinates": { "latitude": 43.9014, "longitude": 1.8969 },
+        "department": "Tarn",
+        "priority": 3,
+        "isHeadquarters": false
+      },
+      {
+        "name": "Carmaux",
+        "coordinates": { "latitude": 44.0500, "longitude": 2.1578 },
+        "department": "Tarn",
+        "priority": 3,
+        "isHeadquarters": false
+      },
+      {
+        "name": "Lavaur",
+        "coordinates": { "latitude": 43.6989, "longitude": 1.8186 },
+        "department": "Tarn",
+        "priority": 3,
+        "isHeadquarters": false
+      }
+    ]
+  },
+  "services": [
+    {
+      "name": "Charpente Métallique",
+      "description": "Fabrication et pose de charpentes métalliques sur mesure",
+      "areaServed": ["Albi", "Toulouse", "Montauban", "Rodez", "Castres", "Gaillac", "Carmaux", "Lavaur"]
+    },
+    {
+      "name": "Bardage",
+      "description": "Pose de bardages métalliques et isolants",
+      "areaServed": ["Albi", "Toulouse", "Montauban", "Rodez", "Castres", "Gaillac", "Carmaux", "Lavaur"]
+    },
+    {
+      "name": "Couverture",
+      "description": "Installation de couvertures métalliques et traditionnelles",
+      "areaServed": ["Albi", "Toulouse", "Montauban", "Rodez", "Castres", "Gaillac", "Carmaux", "Lavaur"]
+    },
+    {
+      "name": "Photovoltaïque",
+      "description": "Installation de panneaux solaires photovoltaïques",
+      "areaServed": ["Albi", "Toulouse", "Montauban", "Rodez", "Castres", "Gaillac", "Carmaux", "Lavaur"]
+    },
+    {
+      "name": "Terrassement",
+      "description": "Travaux de terrassement et aménagement extérieur",
+      "areaServed": ["Albi", "Toulouse", "Montauban", "Rodez", "Castres", "Gaillac", "Carmaux", "Lavaur"]
+    }
+  ],
+  "hours": {
+    "weekdays": {
+      "monday": { "opens": "08:00", "closes": "18:00" },
+      "tuesday": { "opens": "08:00", "closes": "18:00" },
+      "wednesday": { "opens": "08:00", "closes": "18:00" },
+      "thursday": { "opens": "08:00", "closes": "18:00" },
+      "friday": { "opens": "08:00", "closes": "18:00" }
+    },
+    "weekend": {
+      "saturday": { "opens": "09:00", "closes": "12:00" },
+      "sunday": { "opens": "closed", "closes": "closed" }
+    }
+  },
+  "metadata": {
+    "version": "1.0",
+    "lastUpdated": "2024-01-15",
+    "coordinateSystem": "WGS84",
+    "units": "meters",
+    "language": "fr",
+    "locale": "fr-FR"
+  }
+}

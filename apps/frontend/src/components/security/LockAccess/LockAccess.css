@@ -1,0 +1,927 @@
+/* ========================================
+   STYLES LOCKACCESS - DK BUILDING
+   Système de verrouillage d'accès sécurisé
+   ======================================== */
+
+/* ========================================
+   VARIABLES CSS ET CONFIGURATION
+   ======================================== */
+:root {
+  /* Couleurs DK BUILDING */
+  --dk-black: #0E0E0E;
+  --dk-gray-900: #101010;
+  --dk-gray-800: #202020;
+  --dk-gray-700: #404040;
+  --dk-gray-600: #606060;
+  --dk-gray-500: #808080;
+  --dk-gray-400: #A0A0A0;
+  --dk-gray-300: #C0C0C0;
+  --dk-white: #FFFFFF;
+  --dk-yellow: #F3E719;
+  --dk-blue-400: #60A5FA;
+  --dk-blue-500: #3B82F6;
+  --dk-blue-600: #2563EB;
+  --dk-blue-700: #1D4ED8;
+  
+  /* Couleurs de sécurité */
+  --security-red: #EF4444;
+  --security-green: #10B981;
+  --security-yellow: #F59E0B;
+  --security-orange: #F97316;
+  
+  /* Transitions et animations */
+  --transition-fast: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-normal: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  
+  /* Z-index */
+  --z-lockaccess: 10000;
+  --z-lockaccess-overlay: 9999;
+  --z-lockaccess-status: 50;
+}
+
+/* ========================================
+   STYLES DE BASE POUR LOCKACCESS
+   ======================================== */
+
+/* Masquer complètement tous les contrôles de lecteur vidéo */
+video::-webkit-media-controls {
+  display: none !important;
+}
+
+video::-webkit-media-controls-panel {
+  display: none !important;
+}
+
+video::-webkit-media-controls-play-button {
+  display: none !important;
+}
+
+video::-webkit-media-controls-volume-slider {
+  display: none !important;
+}
+
+video::-webkit-media-controls-mute-button {
+  display: none !important;
+}
+
+video::-webkit-media-controls-timeline {
+  display: none !important;
+}
+
+video::-webkit-media-controls-current-time-display {
+  display: none !important;
+}
+
+video::-webkit-media-controls-time-remaining-display {
+  display: none !important;
+}
+
+video::-webkit-media-controls-fullscreen-button {
+  display: none !important;
+}
+
+video::-webkit-media-controls-rewind-button {
+  display: none !important;
+}
+
+video::-webkit-media-controls-return-to-realtime-button {
+  display: none !important;
+}
+
+video::-webkit-media-controls-toggle-closed-captions-button {
+  display: none !important;
+}
+
+video::-webkit-media-controls-overlay-play-button {
+  display: none !important;
+}
+
+video::-webkit-media-controls-start-playback-button {
+  display: none !important;
+}
+
+/* Masquer les contrôles pour Firefox */
+video::-moz-media-controls {
+  display: none !important;
+}
+
+/* Masquer les contrôles pour Edge/IE */
+video::-ms-media-controls {
+  display: none !important;
+}
+
+/* Empêcher le clic droit sur la vidéo */
+video {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* ========================================
+   GRADIENTS ANIMÉS DK BUILDING
+   ======================================== */
+
+@keyframes dk-black-pulse {
+  0% {
+    background-color: var(--dk-black);
+    transform: scale(1);
+  }
+  25% {
+    background-color: #121212;
+  }
+  50% {
+    background-color: #1A1A1A;
+    transform: scale(1.001);
+  }
+  75% {
+    background-color: #141414;
+  }
+  100% {
+    background-color: var(--dk-black);
+    transform: scale(1);
+  }
+}
+
+@keyframes dk-gray-900-pulse {
+  0% {
+    background-color: #131313;
+    transform: scale(1);
+  }
+  25% {
+    background-color: var(--dk-gray-900);
+  }
+  50% {
+    background-color: #1C1C1C;
+    transform: scale(1.001);
+  }
+  75% {
+    background-color: var(--dk-gray-900);
+  }
+  100% {
+    background-color: #151515;
+    transform: scale(1);
+  }
+}
+
+/* Classes optimisées avec performance GPU et accessibilité */
+.bg-dk-black-animated {
+  animation: dk-black-pulse 0.750s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite;
+  will-change: background-color, transform;
+  backface-visibility: hidden;
+  transform: translateZ(0);
+}
+
+.bg-dk-gray-900-animated {
+  animation: dk-gray-900-pulse 0.750s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite;
+  will-change: background-color, transform;
+  backface-visibility: hidden;
+  transform: translateZ(0);
+}
+
+/* ========================================
+   STYLES SCREENBLOCKER
+   ======================================== */
+
+/* ScreenBlocker Styles - Utilise maintenant la classe dk-preloader existante */
+.screen-blocker__message {
+  position: relative;
+  z-index: 10;
+  max-width: 20rem;
+  margin: 0 1.5rem;
+  text-align: center;
+}
+
+.screen-blocker__icon {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+}
+
+.screen-blocker__title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--dk-white);
+  margin-bottom: 0.75rem;
+  font-family: 'Foundation Sans', sans-serif;
+}
+
+.screen-blocker__subtitle {
+  font-size: 0.875rem;
+  color: rgba(255, 255, 255, 0.8);
+  margin-bottom: 1rem;
+  font-family: 'Foundation Sans', sans-serif;
+  line-height: 1.5;
+}
+
+.screen-blocker__action {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.7);
+  font-family: 'Foundation Sans', sans-serif;
+  line-height: 1.5;
+}
+
+.screen-blocker__indicator {
+  margin-top: 1.5rem;
+  padding: 0.5rem 1rem;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 0.5rem;
+  backdrop-filter: blur(4px);
+}
+
+.screen-blocker__indicator-text {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.6);
+  font-family: 'Foundation Sans', sans-serif;
+}
+
+/* ========================================
+   STYLES LOCKACCESS OVERLAY
+   ======================================== */
+
+.lockaccess-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-lockaccess-overlay);
+  background: linear-gradient(to bottom, rgba(14, 14, 14, 0.85), rgba(14, 14, 14, 0.95));
+  backdrop-filter: blur(2px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 1;
+  transition: opacity var(--transition-normal);
+}
+
+.lockaccess-overlay--hidden {
+  opacity: 0;
+  pointer-events: none;
+  visibility: hidden;
+  transition: opacity var(--transition-normal), visibility 0s linear var(--transition-normal);
+}
+
+/* ========================================
+   STYLES LOCKACCESS SCREENS
+   ======================================== */
+
+/* Styles communs pour tous les écrans LockAccess */
+.lockaccess-screen {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-lockaccess);
+  background: linear-gradient(to bottom, rgba(14, 14, 14, 0.85), rgba(14, 14, 14, 0.95));
+  backdrop-filter: blur(2px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.lockaccess-screen__content {
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  max-width: 42rem;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+  text-align: center;
+}
+
+.lockaccess-screen__particles {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.lockaccess-screen__particle {
+  position: absolute;
+  width: 0.25rem;
+  height: 0.25rem;
+  border-radius: 50%;
+  animation: pulse 2s infinite;
+}
+
+/* ========================================
+   STYLES MAINTENANCE SCREEN
+   ======================================== */
+
+.maintenance-screen {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-lockaccess);
+  background: linear-gradient(135deg, var(--dk-black) 0%, var(--dk-gray-900) 50%, var(--dk-black) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.maintenance-screen__icon {
+  width: 6rem;
+  height: 6rem;
+  background-color: rgba(96, 165, 250, 0.2);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1.5rem;
+}
+
+.maintenance-screen__title {
+  font-size: 2.25rem;
+  font-weight: 700;
+  color: var(--dk-white);
+  margin-bottom: 1rem;
+}
+
+.maintenance-screen__subtitle {
+  font-size: 1.25rem;
+  color: var(--dk-gray-400);
+  margin-bottom: 2rem;
+}
+
+.maintenance-screen__card {
+  background-color: rgba(32, 32, 32, 0.5);
+  backdrop-filter: blur(4px);
+  border-radius: 1rem;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  border: 1px solid rgba(64, 64, 64, 0.5);
+}
+
+.maintenance-screen__status {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.maintenance-screen__status-icon {
+  width: 1.5rem;
+  height: 1.5rem;
+  color: var(--dk-blue-400);
+  margin-right: 0.75rem;
+}
+
+.maintenance-screen__status-text {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--dk-blue-400);
+}
+
+.maintenance-screen__contact {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+
+.maintenance-screen__contact-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  background-color: rgba(64, 64, 64, 0.3);
+  border-radius: 0.5rem;
+}
+
+.maintenance-screen__contact-icon {
+  width: 1.25rem;
+  height: 1.25rem;
+  color: var(--dk-blue-400);
+  margin-right: 0.75rem;
+}
+
+.maintenance-screen__contact-label {
+  font-size: 0.875rem;
+  color: var(--dk-gray-400);
+}
+
+.maintenance-screen__contact-value {
+  color: var(--dk-white);
+  font-weight: 500;
+}
+
+.maintenance-screen__refresh-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 1.5rem;
+  background-color: var(--dk-blue-600);
+  color: var(--dk-white);
+  border-radius: 0.5rem;
+  transition: background-color var(--transition-fast);
+  border: none;
+  cursor: pointer;
+}
+
+.maintenance-screen__refresh-button:hover {
+  background-color: var(--dk-blue-700);
+}
+
+.maintenance-screen__refresh-icon {
+  width: 1.25rem;
+  height: 1.25rem;
+  margin-right: 0.5rem;
+}
+
+/* ========================================
+   STYLES LOCKED SCREEN
+   ======================================== */
+
+.locked-screen {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-lockaccess);
+  background: linear-gradient(135deg, var(--dk-black) 0%, var(--dk-gray-900) 50%, var(--dk-black) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.locked-screen__form {
+  background-color: rgba(32, 32, 32, 0.5);
+  backdrop-filter: blur(4px);
+  border-radius: 1rem;
+  padding: 2rem;
+  border: 1px solid rgba(64, 64, 64, 0.5);
+}
+
+.locked-screen__input-group {
+  margin-bottom: 1.5rem;
+}
+
+.locked-screen__label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--dk-gray-300);
+  margin-bottom: 0.5rem;
+}
+
+.locked-screen__input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background-color: rgba(64, 64, 64, 0.5);
+  border: 1px solid var(--dk-gray-600);
+  border-radius: 0.5rem;
+  color: var(--dk-white);
+  font-size: 1rem;
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.locked-screen__input:focus {
+  outline: none;
+  border-color: var(--dk-blue-500);
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+}
+
+.locked-screen__input::placeholder {
+  color: var(--dk-gray-400);
+}
+
+.locked-screen__input-container {
+  position: relative;
+}
+
+.locked-screen__toggle-password {
+  position: absolute;
+  right: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: var(--dk-gray-400);
+  cursor: pointer;
+  transition: color var(--transition-fast);
+}
+
+.locked-screen__toggle-password:hover {
+  color: var(--dk-white);
+}
+
+.locked-screen__error {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem;
+  background-color: rgba(239, 68, 68, 0.2);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.locked-screen__error-icon {
+  width: 1.25rem;
+  height: 1.25rem;
+  color: var(--security-red);
+  margin-right: 0.75rem;
+}
+
+.locked-screen__error-text {
+  color: var(--security-red);
+  font-size: 0.875rem;
+}
+
+.locked-screen__submit-button {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 1.5rem;
+  background-color: var(--dk-blue-600);
+  color: var(--dk-white);
+  border-radius: 0.5rem;
+  border: none;
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.locked-screen__submit-button:hover:not(:disabled) {
+  background-color: var(--dk-blue-700);
+}
+
+.locked-screen__submit-button:disabled {
+  background-color: var(--dk-gray-600);
+  cursor: not-allowed;
+}
+
+.locked-screen__loading-spinner {
+  width: 1.25rem;
+  height: 1.25rem;
+  border: 2px solid var(--dk-white);
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin-right: 0.5rem;
+}
+
+.locked-screen__success-message {
+  opacity: 0;
+  transform: scale(0);
+  transition: opacity var(--transition-normal), transform var(--transition-normal);
+}
+
+.locked-screen__success-message--visible {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* ========================================
+   STYLES IP BLOCKED SCREEN
+   ======================================== */
+
+.ip-blocked-screen {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-lockaccess);
+  background: linear-gradient(135deg, var(--dk-black) 0%, var(--dk-gray-900) 50%, var(--dk-black) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.ip-blocked-screen__icon {
+  width: 6rem;
+  height: 6rem;
+  background-color: rgba(239, 68, 68, 0.2);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1.5rem;
+}
+
+.ip-blocked-screen__title {
+  font-size: 2.25rem;
+  font-weight: 700;
+  color: var(--dk-white);
+  margin-bottom: 1rem;
+}
+
+.ip-blocked-screen__subtitle {
+  font-size: 1.25rem;
+  color: var(--dk-gray-400);
+  margin-bottom: 2rem;
+}
+
+.ip-blocked-screen__card {
+  background-color: rgba(32, 32, 32, 0.5);
+  backdrop-filter: blur(4px);
+  border-radius: 1rem;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.ip-blocked-screen__ip-info {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  background-color: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  border-radius: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.ip-blocked-screen__ip-label {
+  font-size: 0.875rem;
+  color: var(--dk-gray-400);
+}
+
+.ip-blocked-screen__ip-value {
+  color: var(--dk-white);
+  font-family: monospace;
+  font-size: 1.125rem;
+}
+
+.ip-blocked-screen__status-info {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  background-color: rgba(64, 64, 64, 0.3);
+  border-radius: 0.5rem;
+}
+
+.ip-blocked-screen__status-label {
+  font-size: 0.875rem;
+  color: var(--dk-gray-400);
+}
+
+.ip-blocked-screen__status-value {
+  color: var(--security-yellow);
+  font-weight: 500;
+}
+
+.ip-blocked-screen__reasons {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+
+.ip-blocked-screen__reason-item {
+  display: flex;
+  align-items: flex-start;
+  padding: 1rem;
+  background-color: rgba(64, 64, 64, 0.3);
+  border-radius: 0.5rem;
+}
+
+.ip-blocked-screen__reason-icon {
+  width: 1.25rem;
+  height: 1.25rem;
+  color: var(--dk-blue-400);
+  margin-right: 0.75rem;
+  margin-top: 0.125rem;
+  flex-shrink: 0;
+}
+
+.ip-blocked-screen__reason-title {
+  color: var(--dk-white);
+  font-weight: 500;
+  margin-bottom: 0.25rem;
+}
+
+.ip-blocked-screen__reason-description {
+  font-size: 0.875rem;
+  color: var(--dk-gray-400);
+}
+
+.ip-blocked-screen__contact-note {
+  margin-top: 1rem;
+  padding: 1rem;
+  background-color: rgba(59, 130, 246, 0.1);
+  border: 1px solid rgba(59, 130, 246, 0.2);
+  border-radius: 0.5rem;
+}
+
+.ip-blocked-screen__contact-note-text {
+  color: var(--dk-blue-300);
+  font-size: 0.875rem;
+}
+
+.ip-blocked-screen__contact-note-code {
+  background-color: rgba(64, 64, 64, 0.7);
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  font-family: monospace;
+}
+
+.ip-blocked-screen__retry-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 1.5rem;
+  background-color: var(--dk-gray-700);
+  color: var(--dk-white);
+  border-radius: 0.5rem;
+  border: none;
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+}
+
+.ip-blocked-screen__retry-button:hover {
+  background-color: var(--dk-gray-600);
+}
+
+.ip-blocked-screen__retry-icon {
+  width: 1.25rem;
+  height: 1.25rem;
+  margin-right: 0.5rem;
+}
+
+/* ========================================
+   STYLES LOCKACCESS STATUS
+   ======================================== */
+
+.lockaccess-status {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  z-index: var(--z-lockaccess-status);
+}
+
+.lockaccess-status__indicator {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: rgba(239, 68, 68, 0.2);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: 0.5rem;
+  padding: 0.75rem;
+}
+
+.lockaccess-status__icon {
+  width: 1rem;
+  height: 1rem;
+  color: var(--security-red);
+}
+
+.lockaccess-status__text {
+  color: var(--security-red);
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+/* ========================================
+   ANIMATIONS ET TRANSITIONS
+   ======================================== */
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 0.3;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.2);
+  }
+}
+
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(-25%);
+    animation-timing-function: cubic-bezier(0.8, 0, 1, 1);
+  }
+  50% {
+    transform: translateY(0);
+    animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
+  }
+}
+
+/* ========================================
+   RESPONSIVE DESIGN
+   ======================================== */
+
+@media (max-width: 360px) {
+  .screen-blocker__message {
+    margin: 0 1rem;
+  }
+  
+  .screen-blocker__title {
+    font-size: 1.125rem;
+  }
+  
+  .screen-blocker__subtitle {
+    font-size: 0.8125rem;
+  }
+  
+  .screen-blocker__action {
+    font-size: 0.6875rem;
+  }
+}
+
+@media (min-width: 640px) {
+  .lockaccess-screen__content {
+    max-width: 48rem;
+  }
+  
+  .maintenance-screen__title {
+    font-size: 3rem;
+  }
+  
+  .ip-blocked-screen__title {
+    font-size: 3rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .lockaccess-screen__content {
+    max-width: 80rem;
+  }
+  
+  .maintenance-screen__title {
+    font-size: 3.75rem;
+  }
+  
+  .ip-blocked-screen__title {
+    font-size: 3.75rem;
+  }
+}
+
+/* ========================================
+   ACCESSIBILITÉ ET PREFERENCES
+   ======================================== */
+
+/* Respect des préférences de mouvement réduit */
+@media (prefers-reduced-motion: reduce) {
+  .bg-dk-black-animated,
+  .bg-dk-gray-900-animated {
+    animation: none;
+    background-color: var(--dk-black);
+  }
+  
+  .bg-dk-gray-900-animated {
+    background-color: var(--dk-gray-900);
+  }
+  
+  .screen-blocker__message,
+  .screen-blocker__icon {
+    animation: none !important;
+    transition: none !important;
+  }
+  
+  .lockaccess-screen__particle {
+    animation: none;
+  }
+  
+  .locked-screen__loading-spinner {
+    animation: none;
+  }
+}
+
+/* Mode sombre forcé pour LockAccess */
+.lockaccess-screen {
+  color-scheme: dark;
+}
+
+/* Focus visible pour l'accessibilité - DÉSACTIVÉ */
+/* .locked-screen__input:focus-visible,
+.locked-screen__submit-button:focus-visible,
+.maintenance-screen__refresh-button:focus-visible,
+.ip-blocked-screen__retry-button:focus-visible {
+  outline: 2px solid var(--dk-blue-400);
+  outline-offset: 2px;
+} */
+
+/* ========================================
+   UTILITAIRES LOCKACCESS
+   ======================================== */
+
+.lockaccess-hidden {
+  display: none !important;
+}
+
+.lockaccess-invisible {
+  visibility: hidden !important;
+}
+
+.lockaccess-no-scroll {
+  position: fixed;
+  width: 100%;
+  overflow: hidden;
+}
+
+.lockaccess-blur {
+  filter: blur(4px);
+  pointer-events: none;
+}
+
+.lockaccess-overlay-backdrop {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(14, 14, 14, 0.8);
+  backdrop-filter: blur(8px);
+  z-index: var(--z-lockaccess-overlay);
+}

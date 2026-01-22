@@ -1,0 +1,138 @@
+{
+  "comparisons": {
+    "version": "1.0",
+    "lastUpdated": "2024-01-15",
+    "company": "DK BUILDING",
+    "language": "fr-FR",
+    "comparisons": [
+      {
+        "id": "charpente-metallique-vs-bois",
+        "title": "Charpente Métallique vs Charpente Bois",
+        "description": "Comparaison technique entre charpente métallique et charpente bois",
+        "criteria": [
+          {
+            "criterion": "Résistance",
+            "metallique": "Excellente résistance mécanique",
+            "bois": "Résistance limitée par la taille",
+            "winner": "metallique",
+            "explanation": "L'acier offre une résistance supérieure et permet de plus grandes portées"
+          },
+          {
+            "criterion": "Résistance au feu",
+            "metallique": "Résistance au feu élevée",
+            "bois": "Combustible, nécessite traitement",
+            "winner": "metallique",
+            "explanation": "L'acier ne brûle pas et conserve ses propriétés mécaniques en cas d'incendie"
+          },
+          {
+            "criterion": "Rapidité de montage",
+            "metallique": "Montage rapide (préfabriqué)",
+            "bois": "Montage plus long (sur site)",
+            "winner": "metallique",
+            "explanation": "Les éléments métalliques sont préfabriqués en atelier"
+          },
+          {
+            "criterion": "Durabilité",
+            "metallique": "50+ ans avec entretien minimal",
+            "bois": "30-40 ans avec entretien régulier",
+            "winner": "metallique",
+            "explanation": "L'acier résiste mieux aux intempéries et aux insectes"
+          },
+          {
+            "criterion": "Coût",
+            "metallique": "Coût initial plus élevé",
+            "bois": "Coût initial plus faible",
+            "winner": "bois",
+            "explanation": "Le bois est moins cher à l'achat mais plus coûteux à long terme"
+          },
+          {
+            "criterion": "Écologie",
+            "metallique": "Recyclable à 100%",
+            "bois": "Renouvelable et naturel",
+            "winner": "bois",
+            "explanation": "Le bois est une ressource renouvelable et stocke le CO2"
+          }
+        ],
+        "conclusion": "La charpente métallique est recommandée pour les projets nécessitant résistance, rapidité et durabilité. Le bois convient mieux aux projets écologiques avec budget limité."
+      },
+      {
+        "id": "bardage-types",
+        "title": "Types de Bardage Comparés",
+        "description": "Comparaison des différents types de bardage",
+        "criteria": [
+          {
+            "criterion": "Bardage Métallique",
+            "avantages": ["Durabilité", "Résistance", "Facilité d'entretien"],
+            "inconvenients": ["Coût", "Conductivité thermique"],
+            "prix": "€€€",
+            "duree": "30-50 ans"
+          },
+          {
+            "criterion": "Bardage Composite",
+            "avantages": ["Esthétique", "Isolation", "Facilité de pose"],
+            "inconvenients": ["Coût élevé", "Dilatation"],
+            "prix": "€€€€",
+            "duree": "20-30 ans"
+          },
+          {
+            "criterion": "Bardage Bois",
+            "avantages": ["Écologique", "Esthétique", "Isolation"],
+            "inconvenients": ["Entretien", "Sensibilité aux intempéries"],
+            "prix": "€€",
+            "duree": "15-25 ans"
+          },
+          {
+            "criterion": "Bardage PVC",
+            "avantages": ["Coût faible", "Facilité d'entretien"],
+            "inconvenients": ["Dilatation", "Esthétique limitée"],
+            "prix": "€",
+            "duree": "10-20 ans"
+          }
+        ],
+        "conclusion": "Le choix dépend du budget, de l'esthétique souhaitée et des contraintes d'entretien."
+      },
+      {
+        "id": "couverture-types",
+        "title": "Types de Couverture Comparés",
+        "description": "Comparaison des différents types de couverture",
+        "criteria": [
+          {
+            "criterion": "Couverture Métallique",
+            "avantages": ["Légèreté", "Rapidité de pose", "Durabilité"],
+            "inconvenients": ["Bruit", "Conductivité thermique"],
+            "prix": "€€",
+            "duree": "40-60 ans"
+          },
+          {
+            "criterion": "Tuiles",
+            "avantages": ["Esthétique", "Isolation", "Silence"],
+            "inconvenients": ["Poids", "Fragilité"],
+            "prix": "€€€",
+            "duree": "30-50 ans"
+          },
+          {
+            "criterion": "Ardoise",
+            "avantages": ["Esthétique", "Durabilité", "Noblesse"],
+            "inconvenients": ["Coût élevé", "Poids"],
+            "prix": "€€€€",
+            "duree": "50-100 ans"
+          },
+          {
+            "criterion": "Membrane",
+            "avantages": ["Étanchéité", "Flexibilité", "Rapidité"],
+            "inconvenients": ["Esthétique", "Durabilité limitée"],
+            "prix": "€€",
+            "duree": "15-25 ans"
+          }
+        ],
+        "conclusion": "Le choix dépend du style architectural, du budget et des contraintes techniques."
+      }
+    ],
+    "metadata": {
+      "targetAudience": "clients potentiels, architectes, maîtres d'ouvrage",
+      "purpose": "aide à la décision technique",
+      "format": "comparaison structurée",
+      "updateFrequency": "annuelle"
+    }
+  }
+}

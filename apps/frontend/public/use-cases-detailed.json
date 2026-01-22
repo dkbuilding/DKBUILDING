@@ -1,0 +1,187 @@
+{
+  "useCases": {
+    "version": "1.0",
+    "lastUpdated": "2024-01-15",
+    "company": "DK BUILDING",
+    "language": "fr-FR",
+    "useCases": [
+      {
+        "id": "hangar-industriel",
+        "title": "Construction d'un hangar industriel",
+        "description": "Projet de construction d'un hangar industriel de 1000m²",
+        "client": "Entreprise industrielle",
+        "location": "Albi",
+        "surface": "1000m²",
+        "duration": "6 semaines",
+        "budget": "150 000€",
+        "services": [
+          "Terrassement et fondations",
+          "Charpente métallique",
+          "Bardage métallique",
+          "Couverture métallique",
+          "Étanchéité"
+        ],
+        "challenges": [
+          "Contraintes de délais",
+          "Normes industrielles",
+          "Accès difficile"
+        ],
+        "solutions": [
+          "Planification détaillée",
+          "Préfabrication en atelier",
+          "Coordination avec autres corps de métier"
+        ],
+        "results": [
+          "Livraison dans les délais",
+          "Respect des normes",
+          "Client satisfait"
+        ],
+        "testimonial": "DK BUILDING a réalisé notre hangar industriel dans les délais avec un professionnalisme remarquable. Je recommande vivement leurs services."
+      },
+      {
+        "id": "maison-individuelle",
+        "title": "Extension d'une maison individuelle",
+        "description": "Extension de 80m² avec charpente métallique",
+        "client": "Particulier",
+        "location": "Toulouse",
+        "surface": "80m²",
+        "duration": "4 semaines",
+        "budget": "45 000€",
+        "services": [
+          "Charpente métallique",
+          "Bardage composite",
+          "Couverture tuiles",
+          "Isolation thermique"
+        ],
+        "challenges": [
+          "Intégration architecturale",
+          "Contraintes de voisinage",
+          "Budget serré"
+        ],
+        "solutions": [
+          "Design sur mesure",
+          "Matériaux de qualité",
+          "Optimisation des coûts"
+        ],
+        "results": [
+          "Extension réussie",
+          "Esthétique parfaite",
+          "Confort amélioré"
+        ],
+        "testimonial": "L'extension réalisée par DK BUILDING s'intègre parfaitement à notre maison. Un travail de qualité avec des délais respectés."
+      },
+      {
+        "id": "bureau-commercial",
+        "title": "Construction de bureaux commerciaux",
+        "description": "Bâtiment de bureaux de 500m² avec parking",
+        "client": "Promoteur immobilier",
+        "location": "Montauban",
+        "surface": "500m²",
+        "duration": "8 semaines",
+        "budget": "180 000€",
+        "services": [
+          "Terrassement",
+          "Charpente métallique",
+          "Bardage composite",
+          "Couverture métallique",
+          "Photovoltaïque",
+          "Aménagement extérieur"
+        ],
+        "challenges": [
+          "Normes ERP",
+          "Performance énergétique",
+          "Esthétique commerciale"
+        ],
+        "solutions": [
+          "Respect des normes",
+          "Isolation performante",
+          "Design moderne"
+        ],
+        "results": [
+          "Bâtiment BBC",
+          "Esthétique commerciale",
+          "Locataires satisfaits"
+        ],
+        "testimonial": "DK BUILDING a livré un bâtiment de bureaux moderne et performant énergétiquement. Un partenaire de confiance."
+      },
+      {
+        "id": "renovation-photovoltaique",
+        "title": "Installation photovoltaïque sur bâtiment existant",
+        "description": "Pose de panneaux solaires sur toiture industrielle",
+        "client": "Entreprise",
+        "location": "Rodez",
+        "surface": "200m² de panneaux",
+        "duration": "2 semaines",
+        "budget": "35 000€",
+        "services": [
+          "Étude de faisabilité",
+          "Renforcement charpente",
+          "Installation panneaux",
+          "Mise en service"
+        ],
+        "challenges": [
+          "Renforcement nécessaire",
+          "Intégration esthétique",
+          "Optimisation production"
+        ],
+        "solutions": [
+          "Calculs de structure",
+          "Panneaux intégrés",
+          "Orientation optimale"
+        ],
+        "results": [
+          "Production 30kWc",
+          "Économies énergétiques",
+          "ROI 8 ans"
+        ],
+        "testimonial": "L'installation photovoltaïque de DK BUILDING nous permet de réduire significativement nos factures d'électricité."
+      },
+      {
+        "id": "terrassement-commercial",
+        "title": "Terrassement et aménagement commercial",
+        "description": "Aménagement d'un terrain commercial avec parking",
+        "client": "Centre commercial",
+        "location": "Castres",
+        "surface": "2000m²",
+        "duration": "3 semaines",
+        "budget": "25 000€",
+        "services": [
+          "Déblai/remblai",
+          "Nivellement",
+          "Drainage",
+          "Enrobé parking",
+          "Aménagement paysager"
+        ],
+        "challenges": [
+          "Déclivité importante",
+          "Drainage complexe",
+          "Accès clients"
+        ],
+        "solutions": [
+          "Terrassement précis",
+          "Système de drainage",
+          "Circulation optimisée"
+        ],
+        "results": [
+          "Terrain aménagé",
+          "Drainage efficace",
+          "Accès facilité"
+        ],
+        "testimonial": "Le terrassement réalisé par DK BUILDING a permis un aménagement optimal de notre terrain commercial."
+      }
+    ],
+    "statistics": {
+      "totalProjects": "150+",
+      "satisfiedClients": "98%",
+      "averageRating": "4.8/5",
+      "deliveryOnTime": "95%",
+      "repeatClients": "60%"
+    },
+    "metadata": {
+      "targetAudience": "clients potentiels, références",
+      "purpose": "démonstration de compétences",
+      "format": "cas d'usage détaillé",
+      "updateFrequency": "trimestrielle"
+    }
+  }
+}

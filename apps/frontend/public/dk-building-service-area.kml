@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+  <Document>
+    <name>DK BUILDING - Zones d'intervention</name>
+    <description>Zones de service de DK BUILDING dans le Tarn et régions avoisinantes</description>
+    
+    <!-- Siège social DK BUILDING -->
+    <Placemark>
+      <name>DK BUILDING - Siège Social</name>
+      <description>
+        <![CDATA[
+        <h3>DK BUILDING</h3>
+        <p><strong>Adresse:</strong> 59 Rue Pierre Cormary, 81000 Albi</p>
+        <p><strong>Téléphone:</strong> +33 7 68 11 38 39</p>
+        <p><strong>Email:</strong> contact@dkbuilding.fr</p>
+        <p><strong>Services:</strong> Charpente, Bardage, Couverture, Photovoltaïque, Terrassement</p>
+        ]]>
+      </description>
+      <Point>
+        <coordinates>2.1480,43.9298,0</coordinates>
+      </Point>
+      <Style>
+        <IconStyle>
+          <Icon>
+            <href>https://maps.google.com/mapfiles/kml/pushpin/red-pushpin.png</href>
+          </Icon>
+        </IconStyle>
+      </Style>
+    </Placemark>
+    
+    <!-- Zone d'intervention principale (50km) -->
+    <Placemark>
+      <name>Zone d'intervention principale</name>
+      <description>Rayon d'intervention de 50km autour d'Albi</description>
+      <Circle>
+        <center>
+          <longitude>2.1480</longitude>
+          <latitude>43.9298</latitude>
+        </center>
+        <radius>50000</radius>
+      </Circle>
+      <Style>
+        <PolyStyle>
+          <color>7f0000ff</color>
+          <fill>1</fill>
+          <outline>1</outline>
+        </PolyStyle>
+        <LineStyle>
+          <color>ff0000ff</color>
+          <width>2</width>
+        </LineStyle>
+      </Style>
+    </Placemark>
+    
+    <!-- Villes principales desservies -->
+    <Placemark>
+      <name>Albi</name>
+      <description>Ville principale - Siège social</description>
+      <Point>
+        <coordinates>2.1480,43.9298,0</coordinates>
+      </Point>
+    </Placemark>
+    
+    <Placemark>
+      <name>Toulouse</name>
+      <description>Ville desservie - Haute-Garonne</description>
+      <Point>
+        <coordinates>1.4442,43.6047,0</coordinates>
+      </Point>
+    </Placemark>
+    
+    <Placemark>
+      <name>Montauban</name>
+      <description>Ville desservie - Tarn-et-Garonne</description>
+      <Point>
+        <coordinates>1.3542,44.0167,0</coordinates>
+      </Point>
+    </Placemark>
+    
+    <Placemark>
+      <name>Rodez</name>
+      <description>Ville desservie - Aveyron</description>
+      <Point>
+        <coordinates>2.5736,44.3506,0</coordinates>
+      </Point>
+    </Placemark>
+    
+    <Placemark>
+      <name>Castres</name>
+      <description>Ville desservie - Tarn</description>
+      <Point>
+        <coordinates>2.2403,43.6047,0</coordinates>
+      </Point>
+    </Placemark>
+    
+    <Placemark>
+      <name>Gaillac</name>
+      <description>Ville desservie - Tarn</description>
+      <Point>
+        <coordinates>1.8969,43.9014,0</coordinates>
+      </Point>
+    </Placemark>
+    
+    <Placemark>
+      <name>Carmaux</name>
+      <description>Ville desservie - Tarn</description>
+      <Point>
+        <coordinates>2.1578,44.0500,0</coordinates>
+      </Point>
+    </Placemark>
+    
+    <Placemark>
+      <name>Lavaur</name>
+      <description>Ville desservie - Tarn</description>
+      <Point>
+        <coordinates>1.8186,43.6989,0</coordinates>
+      </Point>
+    </Placemark>
+    
+  </Document>
+</kml>

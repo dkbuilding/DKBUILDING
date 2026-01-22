@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Système Largeur Non Suffisante - DK BUILDING</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #0E0E0E;
+            color: white;
+            line-height: 1.6;
+        }
+        
+        .test-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .current-size {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 10px;
+            border-radius: 8px;
+            backdrop-filter: blur(10px);
+            font-size: 14px;
+            z-index: 1000;
+        }
+        
+        .test-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .btn {
+            padding: 12px 20px;
+            background: #F3E719;
+            color: #0E0E0E;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .btn:hover {
+            background: #E6D417;
+            transform: translateY(-2px);
+        }
+        
+        .btn.active {
+            background: #1CC6FF;
+            color: white;
+        }
+        
+        .test-frame {
+            width: 100%;
+            height: 600px;
+            border: 2px solid #333;
+            border-radius: 12px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+        
+        .test-info {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            border-radius: 12px;
+            margin: 20px 0;
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        
+        .status-ok { background: #4CAF50; }
+        .status-error { background: #F44336; }
+        
+        .breakpoint-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .breakpoint-item {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #F3E719;
+        }
+        
+        .breakpoint-item.error {
+            border-left-color: #F44336;
+        }
+        
+        .breakpoint-item.ok {
+            border-left-color: #4CAF50;
+        }
+    </style>
+</head>
+<body>
+    <div class="current-size" id="currentSize">
+        Largeur actuelle: <span id="currentWidth">-</span>px
+        <br>
+        Statut: <span id="currentStatus">-</span>
+    </div>
+    
+    <div class="test-container">
+        <h1>🔧 Test Système Largeur Non Suffisante - DK BUILDING</h1>
+        
+        <div class="test-info">
+            <h3>📋 Objectif du Test</h3>
+            <p>Vérifier que le système de détection de largeur non suffisante fonctionne correctement avec un seuil de <strong>320px</strong>.</p>
+            
+            <h3>🎯 Comportement Attendu</h3>
+            <ul>
+                <li><span class="status-indicator status-error"></span> <strong>&lt; 320px :</strong> Message d'erreur affiché, site bloqué</li>
+                <li><span class="status-indicator status-ok"></span> <strong>≥ 320px :</strong> Site accessible normalement</li>
+            </ul>
+        </div>
+        
+        <div class="test-buttons">
+            <button class="btn" onclick="setSize(240)">240px (xxxsm)</button>
+            <button class="btn" onclick="setSize(300)">300px (limite)</button>
+            <button class="btn" onclick="setSize(320)">320px (xxs)</button>
+            <button class="btn" onclick="setSize(375)">375px (xs)</button>
+            <button class="btn" onclick="setSize(640)">640px (sm)</button>
+            <button class="btn" onclick="setSize(768)">768px (md)</button>
+            <button class="btn" onclick="setSize(1024)">1024px (lg)</button>
+            <button class="btn" onclick="setSize(1280)">1280px (xl)</button>
+            <button class="btn" onclick="resetSize()">Reset</button>
+        </div>
+        
+        <div class="breakpoint-list">
+            <div class="breakpoint-item" id="breakpoint-240">
+                <strong>240px (xxxsm)</strong><br>
+                Montres Fitness, Apple Watch<br>
+                <span class="status-text">❌ Bloqué</span>
+            </div>
+            <div class="breakpoint-item" id="breakpoint-300">
+                <strong>300px (limite)</strong><br>
+                Très petits mobiles<br>
+                <span class="status-text">❌ Bloqué</span>
+            </div>
+            <div class="breakpoint-item" id="breakpoint-320">
+                <strong>320px (xxs)</strong><br>
+                iPhone 3G, petits mobiles<br>
+                <span class="status-text">✅ Autorisé</span>
+            </div>
+            <div class="breakpoint-item" id="breakpoint-375">
+                <strong>375px (xs)</strong><br>
+                iPhone SE, petits mobiles<br>
+                <span class="status-text">✅ Autorisé</span>
+            </div>
+            <div class="breakpoint-item" id="breakpoint-640">
+                <strong>640px (sm)</strong><br>
+                Mobiles standards<br>
+                <span class="status-text">✅ Autorisé</span>
+            </div>
+            <div class="breakpoint-item" id="breakpoint-768">
+                <strong>768px (md)</strong><br>
+                Tablettes portrait<br>
+                <span class="status-text">✅ Autorisé</span>
+            </div>
+            <div class="breakpoint-item" id="breakpoint-1024">
+                <strong>1024px (lg)</strong><br>
+                Tablettes landscape / petits desktops<br>
+                <span class="status-text">✅ Autorisé</span>
+            </div>
+            <div class="breakpoint-item" id="breakpoint-1280">
+                <strong>1280px (xl)</strong><br>
+                Desktops standards<br>
+                <span class="status-text">✅ Autorisé</span>
+            </div>
+        </div>
+        
+        <div class="test-frame" id="testFrame">
+            <iframe src="http://localhost:5173" width="100%" height="100%" frameborder="0"></iframe>
+        </div>
+        
+        <div class="test-info">
+            <h3>🔍 Instructions de Test</h3>
+            <ol>
+                <li>Cliquez sur les boutons pour simuler différentes largeurs d'écran</li>
+                <li>Observez le comportement dans l'iframe ci-dessus</li>
+                <li>Vérifiez que le message d'erreur apparaît pour les largeurs &lt; 320px</li>
+                <li>Vérifiez que le site se charge normalement pour les largeurs ≥ 320px</li>
+                <li>Testez également le redimensionnement manuel de la fenêtre</li>
+            </ol>
+            
+            <h3>📊 Résultats Attendus</h3>
+            <ul>
+                <li><strong>240px-319px :</strong> Message "Un espace plus large est nécessaire" avec icône règle</li>
+                <li><strong>320px+ :</strong> Chargement normal du site DK BUILDING</li>
+                <li><strong>Transition :</strong> Animation fluide lors du changement de taille</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        const MIN_WIDTH = 320;
+        let currentSize = null;
+        
+        function updateCurrentSize() {
+            const width = window.innerWidth;
+            const isBelowMinimum = width < MIN_WIDTH;
+            
+            document.getElementById('currentWidth').textContent = width;
+            document.getElementById('currentStatus').textContent = isBelowMinimum ? '❌ Bloqué' : '✅ Autorisé';
+            document.getElementById('currentStatus').style.color = isBelowMinimum ? '#F44336' : '#4CAF50';
+            
+            // Mettre à jour les indicateurs de breakpoints
+            updateBreakpointIndicators(width);
+        }
+        
+        function updateBreakpointIndicators(currentWidth) {
+            const breakpoints = [
+                { size: 240, id: 'breakpoint-240' },
+                { size: 300, id: 'breakpoint-300' },
+                { size: 320, id: 'breakpoint-320' },
+                { size: 375, id: 'breakpoint-375' },
+                { size: 640, id: 'breakpoint-640' },
+                { size: 768, id: 'breakpoint-768' },
+                { size: 1024, id: 'breakpoint-1024' },
+                { size: 1280, id: 'breakpoint-1280' }
+            ];
+            
+            breakpoints.forEach(bp => {
+                const element = document.getElementById(bp.id);
+                const isActive = currentWidth === bp.size;
+                const isBelowMinimum = bp.size < MIN_WIDTH;
+                
+                element.className = `breakpoint-item ${isActive ? 'active' : ''} ${isBelowMinimum ? 'error' : 'ok'}`;
+            });
+        }
+        
+        function setSize(width) {
+            // Simuler le redimensionnement de la fenêtre
+            Object.defineProperty(window, 'innerWidth', {
+                writable: true,
+                configurable: true,
+                value: width
+            });
+            
+            // Déclencher l'événement resize
+            window.dispatchEvent(new Event('resize'));
+            
+            // Mettre à jour l'affichage
+            updateCurrentSize();
+            
+            // Mettre à jour les boutons actifs
+            document.querySelectorAll('.btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            currentSize = width;
+        }
+        
+        function resetSize() {
+            // Restaurer la taille réelle
+            Object.defineProperty(window, 'innerWidth', {
+                writable: true,
+                configurable: true,
+                value: window.screen.width
+            });
+            
+            window.dispatchEvent(new Event('resize'));
+            updateCurrentSize();
+            
+            document.querySelectorAll('.btn').forEach(btn => btn.classList.remove('active'));
+            currentSize = null;
+        }
+        
+        // Initialisation
+        updateCurrentSize();
+        
+        // Écouter les changements de taille réels
+        window.addEventListener('resize', updateCurrentSize);
+        
+        // Mise à jour périodique pour s'assurer de la cohérence
+        setInterval(updateCurrentSize, 1000);
+    </script>
+</body>
+</html>

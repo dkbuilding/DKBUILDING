@@ -1,0 +1,62 @@
+/* Styles globaux pour DK BUILDING */
+.App {
+  min-height: 100vh;
+  background-color: #0E0E0E;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* Smooth scrolling pour les ancres */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Styles pour les sections */
+section {
+  position: relative;
+}
+
+/* Styles pour les liens d'ancrage */
+a[href^="#"] {
+  scroll-margin-top: 80px;
+}
+
+/* Styles pour les images lazy loading */
+img {
+  transition: opacity 0.3s ease;
+}
+
+img[loading="lazy"] {
+  opacity: 0;
+}
+
+img[loading="lazy"].loaded {
+  opacity: 1;
+}
+
+/* Styles pour les boutons avec focus visible - DÉSACTIVÉ */
+/* button:focus-visible,
+.btn-primary:focus-visible,
+.btn-secondary:focus-visible {
+  outline: 2px solid #F3E719;
+  outline-offset: 2px;
+} */
+
+/* Styles pour les animations GSAP */
+.gsap-element {
+  opacity: 0;
+}
+
+/* Styles pour les cartes avec hover */
+.card-hover {
+  transform-origin: center;
+}
+
+/* Styles pour les gradients de texte */
+.text-gradient {
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}

@@ -1,0 +1,13 @@
+/* ========================================
+   CONFIGURATION TAILWIND CSS v4 + FALLBACK
+   ======================================== */
+
+/* Imports CSS v4 - Syntaxe moderne (priorité) */
+@import "tailwindcss";
+
+/* Fallback v3 - Directives obsolètes gardées par sécurité */
+/* Ces directives seront ignorées en v4 mais serviront de fallback */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+

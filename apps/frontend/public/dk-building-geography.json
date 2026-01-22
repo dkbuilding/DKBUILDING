@@ -1,0 +1,267 @@
+{
+  "dkBuildingGeography": {
+    "version": "1.0",
+    "lastUpdated": "2024-01-15",
+    "company": "DK BUILDING",
+    "headquarters": {
+      "address": "59 Rue Pierre Cormary",
+      "city": "Albi",
+      "postalCode": "81000",
+      "department": "Tarn",
+      "region": "Occitanie",
+      "country": "France",
+      "coordinates": {
+        "latitude": 43.9298,
+        "longitude": 2.1480
+      }
+    },
+    "serviceArea": {
+      "primaryRadius": "50km",
+      "description": "Zone d'intervention principale autour d'Albi",
+      "departments": [
+        {
+          "code": "81",
+          "name": "Tarn",
+          "region": "Occitanie",
+          "priority": "Primary",
+          "coverage": "100%",
+          "cities": [
+            {
+              "name": "Albi",
+              "postalCode": "81000",
+              "coordinates": { "latitude": 43.9298, "longitude": 2.1480 },
+              "distance": "0km",
+              "priority": 1
+            },
+            {
+              "name": "Castres",
+              "postalCode": "81100",
+              "coordinates": { "latitude": 43.6047, "longitude": 2.2400 },
+              "distance": "35km",
+              "priority": 2
+            },
+            {
+              "name": "Gaillac",
+              "postalCode": "81600",
+              "coordinates": { "latitude": 43.9014, "longitude": 1.8969 },
+              "distance": "25km",
+              "priority": 2
+            },
+            {
+              "name": "Carmaux",
+              "postalCode": "81400",
+              "coordinates": { "latitude": 44.0500, "longitude": 2.1578 },
+              "distance": "15km",
+              "priority": 3
+            },
+            {
+              "name": "Lavaur",
+              "postalCode": "81500",
+              "coordinates": { "latitude": 43.6989, "longitude": 1.8186 },
+              "distance": "30km",
+              "priority": 3
+            }
+          ]
+        },
+        {
+          "code": "31",
+          "name": "Haute-Garonne",
+          "region": "Occitanie",
+          "priority": "Secondary",
+          "coverage": "Partial",
+          "cities": [
+            {
+              "name": "Toulouse",
+              "postalCode": "31000",
+              "coordinates": { "latitude": 43.6047, "longitude": 1.4442 },
+              "distance": "75km",
+              "priority": 2
+            },
+            {
+              "name": "Colomiers",
+              "postalCode": "31770",
+              "coordinates": { "latitude": 43.6100, "longitude": 1.3300 },
+              "distance": "80km",
+              "priority": 3
+            },
+            {
+              "name": "Tournefeuille",
+              "postalCode": "31170",
+              "coordinates": { "latitude": 43.5800, "longitude": 1.3500 },
+              "distance": "85km",
+              "priority": 3
+            }
+          ]
+        },
+        {
+          "code": "82",
+          "name": "Tarn-et-Garonne",
+          "region": "Occitanie",
+          "priority": "Secondary",
+          "coverage": "Partial",
+          "cities": [
+            {
+              "name": "Montauban",
+              "postalCode": "82000",
+              "coordinates": { "latitude": 44.0174, "longitude": 1.3548 },
+              "distance": "45km",
+              "priority": 2
+            },
+            {
+              "name": "Moissac",
+              "postalCode": "82200",
+              "coordinates": { "latitude": 44.1000, "longitude": 1.1000 },
+              "distance": "60km",
+              "priority": 3
+            },
+            {
+              "name": "Castelsarrasin",
+              "postalCode": "82100",
+              "coordinates": { "latitude": 44.0400, "longitude": 1.1100 },
+              "distance": "55km",
+              "priority": 3
+            }
+          ]
+        },
+        {
+          "code": "12",
+          "name": "Aveyron",
+          "region": "Occitanie",
+          "priority": "Secondary",
+          "coverage": "Partial",
+          "cities": [
+            {
+              "name": "Rodez",
+              "postalCode": "12000",
+              "coordinates": { "latitude": 44.3524, "longitude": 2.5739 },
+              "distance": "80km",
+              "priority": 2
+            },
+            {
+              "name": "Millau",
+              "postalCode": "12100",
+              "coordinates": { "latitude": 44.1000, "longitude": 3.0800 },
+              "distance": "90km",
+              "priority": 3
+            },
+            {
+              "name": "Decazeville",
+              "postalCode": "12300",
+              "coordinates": { "latitude": 44.5600, "longitude": 2.2500 },
+              "distance": "70km",
+              "priority": 3
+            }
+          ]
+        }
+      ]
+    },
+    "competitors": {
+      "local": [
+        {
+          "name": "Entreprises locales du Tarn",
+          "location": "Tarn",
+          "specialization": "Construction générale"
+        },
+        {
+          "name": "Charpentiers métalliques régionaux",
+          "location": "Occitanie",
+          "specialization": "Charpente métallique"
+        }
+      ],
+      "regional": [
+        {
+          "name": "Grandes entreprises Toulouse",
+          "location": "Haute-Garonne",
+          "specialization": "BTP général"
+        }
+      ]
+    },
+    "marketAnalysis": {
+      "tarn": {
+        "population": "390,000",
+        "majorIndustries": ["Agriculture", "Tourisme", "Services"],
+        "constructionDemand": "Modérée",
+        "competition": "Modérée"
+      },
+      "hauteGaronne": {
+        "population": "1,400,000",
+        "majorIndustries": ["Aéronautique", "Technologies", "Services"],
+        "constructionDemand": "Élevée",
+        "competition": "Forte"
+      },
+      "tarnEtGaronne": {
+        "population": "260,000",
+        "majorIndustries": ["Agriculture", "Industrie", "Services"],
+        "constructionDemand": "Modérée",
+        "competition": "Modérée"
+      },
+      "aveyron": {
+        "population": "280,000",
+        "majorIndustries": ["Agriculture", "Tourisme", "Artisanat"],
+        "constructionDemand": "Faible",
+        "competition": "Faible"
+      }
+    },
+    "servicesByArea": {
+      "albi": {
+        "services": ["Charpente métallique", "Bardage", "Couverture", "Photovoltaïque", "Terrassement"],
+        "specialization": "Tous services",
+        "responseTime": "24h"
+      },
+      "toulouse": {
+        "services": ["Charpente métallique", "Bardage", "Couverture"],
+        "specialization": "Projets industriels",
+        "responseTime": "48h"
+      },
+      "montauban": {
+        "services": ["Charpente métallique", "Bardage", "Couverture"],
+        "specialization": "Projets commerciaux",
+        "responseTime": "48h"
+      },
+      "rodez": {
+        "services": ["Charpente métallique", "Couverture"],
+        "specialization": "Projets résidentiels",
+        "responseTime": "72h"
+      }
+    },
+    "transportation": {
+      "fromAlbi": {
+        "toToulouse": {
+          "distance": "75km",
+          "time": "1h15",
+          "route": "A68"
+        },
+        "toMontauban": {
+          "distance": "45km",
+          "time": "45min",
+          "route": "N88"
+        },
+        "toRodez": {
+          "distance": "80km",
+          "time": "1h20",
+          "route": "N88"
+        },
+        "toCastres": {
+          "distance": "35km",
+          "time": "35min",
+          "route": "N88"
+        }
+      }
+    },
+    "statistics": {
+      "totalCitiesServed": 20,
+      "totalDepartmentsServed": 4,
+      "averageDistance": "45km",
+      "maxDistance": "90km",
+      "responseTimeAverage": "36h",
+      "projectsCompleted": "150+",
+      "clientSatisfaction": "98%"
+    },
+    "metadata": {
+      "purpose": "Géolocalisation et zone d'intervention DK BUILDING",
+      "updateFrequency": "trimestrielle",
+      "source": "DK BUILDING internal data",
+      "language": "fr-FR"
+    }
+  }
+}

@@ -1,0 +1,105 @@
+{
+  "screenConditions": {
+    "minWidth": 320,
+    "minHeight": 320,
+    "messages": {
+      "widthOnly": {
+        "title": "Un espace plus large est nécessaire",
+        "subtitle": "Notre site nécessite un écran d'au moins 320px de largeur pour garantir une expérience optimale.",
+        "action": "Pour une navigation confortable, veuillez utiliser une tablette, un ordinateur, ou orienter votre smartphone en mode paysage.",
+        "icon": "ruler"
+      },
+      "heightOnly": {
+        "title": "Un espace plus haut est nécessaire",
+        "subtitle": "Notre site nécessite un écran d'au moins 320px de hauteur pour garantir une expérience optimale.",
+        "action": "Pour une navigation confortable, veuillez utiliser une tablette, un ordinateur, ou redimensionner votre fenêtre.",
+        "icon": "maximize-2"
+      },
+      "both": {
+        "title": "Écran trop petit",
+        "subtitle": "Votre écran est trop petit pour afficher correctement notre site web.",
+        "action": "Veuillez rediriger l'affichage de ce site vers un écran plus grand (tablette, ordinateur) pour une expérience optimale.",
+        "icon": "maximize",
+        "variant": "fullscreen"
+      }
+    }
+  },
+  "preloaderSettings": {
+    "animation": {
+      "duration": 1000,
+      "easing": "power3.out",
+      "fadeInDuration": 0.6,
+      "scaleDuration": 0.4
+    },
+    "logo": {
+      "src": "/src/assets/images/logos/Logo — DK BUILDING — Structure 2.png",
+      "alt": "DK BUILDING",
+      "width": 120,
+      "height": 120
+    }
+  },
+  "browserConditions": {
+    "minVersion": {
+      "chrome": 90,
+      "firefox": 88,
+      "safari": 14,
+      "edge": 90,
+      "ie": 11,
+      "android": 60,
+      "ios": 13,
+      "blackberry": 10,
+      "opera": 86,
+      "opera mini": 86,
+      "opera mobile": 86,
+      "opera tablet": 86,
+      "opera desktop": 86,
+      "opera tv": 86,
+      "opera watch": 86,
+      "samsung internet": 13,
+      "uc browser": 13,
+      "qq browser": 13,
+      "baidu browser": 13,
+      "maxthon": 13,
+      "yandex browser": 13,
+      "vivaldi": 13,
+      "brave": 13,
+      "epiphany": 13,
+      "epiphany mobile": 13,
+      "epiphany tablet": 13,
+      "epiphany desktop": 13,
+      "epiphany tv": 13,
+      "epiphany watch": 13,
+      "lynx": 13,
+      "dillo": 13,
+      "w3m": 13,
+      "links": 13,
+      "elinks": 13,
+      "w3m mobile": 13,
+      "w3m tablet": 13,
+      "w3m desktop": 13,
+      "w3m tv": 13,
+      "w3m watch": 13
+    },
+    "message": {
+      "title": "Navigateur obsolète détecté",
+      "subtitle": "Votre navigateur n'est pas compatible avec notre site.",
+      "action": "Veuillez mettre à jour votre navigateur vers une version plus récente.",
+      "icon": "globe"
+    }
+  },
+  "performanceConditions": {
+    "slowConnection": {
+      "threshold": 2000,
+      "message": {
+        "title": "Connexion lente détectée",
+        "subtitle": "Le chargement peut prendre plus de temps.",
+        "action": "Veuillez patienter ou vérifier votre connexion internet."
+      }
+    }
+  },
+  "accessibility": {
+    "respectReducedMotion": true,
+    "highContrast": true,
+    "keyboardNavigation": true
+  }
+}

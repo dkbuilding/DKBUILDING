@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Responsive Footer DK BUILDING</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+            background: #0E0E0E;
+            color: white;
+        }
+        
+        .test-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .breakpoint-info {
+            background: #202020;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 8px;
+            border-left: 4px solid #F3E719;
+        }
+        
+        .breakpoint-info h3 {
+            margin: 0 0 10px 0;
+            color: #F3E719;
+        }
+        
+        .breakpoint-info p {
+            margin: 5px 0;
+            color: #C0C0C0;
+        }
+        
+        .test-frame {
+            width: 100%;
+            height: 600px;
+            border: 2px solid #F3E719;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        
+        .responsive-buttons {
+            display: flex;
+            gap: 10px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            background: #F3E719;
+            color: #0E0E0E;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        
+        .btn:hover {
+            background: #FDE047;
+        }
+        
+        .btn.active {
+            background: #EAB308;
+        }
+        
+        .accessibility-checklist {
+            background: #101010;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            border: 1px solid #404040;
+        }
+        
+        .accessibility-checklist h3 {
+            color: #F3E719;
+            margin-top: 0;
+        }
+        
+        .checklist-item {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+            padding: 10px;
+            background: #202020;
+            border-radius: 5px;
+        }
+        
+        .checklist-item input[type="checkbox"] {
+            margin-right: 10px;
+            transform: scale(1.2);
+        }
+        
+        .checklist-item label {
+            color: #C0C0C0;
+            cursor: pointer;
+        }
+        
+        .current-size {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: rgba(0,0,0,0.8);
+            padding: 10px;
+            border-radius: 5px;
+            color: #F3E719;
+            font-weight: bold;
+            z-index: 1000;
+        }
+    </style>
+</head>
+<body>
+    <div class="current-size" id="currentSize"></div>
+    
+    <div class="test-container">
+        <h1>Test Responsive Footer DK BUILDING</h1>
+        
+        <div class="breakpoint-info">
+            <h3>Breakpoints à tester</h3>
+            <p><strong>Mobile:</strong> 375px - Layout vertical, logo centré, titre 4xl-5xl</p>
+            <p><strong>Tablet:</strong> 768px - 3 colonnes nav, titre 6xl-7xl</p>
+            <p><strong>Desktop:</strong> 1024px - Layout pleine largeur, titre 8xl-9xl</p>
+            <p><strong>Large:</strong> 1280px+ - Container max-width, espacement optimal</p>
+        </div>
+        
+        <div class="responsive-buttons">
+            <button class="btn" onclick="setSize(375)">Mobile (375px)</button>
+            <button class="btn" onclick="setSize(768)">Tablet (768px)</button>
+            <button class="btn" onclick="setSize(1024)">Desktop (1024px)</button>
+            <button class="btn" onclick="setSize(1280)">Large (1280px)</button>
+            <button class="btn" onclick="setSize(1920)">XL (1920px)</button>
+            <button class="btn" onclick="resetSize()">Reset</button>
+        </div>
+        
+        <div class="test-frame" id="testFrame">
+            <iframe src="http://localhost:5173" width="100%" height="100%" frameborder="0"></iframe>
+        </div>
+        
+        <div class="accessibility-checklist">
+            <h3>Checklist Accessibilité</h3>
+            
+            <div class="checklist-item">
+                <input type="checkbox" id="contrast">
+                <label for="contrast">Contraste WCAG AA respecté (4.5:1 minimum)</label>
+            </div>
+            
+            <div class="checklist-item">
+                <input type="checkbox" id="focus">
+                <label for="focus">Focus visibles sur tous les éléments interactifs</label>
+            </div>
+            
+            <div class="checklist-item">
+                <input type="checkbox" id="aria">
+                <label for="aria">ARIA labels corrects et descriptifs</label>
+            </div>
+            
+            <div class="checklist-item">
+                <input type="checkbox" id="keyboard">
+                <label for="keyboard">Navigation clavier complète (Tab, Enter, Escape)</label>
+            </div>
+            
+            <div class="checklist-item">
+                <input type="checkbox" id="touch">
+                <label for="touch">Touch targets minimum 44px sur mobile</label>
+            </div>
+            
+            <div class="checklist-item">
+                <input type="checkbox" id="motion">
+                <label for="motion">prefers-reduced-motion respecté</label>
+            </div>
+            
+            <div class="checklist-item">
+                <input type="checkbox" id="screenreader">
+                <label for="screenreader">Screen reader friendly</label>
+            </div>
+        </div>
+        
+        <div class="breakpoint-info">
+            <h3>Instructions de test</h3>
+            <p>1. Cliquez sur les boutons pour tester différents breakpoints</p>
+            <p>2. Vérifiez que le layout s'adapte correctement</p>
+            <p>3. Testez la navigation clavier (Tab pour naviguer)</p>
+            <p>4. Vérifiez les animations GSAP au scroll</p>
+            <p>5. Cochez les éléments de la checklist accessibilité</p>
+        </div>
+    </div>
+    
+    <script>
+        function setSize(width) {
+            const frame = document.getElementById('testFrame');
+            frame.style.width = width + 'px';
+            frame.style.height = '600px';
+            
+            // Mettre à jour le bouton actif
+            document.querySelectorAll('.btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            updateCurrentSize();
+        }
+        
+        function resetSize() {
+            const frame = document.getElementById('testFrame');
+            frame.style.width = '100%';
+            frame.style.height = '600px';
+            
+            document.querySelectorAll('.btn').forEach(btn => btn.classList.remove('active'));
+            updateCurrentSize();
+        }
+        
+        function updateCurrentSize() {
+            const frame = document.getElementById('testFrame');
+            const currentSize = document.getElementById('currentSize');
+            const width = frame.style.width === '100%' ? window.innerWidth : parseInt(frame.style.width);
+            currentSize.textContent = `${width}px`;
+        }
+        
+        // Mettre à jour la taille actuelle
+        window.addEventListener('resize', updateCurrentSize);
+        updateCurrentSize();
+        
+        // Test automatique des breakpoints
+        function autoTest() {
+            const breakpoints = [375, 768, 1024, 1280];
+            let currentIndex = 0;
+            
+            const testInterval = setInterval(() => {
+                if (currentIndex < breakpoints.length) {
+                    const frame = document.getElementById('testFrame');
+                    frame.style.width = breakpoints[currentIndex] + 'px';
+                    updateCurrentSize();
+                    currentIndex++;
+                } else {
+                    clearInterval(testInterval);
+                    resetSize();
+                }
+            }, 3000);
+        }
+        
+        // Démarrer le test automatique après 5 secondes
+        setTimeout(autoTest, 5000);
+    </script>
+</body>
+</html>

@@ -1,0 +1,152 @@
+/* 
+ * Noise Overlay pour améliorer la netteté des vidéos
+ * DK BUILDING - Effet 4K Noise
+ */
+
+/* Overlay de noise principal avec gradients radiaux */
+.noise-overlay-primary {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  opacity: 0.02;
+  pointer-events: none;
+  background-image: 
+    radial-gradient(circle at 1px 1px, rgba(255,255,255,0.15) 1px, transparent 0),
+    radial-gradient(circle at 2px 2px, rgba(255,255,255,0.1) 1px, transparent 0),
+    radial-gradient(circle at 3px 3px, rgba(255,255,255,0.08) 1px, transparent 0);
+  background-size: 4px 4px, 6px 6px, 8px 8px;
+  background-position: 0 0, 1px 1px, 2px 2px;
+  filter: contrast(1.2) brightness(1.1);
+  mix-blend-mode: overlay;
+}
+
+/* Overlay de noise alternatif avec pattern SVG */
+.noise-overlay-svg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  opacity: 0.015;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.4'/%3E%3C/svg%3E");
+  background-size: 200px 200px;
+  filter: contrast(1.3) brightness(1.05);
+  mix-blend-mode: soft-light;
+}
+
+/* Overlay de noise haute résolution pour écrans 4K+ */
+.noise-overlay-hd {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  opacity: 0.008;
+  pointer-events: none;
+  background-image: 
+    radial-gradient(circle at 0.5px 0.5px, rgba(255,255,255,0.2) 0.5px, transparent 0),
+    radial-gradient(circle at 1px 1px, rgba(255,255,255,0.12) 0.8px, transparent 0),
+    radial-gradient(circle at 1.5px 1.5px, rgba(255,255,255,0.08) 1px, transparent 0),
+    radial-gradient(circle at 2px 2px, rgba(255,255,255,0.06) 1.2px, transparent 0);
+  background-size: 2px 2px, 3px 3px, 4px 4px, 5px 5px;
+  background-position: 0 0, 0.5px 0.5px, 1px 1px, 1.5px 1.5px;
+  filter: contrast(1.4) brightness(1.08) saturate(1.1);
+  mix-blend-mode: overlay;
+}
+
+/* Variantes d'intensité */
+.noise-overlay-subtle {
+  opacity: 0.02;
+}
+
+.noise-overlay-medium {
+  opacity: 0.05;
+}
+
+.noise-overlay-strong {
+  opacity: 0.08;
+}
+
+/* Variantes de couleur pour différents thèmes */
+.noise-overlay-warm {
+  background-image: 
+    radial-gradient(circle at 1px 1px, rgba(255,248,220,0.15) 1px, transparent 0),
+    radial-gradient(circle at 2px 2px, rgba(255,235,205,0.1) 1px, transparent 0),
+    radial-gradient(circle at 3px 3px, rgba(255,222,173,0.08) 1px, transparent 0);
+}
+
+.noise-overlay-cool {
+  background-image: 
+    radial-gradient(circle at 1px 1px, rgba(220,248,255,0.15) 1px, transparent 0),
+    radial-gradient(circle at 2px 2px, rgba(205,235,255,0.1) 1px, transparent 0),
+    radial-gradient(circle at 3px 3px, rgba(173,222,255,0.08) 1px, transparent 0);
+}
+
+/* Animation subtile pour un effet dynamique */
+.noise-overlay-animated {
+  animation: noise-shift 20s linear infinite;
+}
+
+@keyframes noise-shift {
+  0% {
+    background-position: 0 0, 1px 1px, 2px 2px;
+  }
+  25% {
+    background-position: 1px 0, 2px 1px, 3px 2px;
+  }
+  50% {
+    background-position: 0 1px, 1px 2px, 2px 3px;
+  }
+  75% {
+    background-position: -1px 0, 0 1px, 1px 2px;
+  }
+  100% {
+    background-position: 0 0, 1px 1px, 2px 2px;
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .noise-overlay-primary,
+  .noise-overlay-svg,
+  .noise-overlay-hd {
+    opacity: 0.01; /* Réduire l'intensité sur mobile */
+  }
+}
+
+@media (min-width: 1920px) {
+  .noise-overlay-primary,
+  .noise-overlay-svg,
+  .noise-overlay-hd {
+    opacity: 0.025; /* Augmenter l'intensité sur écrans 4K */
+  }
+}
+
+/* Optimisations pour les performances */
+.noise-overlay-primary,
+.noise-overlay-svg,
+.noise-overlay-hd {
+  will-change: transform;
+  transform: translateZ(0); /* Force l'accélération matérielle */
+  backface-visibility: hidden;
+}
+
+/* Mode sombre optimisé */
+@media (prefers-color-scheme: dark) {
+  .noise-overlay-primary {
+    background-image: 
+      radial-gradient(circle at 1px 1px, rgba(255,255,255,0.2) 1px, transparent 0),
+      radial-gradient(circle at 2px 2px, rgba(255,255,255,0.15) 1px, transparent 0),
+      radial-gradient(circle at 3px 3px, rgba(255,255,255,0.1) 1px, transparent 0);
+  }
+}
+
+/* Mode économie d'énergie */
+@media (prefers-reduced-motion: reduce) {
+  .noise-overlay-animated {
+    animation: none;
+  }
+}

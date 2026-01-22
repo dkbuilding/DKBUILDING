@@ -1,0 +1,4 @@
+// Barrel exports pour les composants de navigation
+export { default as Navigation } from './Navigation';
+export { default as Sidebar } from './Sidebar';
+export { default as SmartNavigationIndicator } from './SmartNavigationIndicator';

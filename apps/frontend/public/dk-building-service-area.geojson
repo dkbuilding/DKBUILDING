@@ -1,0 +1,178 @@
+{
+  "type": "FeatureCollection",
+  "name": "DK BUILDING - Zones d'intervention",
+  "description": "Zones de service de DK BUILDING dans le Tarn et régions avoisinantes",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "DK BUILDING - Siège Social",
+        "description": "Siège social et bureau principal",
+        "address": "59 Rue Pierre Cormary, 81000 Albi",
+        "phone": "+33 7 68 11 38 39",
+        "email": "contact@dkbuilding.fr",
+        "services": ["Charpente", "Bardage", "Couverture", "Photovoltaïque", "Terrassement"],
+        "type": "headquarters",
+        "priority": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [2.1480, 43.9298]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Zone d'intervention principale",
+        "description": "Rayon d'intervention de 50km autour d'Albi",
+        "radius": 50000,
+        "type": "service_area",
+        "priority": 2
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [2.1480, 43.9298],
+          [2.1480, 44.3788],
+          [2.5980, 44.3788],
+          [2.5980, 43.4808],
+          [1.6980, 43.4808],
+          [1.6980, 44.3788],
+          [2.1480, 44.3788],
+          [2.1480, 43.9298]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Albi",
+        "description": "Ville principale - Siège social",
+        "department": "Tarn",
+        "region": "Occitanie",
+        "type": "city",
+        "priority": 1
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [2.1480, 43.9298]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Toulouse",
+        "description": "Ville desservie - Haute-Garonne",
+        "department": "Haute-Garonne",
+        "region": "Occitanie",
+        "type": "city",
+        "priority": 2
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [1.4442, 43.6047]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Montauban",
+        "description": "Ville desservie - Tarn-et-Garonne",
+        "department": "Tarn-et-Garonne",
+        "region": "Occitanie",
+        "type": "city",
+        "priority": 2
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [1.3542, 44.0167]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Rodez",
+        "description": "Ville desservie - Aveyron",
+        "department": "Aveyron",
+        "region": "Occitanie",
+        "type": "city",
+        "priority": 2
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [2.5736, 44.3506]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Castres",
+        "description": "Ville desservie - Tarn",
+        "department": "Tarn",
+        "region": "Occitanie",
+        "type": "city",
+        "priority": 2
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [2.2403, 43.6047]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Gaillac",
+        "description": "Ville desservie - Tarn",
+        "department": "Tarn",
+        "region": "Occitanie",
+        "type": "city",
+        "priority": 3
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [1.8969, 43.9014]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Carmaux",
+        "description": "Ville desservie - Tarn",
+        "department": "Tarn",
+        "region": "Occitanie",
+        "type": "city",
+        "priority": 3
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [2.1578, 44.0500]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Lavaur",
+        "description": "Ville desservie - Tarn",
+        "department": "Tarn",
+        "region": "Occitanie",
+        "type": "city",
+        "priority": 3
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [1.8186, 43.6989]
+      }
+    }
+  ],
+  "metadata": {
+    "created": "2024-01-15",
+    "version": "1.0",
+    "coordinate_system": "WGS84",
+    "units": "meters",
+    "service_radius": 50000,
+    "total_cities": 9,
+    "departments_served": ["Tarn", "Haute-Garonne", "Tarn-et-Garonne", "Aveyron"],
+    "region": "Occitanie",
+    "country": "France"
+  }
+}

@@ -1,0 +1,146 @@
+/* Styles pour le système lockAccess - Overlay complet */
+
+/* Masquer complètement le contenu quand le site est verrouillé */
+.lock-access-overlay {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  z-index: 10000 !important;
+  background: linear-gradient(to bottom, rgba(14, 14, 14, 0.85), rgba(14, 14, 14, 0.95)) !important;
+  backdrop-filter: blur(2px) !important;
+  overflow: hidden !important;
+}
+
+/* Désactiver le scroll du body quand verrouillé */
+body.lock-access-active {
+  position: fixed !important;
+  width: 100% !important;
+  overflow: hidden !important;
+  height: 100vh !important;
+}
+
+/* Masquer tous les éléments du site quand verrouillé, SAUF le Hero pour voir le fond */
+.lock-access-active main,
+.lock-access-active .preloader,
+.lock-access-active nav,
+.lock-access-active footer,
+.lock-access-active .about,
+.lock-access-active .services,
+.lock-access-active .portfolio,
+.lock-access-active .contact,
+.lock-access-active .news {
+  display: none !important;
+}
+
+/* Garder le Hero visible mais masquer son contenu pour voir uniquement le fond */
+.lock-access-active .hero,
+.lock-access-active section[class*="hero"],
+.lock-access-active [class*="Hero"] {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  z-index: 1 !important;
+  pointer-events: none !important;
+}
+
+/* Masquer le contenu du Hero (logo, texte, boutons) mais garder le fond visible (vidéo, image) */
+.lock-access-active .hero video,
+.lock-access-active .hero [style*="backgroundImage"],
+.lock-access-active .hero [style*="background-image"],
+.lock-access-active section[class*="hero"] video,
+.lock-access-active section[class*="hero"] [style*="backgroundImage"],
+.lock-access-active section[class*="hero"] [style*="background-image"] {
+  display: block !important;
+  opacity: 1 !important;
+}
+
+/* Masquer tout le contenu texte/logo du Hero */
+.lock-access-active .hero > div:not([class*="absolute"]):not([style*="background"]),
+.lock-access-active .hero img:not([style*="background"]),
+.lock-access-active .hero h1,
+.lock-access-active .hero h2,
+.lock-access-active .hero p,
+.lock-access-active .hero button,
+.lock-access-active section[class*="hero"] > div:not([class*="absolute"]):not([style*="background"]),
+.lock-access-active section[class*="hero"] img:not([style*="background"]),
+.lock-access-active section[class*="hero"] h1,
+.lock-access-active section[class*="hero"] h2,
+.lock-access-active section[class*="hero"] p,
+.lock-access-active section[class*="hero"] button {
+  display: none !important;
+}
+
+/* Assurer que l'overlay est au-dessus de tout */
+.lock-access-container {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  z-index: 10000 !important;
+  background: linear-gradient(to bottom, rgba(14, 14, 14, 0.85), rgba(14, 14, 14, 0.95)) !important;
+  backdrop-filter: blur(2px) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  overflow: hidden !important;
+}
+
+/* Styles pour le contrôleur d'administration */
+.lock-access-controller {
+  position: fixed !important;
+  top: 1rem !important;
+  left: 1rem !important;
+  z-index: 10002 !important;
+}
+
+/* Animation d'entrée pour l'overlay */
+@keyframes lockAccessFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.lock-access-container {
+  animation: lockAccessFadeIn 0.3s ease-out;
+}
+
+/* Styles pour les messages d'erreur */
+.lock-access-error {
+  animation: shake 0.5s ease-in-out;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
+}
+
+/* Responsive design pour l'overlay */
+@media (max-width: 768px) {
+  .lock-access-container {
+    padding: 1rem;
+  }
+  
+  .lock-access-controller {
+    top: 0.5rem;
+    left: 0.5rem;
+  }
+}
+
+/* Styles pour les éléments masqués */
+.lock-access-hidden {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}

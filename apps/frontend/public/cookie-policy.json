@@ -1,0 +1,118 @@
+{
+    "cookiePolicy": {
+        "version": "1.0",
+        "lastUpdated": "2024-01-15",
+        "company": "DK BUILDING",
+        "website": "https://dkbuilding.fr",
+        "cookies": {
+        "essential": {
+            "description": "Cookies essentiels au fonctionnement du site",
+            "required": true,
+            "cookies": [
+            {
+                "name": "session",
+                "purpose": "Maintien de la session utilisateur",
+                "duration": "Session",
+                "type": "HTTP"
+            },
+            {
+                "name": "csrf_token",
+                "purpose": "Protection contre les attaques CSRF",
+                "duration": "Session",
+                "type": "HTTP"
+            }
+            ]
+        },
+        "analytics": {
+            "description": "Cookies d'analyse et de statistiques",
+            "required": false,
+            "cookies": [
+            {
+                "name": "_ga",
+                "purpose": "Google Analytics - Identification unique des utilisateurs",
+                "duration": "2 ans",
+                "type": "HTTP",
+                "provider": "Google"
+            },
+            {
+                "name": "_ga_*",
+                "purpose": "Google Analytics - Identification des propriétés",
+                "duration": "2 ans",
+                "type": "HTTP",
+                "provider": "Google"
+            },
+            {
+                "name": "_gid",
+                "purpose": "Google Analytics - Identification des sessions",
+                "duration": "24 heures",
+                "type": "HTTP",
+                "provider": "Google"
+            }
+            ]
+        },
+        "functional": {
+            "description": "Cookies fonctionnels pour améliorer l'expérience utilisateur",
+            "required": false,
+            "cookies": [
+            {
+                "name": "language",
+                "purpose": "Mémorisation de la langue préférée",
+                "duration": "1 an",
+                "type": "HTTP"
+            },
+            {
+                "name": "theme",
+                "purpose": "Mémorisation du thème préféré",
+                "duration": "1 an",
+                "type": "HTTP"
+            }
+            ]
+        },
+        "marketing": {
+            "description": "Cookies de marketing et publicité",
+            "required": false,
+            "cookies": [
+            {
+                "name": "fbp",
+                "purpose": "Facebook Pixel - Suivi des conversions",
+                "duration": "3 mois",
+                "type": "HTTP",
+                "provider": "Facebook"
+            }
+            ]
+        }
+        },
+        "thirdPartyServices": [
+        {
+            "name": "Google Analytics",
+            "purpose": "Analyse du trafic et des performances du site",
+            "privacyPolicy": "https://policies.google.com/privacy",
+            "optOut": "https://tools.google.com/dlpage/gaoptout"
+        },
+        {
+            "name": "Google Fonts",
+            "purpose": "Chargement des polices de caractères",
+            "privacyPolicy": "https://policies.google.com/privacy"
+        }
+        ],
+        "userRights": {
+        "access": "Droit d'accès aux données personnelles",
+        "rectification": "Droit de rectification des données",
+        "erasure": "Droit à l'effacement des données",
+        "portability": "Droit à la portabilité des données",
+        "objection": "Droit d'opposition au traitement",
+        "restriction": "Droit à la limitation du traitement"
+        },
+        "contact": {
+        "email": "contact@dkbuilding.fr",
+        "phone": "+33 7 68 11 38 39",
+        "address": "59 Rue Pierre Cormary, 81000 Albi, France"
+        },
+        "legalBasis": {
+        "essential": "Intérêt légitime (fonctionnement du site)",
+        "analytics": "Consentement",
+        "functional": "Consentement",
+        "marketing": "Consentement"
+        }
+    }
+}

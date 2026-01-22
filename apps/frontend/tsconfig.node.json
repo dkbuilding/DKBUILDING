@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "composite": false,
+    "skipLibCheck": true,
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "allowSyntheticDefaultImports": true,
+    "allowJs": true,
+    "strict": false,
+    "noEmit": true,
+    "checkJs": false
+  },
+  "include": [],
+  "exclude": ["node_modules", "dist"]
+}
+

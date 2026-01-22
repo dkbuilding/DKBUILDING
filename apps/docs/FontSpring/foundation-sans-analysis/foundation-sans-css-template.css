@@ -1,0 +1,256 @@
+/* Foundation Sans - Toutes les variantes */
+/* A intégrer dans index.css une fois les fichiers fournis */
+
+/* Ultra Light */
+@font-face {
+  font-family: 'Foundation Sans';
+  src: url('/fonts/Fontspring-DEMO-FoundationSans-UltraLight.woff2') format('woff2'),
+       url('/fonts/Fontspring-DEMO-FoundationSans-UltraLight.otf') format('opentype');
+  font-weight: 100;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Foundation Sans';
+  src: url('/fonts/Fontspring-DEMO-FoundationSans-UltraLightItalic.woff2') format('woff2'),
+       url('/fonts/Fontspring-DEMO-FoundationSans-UltraLightItalic.otf') format('opentype');
+  font-weight: 100;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* Light (déjà existant) */
+@font-face {
+  font-family: 'Foundation Sans';
+  src: url('/fonts/Fontspring-DEMO-FoundationSans-Light.woff2') format('woff2'),
+       url('/fonts/Fontspring-DEMO-FoundationSans-Light.otf') format('opentype');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Foundation Sans';
+  src: url('/fonts/Fontspring-DEMO-FoundationSans-LightItalic.woff2') format('woff2'),
+       url('/fonts/Fontspring-DEMO-FoundationSans-LightItalic.otf') format('opentype');
+  font-weight: 300;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* Roman (déjà existant) */
+@font-face {
+  font-family: 'Foundation Sans';
+  src: url('/fonts/Fontspring-DEMO-FoundationSans-Roman.woff2') format('woff2'),
+       url('/fonts/Fontspring-DEMO-FoundationSans-Roman.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Foundation Sans';
+  src: url('/fonts/Fontspring-DEMO-FoundationSans-Italic.woff2') format('woff2'),
+       url('/fonts/Fontspring-DEMO-FoundationSans-Italic.otf') format('opentype');
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* Bold (déjà existant) */
+@font-face {
+  font-family: 'Foundation Sans';
+  src: url('/fonts/Fontspring-DEMO-FoundationSans-Bold.woff2') format('woff2'),
+       url('/fonts/Fontspring-DEMO-FoundationSans-Bold.otf') format('opentype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Foundation Sans';
+  src: url('/fonts/Fontspring-DEMO-FoundationSans-BoldItalic.woff2') format('woff2'),
+       url('/fonts/Fontspring-DEMO-FoundationSans-BoldItalic.otf') format('opentype');
+  font-weight: 700;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* Black */
+@font-face {
+  font-family: 'Foundation Sans';
+  src: url('/fonts/Fontspring-DEMO-FoundationSans-Black.woff2') format('woff2'),
+       url('/fonts/Fontspring-DEMO-FoundationSans-Black.otf') format('opentype');
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Foundation Sans';
+  src: url('/fonts/Fontspring-DEMO-FoundationSans-BlackItalic.woff2') format('woff2'),
+       url('/fonts/Fontspring-DEMO-FoundationSans-BlackItalic.otf') format('opentype');
+  font-weight: 900;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* BlackEx (déjà existant) */
+@font-face {
+  font-family: 'Foundation Sans';
+  src: url('/fonts/Fontspring-DEMO-FoundationSans-BlackEx.woff2') format('woff2'),
+       url('/fonts/Fontspring-DEMO-FoundationSans-BlackEx.otf') format('opentype');
+  font-weight: 950;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Outline */
+@font-face {
+  font-family: 'Foundation Sans';
+  src: url('/fonts/Fontspring-DEMO-FoundationSans-Outline.woff2') format('woff2'),
+       url('/fonts/Fontspring-DEMO-FoundationSans-Outline.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Light Condensed */
+@font-face {
+  font-family: 'Foundation Sans';
+  src: url('/fonts/Fontspring-DEMO-FoundationSans-LightCondensed.woff2') format('woff2'),
+       url('/fonts/Fontspring-DEMO-FoundationSans-LightCondensed.otf') format('opentype');
+  font-weight: 300;
+  font-style: normal;
+  font-stretch: condensed;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Foundation Sans';
+  src: url('/fonts/Fontspring-DEMO-FoundationSans-LightCondensedItalic.woff2') format('woff2'),
+       url('/fonts/Fontspring-DEMO-FoundationSans-LightCondensedItalic.otf') format('opentype');
+  font-weight: 300;
+  font-style: italic;
+  font-stretch: condensed;
+  font-display: swap;
+}
+
+/* Condensed */
+@font-face {
+  font-family: 'Foundation Sans';
+  src: url('/fonts/Fontspring-DEMO-FoundationSans-Condensed.woff2') format('woff2'),
+       url('/fonts/Fontspring-DEMO-FoundationSans-Condensed.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-stretch: condensed;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Foundation Sans';
+  src: url('/fonts/Fontspring-DEMO-FoundationSans-CondensedItalic.woff2') format('woff2'),
+       url('/fonts/Fontspring-DEMO-FoundationSans-CondensedItalic.otf') format('opentype');
+  font-weight: 400;
+  font-style: italic;
+  font-stretch: condensed;
+  font-display: swap;
+}
+
+/* Bold Condensed */
+@font-face {
+  font-family: 'Foundation Sans';
+  src: url('/fonts/Fontspring-DEMO-FoundationSans-BoldCondensed.woff2') format('woff2'),
+       url('/fonts/Fontspring-DEMO-FoundationSans-BoldCondensed.otf') format('opentype');
+  font-weight: 700;
+  font-style: normal;
+  font-stretch: condensed;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Foundation Sans';
+  src: url('/fonts/Fontspring-DEMO-FoundationSans-BoldCondensedItalic.woff2') format('woff2'),
+       url('/fonts/Fontspring-DEMO-FoundationSans-BoldCondensedItalic.otf') format('opentype');
+  font-weight: 700;
+  font-style: italic;
+  font-stretch: condensed;
+  font-display: swap;
+}
+
+/* Black Condensed */
+@font-face {
+  font-family: 'Foundation Sans';
+  src: url('/fonts/Fontspring-DEMO-FoundationSans-BlackCondensed.woff2') format('woff2'),
+       url('/fonts/Fontspring-DEMO-FoundationSans-BlackCondensed.otf') format('opentype');
+  font-weight: 900;
+  font-style: normal;
+  font-stretch: condensed;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Foundation Sans';
+  src: url('/fonts/Fontspring-DEMO-FoundationSans-BlackCondensedItalic.woff2') format('woff2'),
+       url('/fonts/Fontspring-DEMO-FoundationSans-BlackCondensedItalic.otf') format('opentype');
+  font-weight: 900;
+  font-style: italic;
+  font-stretch: condensed;
+  font-display: swap;
+}
+
+/* Light Extended */
+@font-face {
+  font-family: 'Foundation Sans';
+  src: url('/fonts/Fontspring-DEMO-FoundationSans-LightExtended.woff2') format('woff2'),
+       url('/fonts/Fontspring-DEMO-FoundationSans-LightExtended.otf') format('opentype');
+  font-weight: 300;
+  font-style: normal;
+  font-stretch: expanded;
+  font-display: swap;
+}
+
+/* Extended */
+@font-face {
+  font-family: 'Foundation Sans';
+  src: url('/fonts/Fontspring-DEMO-FoundationSans-Extended.woff2') format('woff2'),
+       url('/fonts/Fontspring-DEMO-FoundationSans-Extended.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-stretch: expanded;
+  font-display: swap;
+}
+
+/* Bold Extended */
+@font-face {
+  font-family: 'Foundation Sans';
+  src: url('/fonts/Fontspring-DEMO-FoundationSans-BoldExtended.woff2') format('woff2'),
+       url('/fonts/Fontspring-DEMO-FoundationSans-BoldExtended.otf') format('opentype');
+  font-weight: 700;
+  font-style: normal;
+  font-stretch: expanded;
+  font-display: swap;
+}
+
+/* Black Extended */
+@font-face {
+  font-family: 'Foundation Sans';
+  src: url('/fonts/Fontspring-DEMO-FoundationSans-BlackExtended.woff2') format('woff2'),
+       url('/fonts/Fontspring-DEMO-FoundationSans-BlackExtended.otf') format('opentype');
+  font-weight: 900;
+  font-style: normal;
+  font-stretch: expanded;
+  font-display: swap;
+}
+
+/* Outline Extended */
+@font-face {
+  font-family: 'Foundation Sans';
+  src: url('/fonts/Fontspring-DEMO-FoundationSans-OutlineExtended.woff2') format('woff2'),
+       url('/fonts/Fontspring-DEMO-FoundationSans-OutlineExtended.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-stretch: expanded;
+  font-display: swap;
+}

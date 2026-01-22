@@ -1,0 +1,202 @@
+{
+  "processes": {
+    "version": "1.0",
+    "lastUpdated": "2024-01-15",
+    "company": "DK BUILDING",
+    "language": "fr-FR",
+    "processes": [
+      {
+        "id": "devis-gratuit",
+        "name": "Processus de devis gratuit",
+        "description": "Étapes pour obtenir un devis gratuit de construction",
+        "duration": "24-48h",
+        "cost": "gratuit",
+        "steps": [
+          {
+            "step": 1,
+            "name": "Contact initial",
+            "description": "Prise de contact par téléphone ou email",
+            "duration": "5-10 minutes",
+            "required": ["nom", "téléphone", "email", "description projet"],
+            "contact": {
+              "phone": "07 68 11 38 39",
+              "email": "contact@dkbuilding.fr"
+            }
+          },
+          {
+            "step": 2,
+            "name": "Évaluation téléphonique",
+            "description": "Analyse préliminaire du projet par téléphone",
+            "duration": "15-30 minutes",
+            "questions": [
+              "Type de travaux souhaités",
+              "Surface à traiter",
+              "Localisation du projet",
+              "Délais souhaités",
+              "Budget approximatif"
+            ]
+          },
+          {
+            "step": 3,
+            "name": "Rendez-vous sur site",
+            "description": "Visite gratuite d'un technicien sur le site",
+            "duration": "1-2 heures",
+            "activities": [
+              "Prise de mesures",
+              "Analyse technique",
+              "Évaluation des contraintes",
+              "Photos du site",
+              "Discussion détaillée"
+            ]
+          },
+          {
+            "step": 4,
+            "name": "Élaboration du devis",
+            "description": "Rédaction du devis détaillé",
+            "duration": "24-48h",
+            "content": [
+              "Détail des travaux",
+              "Matériaux utilisés",
+              "Prix unitaires",
+              "Prix total",
+              "Délais de réalisation",
+              "Garanties proposées"
+            ]
+          },
+          {
+            "step": 5,
+            "name": "Présentation du devis",
+            "description": "Envoi et explication du devis",
+            "duration": "30 minutes",
+            "methods": ["email", "courrier", "présentation en personne"],
+            "followUp": "Relance sous 7 jours"
+          }
+        ]
+      },
+      {
+        "id": "realisation-chantier",
+        "name": "Processus de réalisation",
+        "description": "Étapes de réalisation d'un chantier de construction",
+        "duration": "variable selon projet",
+        "steps": [
+          {
+            "step": 1,
+            "name": "Validation du devis",
+            "description": "Acceptation du devis et signature du contrat",
+            "duration": "1 jour",
+            "documents": ["devis signé", "contrat", "assurance décennale"]
+          },
+          {
+            "step": 2,
+            "name": "Planification",
+            "description": "Organisation du chantier et des équipes",
+            "duration": "3-7 jours",
+            "activities": [
+              "Commande des matériaux",
+              "Planification des équipes",
+              "Coordination avec autres corps de métier",
+              "Préparation du chantier"
+            ]
+          },
+          {
+            "step": 3,
+            "name": "Préparation du site",
+            "description": "Aménagement et sécurisation du chantier",
+            "duration": "1-2 jours",
+            "activities": [
+              "Installation du chantier",
+              "Sécurisation du périmètre",
+              "Livraison des matériaux",
+              "Installation des équipements"
+            ]
+          },
+          {
+            "step": 4,
+            "name": "Réalisation des travaux",
+            "description": "Exécution des travaux selon le planning",
+            "duration": "variable",
+            "phases": [
+              "Terrassement (si nécessaire)",
+              "Charpente métallique",
+              "Bardage",
+              "Couverture",
+              "Photovoltaïque (si inclus)",
+              "Finitions"
+            ]
+          },
+          {
+            "step": 5,
+            "name": "Contrôle qualité",
+            "description": "Vérification de la conformité des travaux",
+            "duration": "1 jour",
+            "checks": [
+              "Conformité au devis",
+              "Qualité d'exécution",
+              "Respect des normes",
+              "Tests de fonctionnement"
+            ]
+          },
+          {
+            "step": 6,
+            "name": "Réception des travaux",
+            "description": "Livraison et réception officielle",
+            "duration": "2 heures",
+            "documents": [
+              "Attestation de conformité",
+              "Garanties",
+              "Facture finale",
+              "Mode d'emploi"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "maintenance-suivi",
+        "name": "Processus de maintenance et suivi",
+        "description": "Suivi post-livraison et maintenance",
+        "duration": "10 ans",
+        "steps": [
+          {
+            "step": 1,
+            "name": "Suivi post-livraison",
+            "description": "Vérification après 1 mois",
+            "duration": "1 heure",
+            "activities": [
+              "Visite de contrôle",
+              "Vérification du bon fonctionnement",
+              "Réponse aux questions",
+              "Ajustements si nécessaire"
+            ]
+          },
+          {
+            "step": 2,
+            "name": "Maintenance préventive",
+            "description": "Entretien régulier recommandé",
+            "duration": "1-2 heures",
+            "frequency": "annuelle",
+            "activities": [
+              "Nettoyage des surfaces",
+              "Vérification des fixations",
+              "Contrôle de l'étanchéité",
+              "Maintenance des équipements"
+            ]
+          },
+          {
+            "step": 3,
+            "name": "Intervention garantie",
+            "description": "Réparation en cas de problème",
+            "duration": "variable",
+            "coverage": "garantie décennale",
+            "response": "sous 48h"
+          }
+        ]
+      }
+    ],
+    "metadata": {
+      "targetAudience": "clients potentiels et actuels",
+      "purpose": "transparence du processus",
+      "format": "processus structuré",
+      "updateFrequency": "annuelle"
+    }
+  }
+}

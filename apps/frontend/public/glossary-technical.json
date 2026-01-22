@@ -1,0 +1,109 @@
+{
+    "glossary": {
+        "version": "1.0",
+        "lastUpdated": "2024-01-15",
+        "language": "fr-FR",
+        "domain": "construction",
+        "company": "DK BUILDING",
+        "terms": [
+        {
+            "term": "Charpente métallique",
+            "definition": "Structure porteuse en acier utilisée pour supporter les charges d'un bâtiment. Plus résistante et rapide à monter que le bois traditionnel.",
+            "synonyms": ["charpente acier", "structure métallique", "ossature métallique"],
+            "category": "structure",
+            "advantages": ["résistance", "rapidité", "durabilité", "flexibilité architecturale"],
+            "applications": ["bâtiments industriels", "hangars", "bureaux", "logements"]
+        },
+        {
+            "term": "Bardage",
+            "definition": "Revêtement extérieur des façades d'un bâtiment, généralement en métal, bois ou composite. Assure protection et esthétique.",
+            "synonyms": ["revêtement façade", "parement extérieur", "cladding"],
+            "category": "enveloppe",
+            "types": ["métallique", "composite", "bois", "PVC"],
+            "functions": ["protection", "isolation", "esthétique", "étanchéité"]
+        },
+        {
+            "term": "Couverture",
+            "definition": "Élément de toiture qui protège le bâtiment des intempéries. Peut être métallique, tuile, ardoise ou membrane.",
+            "synonyms": ["toiture", "toit", "couverture toit"],
+            "category": "toiture",
+            "types": ["métallique", "tuile", "ardoise", "membrane"],
+            "components": ["charpente", "isolation", "écran", "couverture"]
+        },
+        {
+            "term": "Photovoltaïque",
+            "definition": "Technologie qui convertit la lumière solaire en électricité grâce à des panneaux solaires. Solution écologique et économique.",
+            "synonyms": ["solaire", "panneaux solaires", "énergie solaire"],
+            "category": "énergie",
+            "benefits": ["écologique", "économique", "renouvelable", "autonomie"],
+            "components": ["panneaux", "onduleur", "compteur", "batterie"]
+        },
+        {
+            "term": "Terrassement",
+            "definition": "Ensemble des travaux de préparation du sol avant construction : déblai, remblai, nivellement, drainage.",
+            "synonyms": ["préparation sol", "travaux sol", "aménagement terrain"],
+            "category": "préparation",
+            "operations": ["déblai", "remblai", "nivellement", "drainage"],
+            "equipment": ["pelleteuse", "bulldozer", "niveleuse", "compacteur"]
+        },
+        {
+            "term": "Devis",
+            "definition": "Document détaillant les travaux à réaliser, les matériaux utilisés et le coût total. Obligatoire avant tout chantier.",
+            "synonyms": ["estimation", "prix", "coût travaux"],
+            "category": "commercial",
+            "elements": ["matériaux", "main d'œuvre", "durée", "garanties"],
+            "validity": "30 jours généralement"
+        },
+        {
+            "term": "Garantie décennale",
+            "definition": "Garantie légale de 10 ans couvrant les dommages affectant la solidité de l'ouvrage ou le rendant impropre à sa destination.",
+            "synonyms": ["garantie 10 ans", "assurance décennale"],
+            "category": "légal",
+            "coverage": ["solidité", "étanchéité", "fonctionnalité"],
+            "obligation": "obligatoire pour les constructeurs"
+        },
+        {
+            "term": "Zone d'intervention",
+            "definition": "Géographique couverte par DK BUILDING : 50km autour d'Albi, incluant Tarn, Haute-Garonne, Tarn-et-Garonne, Aveyron.",
+            "synonyms": ["rayon intervention", "zone géographique", "périmètre"],
+            "category": "géographique",
+            "radius": "50km",
+            "departments": ["Tarn", "Haute-Garonne", "Tarn-et-Garonne", "Aveyron"],
+            "cities": ["Albi", "Toulouse", "Montauban", "Rodez", "Castres"]
+        },
+        {
+            "term": "SIREN",
+            "definition": "Numéro d'identification unique de l'entreprise : 947998555. Permet d'identifier légalement DK BUILDING.",
+            "synonyms": ["numéro entreprise", "identifiant société"],
+            "category": "légal",
+            "format": "9 chiffres",
+            "purpose": "identification légale"
+        },
+        {
+            "term": "Occitanie",
+            "definition": "Région administrative française dont fait partie le Tarn. DK BUILDING intervient dans cette région.",
+            "synonyms": ["région Occitanie", "Midi-Pyrénées"],
+            "category": "géographique",
+            "departments": ["Tarn", "Haute-Garonne", "Tarn-et-Garonne", "Aveyron"],
+            "capital": "Toulouse"
+        }
+        ],
+        "categories": {
+        "structure": "Éléments porteurs du bâtiment",
+        "enveloppe": "Revêtements et protections extérieures",
+        "toiture": "Éléments de couverture et étanchéité",
+        "énergie": "Solutions énergétiques et écologiques",
+        "préparation": "Travaux préparatoires du sol",
+        "commercial": "Aspects commerciaux et tarifaires",
+        "légal": "Obligations légales et réglementaires",
+        "géographique": "Zones et territoires d'intervention"
+        },
+        "metadata": {
+        "targetAudience": "particuliers, entreprises, collectivités",
+        "complexity": "intermediate",
+        "purpose": "information technique, aide à la décision",
+        "format": "glossaire structuré",
+        "updateFrequency": "annuelle"
+        }
+    }
+}
