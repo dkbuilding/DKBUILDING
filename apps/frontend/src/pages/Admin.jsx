@@ -5,7 +5,7 @@ import AdminLogin from '../components/admin/AdminLogin';
 import { Toaster } from 'react-hot-toast';
 import { isAdminSubdomain } from '../utils/subdomainDetector';
 
-const API_BASE_URL = import.meta.env.API_BASE_URL || 'http://localhost:3001';
+const API_BASE_URL = import.meta.env.API_BASE_URL || '';
 
 const Admin = () => {
   const navigate = useNavigate();

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Lock, AlertCircle, Shield } from 'lucide-react';
 import toast from 'react-hot-toast';
 
-const API_BASE_URL = import.meta.env.API_BASE_URL || 'http://localhost:3001';
+const API_BASE_URL = import.meta.env.API_BASE_URL || '';
 
 const AdminLogin = ({ onLogin }) => {
   const [password, setPassword] = useState('');

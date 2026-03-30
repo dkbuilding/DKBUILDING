@@ -56,7 +56,8 @@ const allowedOrigins = [
   "https://admin.dkbuilding.fr",
   "https://administrateur.dkbuilding.fr",
   "https://administrator.dkbuilding.fr",
-  "http://admin.dkbuilding.fr", // Pour développement
+  "http://admin.dkbuilding.fr",
+  "https://dkbuilding-frontend.vercel.app",
   "http://localhost:5173",
 ].filter(Boolean);
 

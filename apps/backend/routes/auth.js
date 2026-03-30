@@ -9,6 +9,7 @@
 
 const express = require("express");
 const router = express.Router();
+const jwt = require("jsonwebtoken");
 const JWTAuthMiddleware = require("../middleware/jwtAuth");
 
 const jwtAuth = new JWTAuthMiddleware();
@@ -57,7 +58,7 @@ router.post("/health", async (req, res) => {
     res.cookie('jwt_token', authResult.token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
+      sameSite: 'lax',
       maxAge: 30 * 60 * 1000, // 30 minutes
       path: '/',
     });
@@ -91,7 +92,7 @@ router.post("/logout", (req, res) => {
   res.clearCookie('jwt_token', {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
-    sameSite: 'strict',
+    sameSite: 'lax',
     path: '/',
   });
   res.json({ success: true, message: 'Déconnexion réussie' });
@@ -176,7 +177,7 @@ router.post("/refresh", jwtAuth.authenticateToken.bind(jwtAuth), (req, res) => {
     res.cookie('jwt_token', newToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
+      sameSite: 'lax',
       maxAge: 30 * 60 * 1000, // 30 minutes
       path: '/',
     });

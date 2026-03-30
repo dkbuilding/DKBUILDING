@@ -1,5 +1,6 @@
-const API_BASE_URL =
-  import.meta.env.VITE_API_URL || "http://localhost:3001/api";
+// En dev, le proxy Vite redirige /api vers localhost:3001
+// En prod, utiliser l'URL du backend Vercel ou le chemin relatif
+const API_BASE_URL = import.meta.env.VITE_API_URL || "/api";
 
 /**
  * Wrapper fetch sécurisé avec cookie HttpOnly JWT
