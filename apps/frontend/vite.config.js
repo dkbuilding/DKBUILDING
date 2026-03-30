@@ -39,7 +39,7 @@ function cspPlugin() {
           "font-src 'self' data: https://fonts.gstatic.com",
           "img-src 'self' data: blob: https://images.unsplash.com https://res.cloudinary.com",
           "media-src 'self' https://static.vecteezy.com https://res.cloudinary.com",
-          "connect-src 'self' https://api.cloudinary.com",
+          "connect-src 'self' https://api.cloudinary.com https://dkbuilding-backend.vercel.app https://*.vercel.app",
           "worker-src 'self' blob:",
           "frame-src 'none'",
           "object-src 'none'",

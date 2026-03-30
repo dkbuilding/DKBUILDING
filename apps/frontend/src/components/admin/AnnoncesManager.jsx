@@ -4,7 +4,7 @@ import { useDropzone } from 'react-dropzone';
 import ReactMarkdown from 'react-markdown';
 import toast from 'react-hot-toast';
 
-const API_BASE_URL = import.meta.env.API_BASE_URL || 'http://localhost:3001';
+const API_BASE_URL = import.meta.env.API_BASE_URL || '';
 
 const AnnoncesManager = () => {
   const [annonces, setAnnonces] = useState([]);

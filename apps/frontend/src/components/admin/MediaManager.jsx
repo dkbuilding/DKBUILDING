@@ -189,7 +189,7 @@ const MediaManager = () => {
             <div className="aspect-square bg-black/40 rounded mb-3 flex items-center justify-center overflow-hidden relative">
               {file.type === "image" ? (
                 <img
-                  src={`${import.meta.env.VITE_API_URL || "http://localhost:3001"}/media/${file.filename}`}
+                  src={`${import.meta.env.VITE_API_URL || ""}/media/${file.filename}`}
                   alt={file.name}
                   className="w-full h-full object-cover transition-transform group-hover:scale-105"
                   loading="lazy"
@@ -201,7 +201,7 @@ const MediaManager = () => {
               {/* Overlay Actions */}
               <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
                 <a
-                  href={`${import.meta.env.VITE_API_URL || "http://localhost:3001"}/media/${file.filename}`}
+                  href={`${import.meta.env.VITE_API_URL || ""}/media/${file.filename}`}
                   target="_blank"
                   download
                   className="p-2 bg-blue-500 text-white rounded-full hover:bg-blue-600 transition-colors"

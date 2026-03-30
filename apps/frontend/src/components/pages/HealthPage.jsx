@@ -454,8 +454,8 @@ const HealthPage = () => {
               Retour au site
             </a>
             <a 
-              href="http://localhost:3001/health" 
-              target="_blank" 
+              href="/api/health"
+              target="_blank"
               rel="noopener noreferrer"
               className="flex items-center text-gray-400 hover:text-white transition-colors mr-4"
             >
@@ -690,8 +690,8 @@ const HealthPage = () => {
                   Actualiser
                 </button>
                 <a 
-                  href="http://localhost:3001/" 
-                  target="_blank" 
+                  href="/api/"
+                  target="_blank"
                   rel="noopener noreferrer"
                   className="w-full flex items-center justify-center px-4 py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-600 transition-colors"
                 >
@@ -699,8 +699,8 @@ const HealthPage = () => {
                   API Root
                 </a>
                 <a 
-                  href="http://localhost:3001/health" 
-                  target="_blank" 
+                  href="/api/health"
+                  target="_blank"
                   rel="noopener noreferrer"
                   className="w-full flex items-center justify-center px-4 py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-600 transition-colors"
                 >

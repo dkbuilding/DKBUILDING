@@ -8,7 +8,7 @@ import MediaManager from './MediaManager';
 import LockAccessManager from './LockAccessManager';
 import toast from 'react-hot-toast';
 
-const API_BASE_URL = import.meta.env.API_BASE_URL || 'http://localhost:3001';
+const API_BASE_URL = import.meta.env.API_BASE_URL || '';
 
 const AdminPanel = () => {
   const navigate = useNavigate();

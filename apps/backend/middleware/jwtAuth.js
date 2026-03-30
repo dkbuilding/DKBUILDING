@@ -78,6 +78,8 @@ class JWTAuthMiddleware {
       // Ajout des informations utilisateur à la requête
       req.user = {
         id: decoded.sub,
+        role: decoded.role || null,
+        permissions: decoded.permissions || [],
         issuer: decoded.iss,
         securityLevel: decoded.security_level,
         issuedAt: new Date(decoded.iat * 1000),
@@ -204,6 +206,7 @@ class JWTAuthMiddleware {
         sub: "health-monitoring",
         iat: Math.floor(Date.now() / 1000),
         exp: Math.floor(Date.now() / 1000) + 30 * 60, // 30 minutes
+        role: 'admin',
         security_level: this.securityLevel,
         algorithm: "sha512",
         iterations: parseInt(process.env.SECURITY_ITERATIONS) || 100000,

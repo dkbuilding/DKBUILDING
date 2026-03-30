@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Lock, Unlock, Wrench, Shield, Ban, CheckCircle, XCircle, AlertCircle } from 'lucide-react';
 import toast from 'react-hot-toast';
 
-const API_BASE_URL = import.meta.env.API_BASE_URL || 'http://localhost:3001';
+const API_BASE_URL = import.meta.env.API_BASE_URL || '';
 
 const LockAccessManager = () => {
   const [config, setConfig] = useState(null);
