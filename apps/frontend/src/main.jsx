@@ -1,5 +1,5 @@
 import { StrictMode } from "react";
-import { createRoot } from "react-dom/client";
+import { createRoot, hydrateRoot } from "react-dom/client";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import "./index.css";
@@ -26,8 +26,8 @@ if (import.meta.env.DEV) {
   // Supprimer l'alerte React pour onselectstart (propriété DOM native utilisée par GSAP)
   const originalError = console.error;
   console.error = (...args) => {
-    if (typeof args[0] === 'string' && 
-        (args[0].includes('onSelectStart') || 
+    if (typeof args[0] === 'string' &&
+        (args[0].includes('onSelectStart') ||
          args[0].includes('Unknown event handler property'))) {
       return; // Ignorer ces alertes spécifiques de GSAP
     }
@@ -37,15 +37,23 @@ if (import.meta.env.DEV) {
 */
 
 // Rendre React IMMÉDIATEMENT pour que le preloader s'affiche tout de suite
-createRoot(document.getElementById("root")).render(
+// Si le HTML contient déjà du contenu pré-rendu (SEO), hydrater au lieu de monter
+const container = document.getElementById("root");
+const appTree = (
   <StrictMode>
     <QueryClientProvider client={queryClient}>
       <App />
       {/* DevTools pour visualiser le cache en développement */}
       {import.meta.env.DEV && <ReactQueryDevtools initialIsOpen={false} />}
     </QueryClientProvider>
-  </StrictMode>,
+  </StrictMode>
 );
+
+if (container.hasChildNodes()) {
+  hydrateRoot(container, appTree);
+} else {
+  createRoot(container).render(appTree);
+}
 
 // Initialiser GSAP en parallèle (non-bloquant) après le rendu
 // Le preloader sera déjà visible pendant l'initialisation

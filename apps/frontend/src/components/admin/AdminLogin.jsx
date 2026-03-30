@@ -19,6 +19,7 @@ const AdminLogin = ({ onLogin }) => {
         headers: {
           'Content-Type': 'application/json'
         },
+        credentials: 'include',
         body: JSON.stringify({ password })
       });
 
@@ -28,9 +29,9 @@ const AdminLogin = ({ onLogin }) => {
       }
 
       const result = await response.json();
-      
-      if (result.token) {
-        localStorage.setItem('jwt_token', result.token);
+
+      if (result.success) {
+        // Le token JWT est stocké automatiquement dans un cookie HttpOnly par le navigateur
         toast.success('Connexion réussie');
         if (onLogin) onLogin();
         // Recharger pour afficher le dashboard
@@ -38,7 +39,7 @@ const AdminLogin = ({ onLogin }) => {
           window.location.reload();
         }, 500);
       } else {
-        throw new Error('Token non reçu');
+        throw new Error('Authentification échouée');
       }
     } catch (error) {
       console.error('Erreur:', error);

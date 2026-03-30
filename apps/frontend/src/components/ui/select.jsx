@@ -5,7 +5,7 @@ const Select = React.forwardRef(({ className, children, ...props }, ref) => {
   return (
     <select
       className={cn(
-        "flex h-10 w-full rounded-md border border-dk-gray-800 bg-dk-black/50 px-3 py-2 text-sm text-white focus:border-dk-yellow focus:outline-none disabled:cursor-not-allowed disabled:opacity-50",
+        "flex h-10 w-full rounded-md border border-dk-gray-800 bg-dk-black/50 px-3 py-2 text-sm text-white focus:border-dk-yellow focus:outline-none focus-visible:ring-2 focus-visible:ring-dk-yellow focus-visible:ring-offset-2 focus-visible:ring-offset-dk-black disabled:cursor-not-allowed disabled:opacity-50",
         className
       )}
       ref={ref}

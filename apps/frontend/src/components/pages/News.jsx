@@ -97,6 +97,16 @@ const News = () => {
   useLayoutEffect(() => {
     if (!sectionRef.current || loading) return;
 
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReducedMotion) {
+      // Afficher les éléments directement sans animation
+      if (titleRef.current) gsap.set(titleRef.current, { opacity: 1, y: 0 });
+      cardsRef.current.forEach((card) => {
+        if (card) gsap.set(card, { opacity: 1, y: 0, scale: 1 });
+      });
+      return;
+    }
+
     const ctx = gsap.context(() => {
       // Animation du titre
       if (titleRef.current) {

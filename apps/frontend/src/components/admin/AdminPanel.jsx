@@ -8,12 +8,21 @@ import MediaManager from './MediaManager';
 import LockAccessManager from './LockAccessManager';
 import toast from 'react-hot-toast';
 
+const API_BASE_URL = import.meta.env.API_BASE_URL || 'http://localhost:3001';
+
 const AdminPanel = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('dashboard');
 
-  const handleLogout = () => {
-    localStorage.removeItem('jwt_token');
+  const handleLogout = async () => {
+    try {
+      await fetch(`${API_BASE_URL}/api/auth/logout`, {
+        method: 'POST',
+        credentials: 'include',
+      });
+    } catch (error) {
+      console.error('Erreur lors de la déconnexion:', error);
+    }
     toast.success('Déconnexion réussie');
     navigate('/');
   };

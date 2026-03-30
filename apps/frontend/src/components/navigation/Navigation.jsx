@@ -307,8 +307,9 @@ const Navigation = ({ onToggleSidebar, isSidebarOpen, footerRef }) => {
       </div>
 
       {/* Navigation principale */}
-      <nav 
+      <nav
         ref={navRef}
+        aria-label="Navigation principale"
         className={`w-full transition-all duration-300 ${
           isScrolled && !isSidebarOpen ? 'bg-dk-black/95 backdrop-blur-md' : 'bg-transparent'
         }`}
@@ -323,14 +324,13 @@ const Navigation = ({ onToggleSidebar, isSidebarOpen, footerRef }) => {
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
             <div className="p-2 flex items-center">
-              <img 
-                src="/src/assets/images/logos/Logo — DK BUILDING — Structure 2.png" 
-                alt="DK BUILDING Logo"
-                aria-label="Retour à l'accueil"
-                href="/"
-                onClick={() => window.location.href = '/'}
-                className="w-8 h-8 xs:w-9 xs:h-9 sm:w-10 sm:h-10 mr-2 xs:mr-3 cursor-pointer"
-              />
+              <a href="/" aria-label="DK BUILDING — Retour à l'accueil">
+                <img
+                  src="/src/assets/images/logos/Logo — DK BUILDING — Structure 2.png"
+                  alt="DK BUILDING Logo"
+                  className="w-8 h-8 xs:w-9 xs:h-9 sm:w-10 sm:h-10 mr-2 xs:mr-3"
+                />
+              </a>
             </div>
 
             {/* CTA et Bouton Hamburger */}
@@ -338,7 +338,7 @@ const Navigation = ({ onToggleSidebar, isSidebarOpen, footerRef }) => {
               {/* Bouton Hamburger */}
               <button
                 onClick={onToggleSidebar}
-                className="p-2 cursor-pointer text-dk-yellow transition-all duration-300 group appearance-none bg-transparent border-0 outline-none ring-0 hover:bg-transparent touch-target"
+                className="p-2 cursor-pointer text-dk-yellow transition-all duration-300 group appearance-none bg-transparent border-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-dk-yellow focus-visible:ring-offset-2 focus-visible:ring-offset-dk-black hover:bg-transparent touch-target"
                 aria-label={isSidebarOpen ? "Fermer le menu" : "Ouvrir le menu"}
               >
                 <div className="w-8 h-8 xs:w-9 xs:h-9 relative">

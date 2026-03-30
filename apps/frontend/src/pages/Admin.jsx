@@ -5,6 +5,8 @@ import AdminLogin from '../components/admin/AdminLogin';
 import { Toaster } from 'react-hot-toast';
 import { isAdminSubdomain } from '../utils/subdomainDetector';
 
+const API_BASE_URL = import.meta.env.API_BASE_URL || 'http://localhost:3001';
+
 const Admin = () => {
   const navigate = useNavigate();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -12,22 +14,39 @@ const Admin = () => {
   const isAdminDomain = isAdminSubdomain();
 
   useEffect(() => {
-    // Vérifier l'authentification JWT
-    const token = localStorage.getItem('jwt_token');
-    
-    if (!token) {
-      // Si on est sur le sous-domaine admin, on affiche le formulaire de connexion
-      // Sinon, rediriger vers la page d'accueil
-      if (!isAdminDomain) {
-        navigate('/');
-        return;
+    // Vérifier l'authentification JWT via l'endpoint /auth/verify
+    // Le token est dans un cookie HttpOnly, donc on ne peut pas le lire côté client
+    const verifyAuth = async () => {
+      try {
+        const response = await fetch(`${API_BASE_URL}/api/auth/verify`, {
+          method: 'POST',
+          credentials: 'include',
+        });
+
+        if (response.ok) {
+          const result = await response.json();
+          if (result.valid) {
+            setIsAuthenticated(true);
+          }
+        } else {
+          // Token invalide ou absent
+          if (!isAdminDomain) {
+            navigate('/');
+            return;
+          }
+        }
+      } catch (error) {
+        // Erreur réseau ou serveur inaccessible
+        if (!isAdminDomain) {
+          navigate('/');
+          return;
+        }
       }
-    } else {
-      // Vérifier la validité du token (optionnel, peut être fait côté serveur)
-      setIsAuthenticated(true);
-    }
-    
-    setIsLoading(false);
+
+      setIsLoading(false);
+    };
+
+    verifyAuth();
   }, [navigate, isAdminDomain]);
 
   if (isLoading) {
@@ -56,4 +75,3 @@ const Admin = () => {
 };
 
 export default Admin;
-

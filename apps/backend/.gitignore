@@ -22,3 +22,4 @@ logs/
 # Backup
 _backup/
 
+.vercel

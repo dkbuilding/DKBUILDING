@@ -114,8 +114,6 @@ router.get('/status', (req, res) => {
         isBlocked: isIPBlocked,
         isLocked: isLocked,
         isMaintenance: isMaintenance,
-        allowedIPs: allowedIPs,
-        blockedIPs: blockedIPs
       },
       security: {
         shouldShowLockScreen: shouldShowAnyScreen,

@@ -1,21 +1,29 @@
-const db = require("../database/db");
+const ProjetsRepository = require("../repositories/ProjetsRepository");
 const Logger = require("../utils/logger");
 const { generateSlug } = require("../utils/slugify");
 const { projetSchema } = require("../validators/schemas");
+const parseJSON = require("../utils/parseJSON");
 
 /**
  * Projets Controller - Version Serverless (Turso + Cloudinary)
  * Architecture GovTech Zero-Cost pour DK BUILDING
+ *
+ * Utilise ProjetsRepository pour l'accès aux données.
+ * Le controller gère uniquement la logique HTTP, la validation et le parsing JSON.
  */
 
-// Helper pour parser les colonnes JSON
-const parseJSON = (data) => {
-  try {
-    return JSON.parse(data);
-  } catch (e) {
-    return [];
-  }
-};
+const projetsRepo = new ProjetsRepository();
+
+/**
+ * Parse les champs JSON d'un projet pour la réponse HTTP
+ */
+const parseProjet = (projet) => ({
+  ...projet,
+  images: parseJSON(projet.images),
+  documents: parseJSON(projet.documents),
+  videos: parseJSON(projet.videos),
+  featured: Boolean(projet.featured),
+});
 
 class ProjetsController {
   static async getAll(req, res) {
@@ -24,49 +32,17 @@ class ProjetsController {
       const offset = Math.max(parseInt(req.query.offset) || 0, 0);
       const { statut, type_projet, featured, orderBy, order } = req.query;
 
-      let query = "SELECT * FROM projets WHERE 1=1";
-      const args = [];
+      const rows = await projetsRepo.getFiltered({
+        statut,
+        type_projet,
+        featured,
+        orderBy,
+        order,
+        limit,
+        offset,
+      });
 
-      if (statut) {
-        query += " AND statut = ?";
-        args.push(statut);
-      }
-
-      if (type_projet) {
-        query += " AND type_projet = ?";
-        args.push(type_projet);
-      }
-
-      if (featured !== undefined) {
-        query += " AND featured = ?";
-        args.push(featured === "true" ? 1 : 0);
-      }
-
-      const allowedOrderBy = [
-        "date_debut",
-        "date_fin",
-        "created_at",
-        "vue_count",
-        "titre",
-      ];
-      const safeOrderBy = allowedOrderBy.includes(orderBy)
-        ? orderBy
-        : "created_at";
-      const safeOrder =
-        (order || "DESC").toUpperCase() === "ASC" ? "ASC" : "DESC";
-
-      query += ` ORDER BY ${safeOrderBy} ${safeOrder} LIMIT ? OFFSET ?`;
-      args.push(limit, offset);
-
-      const result = await db.execute({ sql: query, args });
-
-      const projetsParsed = result.rows.map((projet) => ({
-        ...projet,
-        images: parseJSON(projet.images),
-        documents: parseJSON(projet.documents),
-        videos: parseJSON(projet.videos),
-        featured: Boolean(projet.featured),
-      }));
+      const projetsParsed = rows.map(parseProjet);
 
       res.json({
         success: true,
@@ -85,12 +61,7 @@ class ProjetsController {
   static async getById(req, res) {
     try {
       const { id } = req.params;
-      const result = await db.execute({
-        sql: "SELECT * FROM projets WHERE id = ?",
-        args: [id],
-      });
-
-      const projet = result.rows[0];
+      const projet = await projetsRepo.getById(id);
 
       if (!projet) {
         return res
@@ -98,12 +69,7 @@ class ProjetsController {
           .json({ success: false, error: "Projet non trouvé" });
       }
 
-      projet.images = parseJSON(projet.images);
-      projet.documents = parseJSON(projet.documents);
-      projet.videos = parseJSON(projet.videos);
-      projet.featured = Boolean(projet.featured);
-
-      res.json({ success: true, data: projet });
+      res.json({ success: true, data: parseProjet(projet) });
     } catch (error) {
       console.error("Erreur getById:", error);
       res.status(500).json({ success: false, error: "Erreur système" });
@@ -113,12 +79,7 @@ class ProjetsController {
   static async getBySlug(req, res) {
     try {
       const { slug } = req.params;
-      const result = await db.execute({
-        sql: "SELECT * FROM projets WHERE slug = ?",
-        args: [slug],
-      });
-
-      const projet = result.rows[0];
+      const projet = await projetsRepo.getBySlug(slug);
 
       if (!projet) {
         return res
@@ -126,18 +87,10 @@ class ProjetsController {
           .json({ success: false, error: "Projet non trouvé" });
       }
 
-      projet.images = parseJSON(projet.images);
-      projet.documents = parseJSON(projet.documents);
-      projet.videos = parseJSON(projet.videos);
-      projet.featured = Boolean(projet.featured);
-
       // Update vue count (fire & forget)
-      db.execute({
-        sql: "UPDATE projets SET vue_count = vue_count + 1 WHERE id = ?",
-        args: [projet.id],
-      }).catch((err) => console.error("Erreur update vue_count", err));
+      projetsRepo.incrementViewCount(projet.id);
 
-      res.json({ success: true, data: projet });
+      res.json({ success: true, data: parseProjet(projet) });
     } catch (error) {
       console.error("Erreur getBySlug:", error);
       res.status(500).json({ success: false, error: "Erreur système" });
@@ -147,18 +100,8 @@ class ProjetsController {
   static async getFeatured(req, res) {
     try {
       const limit = Math.min(Math.max(parseInt(req.query.limit) || 6, 1), 20);
-      const result = await db.execute({
-        sql: `SELECT * FROM projets WHERE featured = 1 AND statut = 'termine' ORDER BY created_at DESC LIMIT ?`,
-        args: [limit],
-      });
-
-      const projetsParsed = result.rows.map((projet) => ({
-        ...projet,
-        images: parseJSON(projet.images),
-        documents: parseJSON(projet.documents),
-        videos: parseJSON(projet.videos),
-        featured: Boolean(projet.featured),
-      }));
+      const rows = await projetsRepo.getFeatured(limit);
+      const projetsParsed = rows.map(parseProjet);
 
       res.json({
         success: true,
@@ -176,18 +119,8 @@ class ProjetsController {
       const limit = Math.min(Math.max(parseInt(req.query.limit) || 20, 1), 50);
       const offset = Math.max(parseInt(req.query.offset) || 0, 0);
 
-      const result = await db.execute({
-        sql: `SELECT * FROM projets WHERE statut = 'termine' ORDER BY created_at DESC LIMIT ? OFFSET ?`,
-        args: [limit, offset],
-      });
-
-      const projetsParsed = result.rows.map((projet) => ({
-        ...projet,
-        images: parseJSON(projet.images),
-        documents: parseJSON(projet.documents),
-        videos: parseJSON(projet.videos),
-        featured: Boolean(projet.featured),
-      }));
+      const rows = await projetsRepo.getPublic({ limit, offset });
+      const projetsParsed = rows.map(parseProjet);
 
       res.json({
         success: true,
@@ -215,8 +148,7 @@ class ProjetsController {
       const data = validation.data;
       const userId = req.user?.id || null;
 
-      const slugRes = await db.execute("SELECT slug FROM projets");
-      const existingSlugs = slugRes.rows.map((p) => p.slug);
+      const existingSlugs = await projetsRepo.getAllSlugs();
       const slug = generateSlug(data.titre, existingSlugs);
 
       // Cloudinary URLs
@@ -234,36 +166,24 @@ class ProjetsController {
         ? videos.map((file) => file.path || file)
         : [];
 
-      const result = await db.execute({
-        sql: `
-          INSERT INTO projets (
-            titre, description, contenu, type_projet, client, lieu,
-            date_debut, date_fin, statut, images, documents, videos,
-            meta_keywords, meta_description, slug, featured
-          ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-          RETURNING id
-        `,
-        args: [
-          data.titre,
-          data.description,
-          data.contenu,
-          data.type_projet,
-          data.client,
-          data.lieu,
-          data.date_debut,
-          data.date_fin,
-          data.statut,
-          JSON.stringify(imagePaths),
-          JSON.stringify(documentPaths),
-          JSON.stringify(videoPaths),
-          data.meta_keywords,
-          data.meta_description,
-          slug,
-          data.featured ? 1 : 0,
-        ],
+      const newId = await projetsRepo.createWithReturning({
+        titre: data.titre,
+        description: data.description,
+        contenu: data.contenu,
+        type_projet: data.type_projet,
+        client: data.client,
+        lieu: data.lieu,
+        date_debut: data.date_debut,
+        date_fin: data.date_fin,
+        statut: data.statut,
+        images: JSON.stringify(imagePaths),
+        documents: JSON.stringify(documentPaths),
+        videos: JSON.stringify(videoPaths),
+        meta_keywords: data.meta_keywords,
+        meta_description: data.meta_description,
+        slug,
+        featured: data.featured ? 1 : 0,
       });
-
-      const newId = result.rows[0]?.id || result.lastInsertRowid;
 
       Logger.createLog("create", "projet", newId, userId, {
         titre: data.titre,
@@ -302,11 +222,7 @@ class ProjetsController {
       }
 
       const data = validation.data;
-      const checkStmt = await db.execute({
-        sql: "SELECT * FROM projets WHERE id = ?",
-        args: [id],
-      });
-      const existing = checkStmt.rows[0];
+      const existing = await projetsRepo.getById(id);
 
       if (!existing) {
         return res
@@ -316,11 +232,7 @@ class ProjetsController {
 
       let slug = existing.slug;
       if (data.titre && data.titre !== existing.titre) {
-        const slugRes = await db.execute({
-          sql: "SELECT slug FROM projets WHERE id != ?",
-          args: [id],
-        });
-        const existingSlugs = slugRes.rows.map((p) => p.slug);
+        const existingSlugs = await projetsRepo.getAllSlugs(id);
         slug = generateSlug(data.titre, existingSlugs);
       }
 
@@ -350,47 +262,23 @@ class ProjetsController {
           : videoPaths;
       }
 
-      await db.execute({
-        sql: `
-          UPDATE projets SET
-            titre = COALESCE(?, titre),
-            description = COALESCE(?, description),
-            contenu = COALESCE(?, contenu),
-            type_projet = COALESCE(?, type_projet),
-            client = COALESCE(?, client),
-            lieu = COALESCE(?, lieu),
-            date_debut = COALESCE(?, date_debut),
-            date_fin = COALESCE(?, date_fin),
-            statut = COALESCE(?, statut),
-            images = COALESCE(?, images),
-            documents = COALESCE(?, documents),
-            videos = COALESCE(?, videos),
-            meta_keywords = COALESCE(?, meta_keywords),
-            meta_description = COALESCE(?, meta_description),
-            slug = COALESCE(?, slug),
-            featured = COALESCE(?, featured),
-            updated_at = datetime('now')
-          WHERE id = ?
-        `,
-        args: [
-          data.titre || null,
-          data.description,
-          data.contenu,
-          data.type_projet,
-          data.client,
-          data.lieu,
-          data.date_debut,
-          data.date_fin,
-          data.statut,
-          JSON.stringify(imagePaths),
-          JSON.stringify(documentPaths),
-          JSON.stringify(videoPaths),
-          data.meta_keywords,
-          data.meta_description,
-          slug,
-          data.featured !== undefined ? (data.featured ? 1 : 0) : null,
-          id,
-        ],
+      await projetsRepo.updateWithCoalesce(id, {
+        titre: data.titre || null,
+        description: data.description,
+        contenu: data.contenu,
+        type_projet: data.type_projet,
+        client: data.client,
+        lieu: data.lieu,
+        date_debut: data.date_debut,
+        date_fin: data.date_fin,
+        statut: data.statut,
+        images: JSON.stringify(imagePaths),
+        documents: JSON.stringify(documentPaths),
+        videos: JSON.stringify(videoPaths),
+        meta_keywords: data.meta_keywords,
+        meta_description: data.meta_description,
+        slug,
+        featured: data.featured !== undefined ? (data.featured ? 1 : 0) : null,
       });
 
       Logger.createLog("update", "projet", id, req.user?.id, {
@@ -412,12 +300,9 @@ class ProjetsController {
   static async delete(req, res) {
     try {
       const { id } = req.params;
-      const existing = await db.execute({
-        sql: "SELECT * FROM projets WHERE id = ?",
-        args: [id],
-      });
+      const existing = await projetsRepo.getById(id);
 
-      if (!existing.rows[0]) {
+      if (!existing) {
         return res
           .status(404)
           .json({ success: false, error: "Projet non trouvé" });
@@ -426,9 +311,9 @@ class ProjetsController {
       // Note: Avec Cloudinary, on pourrait appeler cloudinary.uploader.destroy()
       // pour nettoyer les fichiers, mais pour l'instant on supprime juste la ref DB
 
-      await db.execute({ sql: "DELETE FROM projets WHERE id = ?", args: [id] });
+      await projetsRepo.delete(id);
       Logger.createLog("delete", "projet", id, req.user?.id, {
-        titre: existing.rows[0].titre,
+        titre: existing.titre,
       }).catch(console.error);
 
       res.json({ success: true, message: "Projet supprimé" });

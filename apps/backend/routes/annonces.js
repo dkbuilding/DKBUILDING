@@ -17,6 +17,7 @@ router.get('/:id', jwtAuth.authenticateToken.bind(jwtAuth), AnnoncesController.g
 router.post(
   '/',
   jwtAuth.authenticateToken.bind(jwtAuth),
+  jwtAuth.checkAdminRole.bind(jwtAuth),
   uploadFields([
     { name: 'images', maxCount: 10 },
     { name: 'documents', maxCount: 10 }
@@ -28,6 +29,7 @@ router.post(
 router.put(
   '/:id',
   jwtAuth.authenticateToken.bind(jwtAuth),
+  jwtAuth.checkAdminRole.bind(jwtAuth),
   uploadFields([
     { name: 'images', maxCount: 10 },
     { name: 'documents', maxCount: 10 }
@@ -36,7 +38,7 @@ router.put(
   AnnoncesController.update
 );
 
-router.delete('/:id', jwtAuth.authenticateToken.bind(jwtAuth), AnnoncesController.delete);
+router.delete('/:id', jwtAuth.authenticateToken.bind(jwtAuth), jwtAuth.checkAdminRole.bind(jwtAuth), AnnoncesController.delete);
 
 module.exports = router;
 

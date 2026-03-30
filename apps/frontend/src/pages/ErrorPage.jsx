@@ -232,7 +232,7 @@ const ErrorPage = () => {
             <button
               key={index}
               onClick={handleGoHome}
-              className="bg-white text-dk-black px-6 py-3 rounded-lg font-foundation-bold hover:bg-dk-yellow hover:text-dk-yellow transition-colors duration-300 flex items-center justify-center gap-2"
+              className="bg-white text-dk-black px-6 py-3 rounded-lg font-foundation-bold hover:bg-dk-yellow hover:text-dk-black transition-colors duration-300 flex items-center justify-center gap-2"
             >
               <ActionIcon action="home" />
               Retourner à l'accueil
@@ -275,13 +275,13 @@ const ErrorPage = () => {
         
         {/* Logo DK BUILDING */}
         <div ref={logoRef} className="mb-8">
-          <img 
-            src="/src/assets/images/logos/Logo — DK BUILDING — Structure 2.png" 
-            alt="DK BUILDING Logo"
-            className="w-16 h-16 xs:w-20 xs:h-20 sm:w-24 sm:h-24 mx-auto cursor-pointer hover:scale-105 transition-transform duration-300"
-            onClick={handleGoHome}
-            aria-label="Retour à l'accueil"
-          />
+          <a href="/" aria-label="DK BUILDING — Retour à l'accueil">
+            <img
+              src="/src/assets/images/logos/Logo — DK BUILDING — Structure 2.png"
+              alt="DK BUILDING Logo"
+              className="w-16 h-16 xs:w-20 xs:h-20 sm:w-24 sm:h-24 mx-auto hover:scale-105 transition-transform duration-300"
+            />
+          </a>
         </div>
         
         {/* Code d'erreur */}

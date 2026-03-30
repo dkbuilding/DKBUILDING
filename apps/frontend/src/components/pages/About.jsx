@@ -126,6 +126,26 @@ const About = () => {
   useLayoutEffect(() => {
     if (!sectionRef.current) return;
 
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReducedMotion) {
+      // Afficher les éléments directement sans animation
+      if (titleRef.current) gsap.set(titleRef.current, { opacity: 1, y: 0 });
+      if (contentRef.current) gsap.set(contentRef.current, { opacity: 1, x: 0 });
+      const statElements = statsRef.current?.children;
+      if (statElements) {
+        Array.from(statElements).forEach((stat) => {
+          gsap.set(stat, { opacity: 1, scale: 1 });
+        });
+      }
+      const valueElements = valuesRef.current?.children;
+      if (valueElements) {
+        Array.from(valueElements).forEach((value) => {
+          gsap.set(value, { opacity: 1, y: 0 });
+        });
+      }
+      return;
+    }
+
     const ctx = gsap.context(() => {
       // Animation du titre
       if (titleRef.current) {

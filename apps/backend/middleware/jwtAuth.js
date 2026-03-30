@@ -23,9 +23,10 @@ class JWTAuthMiddleware {
    */
   authenticateToken(req, res, next) {
     try {
-      // Récupération du token depuis l'en-tête Authorization
-      const authHeader = req.headers["authorization"];
-      const token = authHeader && authHeader.split(" ")[1]; // Bearer TOKEN
+      // Chercher le token dans le cookie HttpOnly OU dans le header Authorization
+      const cookieToken = req.cookies?.jwt_token;
+      const headerToken = req.headers["authorization"]?.split(" ")[1];
+      const token = cookieToken || headerToken;
 
       if (!token) {
         return res.status(401).json({
@@ -244,17 +245,9 @@ class JWTAuthMiddleware {
    */
   securePasswordCompare(provided, stored) {
     try {
-      // Normalisation des chaînes
-      const providedBuffer = Buffer.from(provided, "utf8");
-      const storedBuffer = Buffer.from(stored, "utf8");
-
-      // Vérification de la longueur pour éviter les fuites d'information
-      if (providedBuffer.length !== storedBuffer.length) {
-        return false;
-      }
-
-      // Comparaison sécurisée contre les attaques par timing
-      return crypto.timingSafeEqual(providedBuffer, storedBuffer);
+      const providedHash = crypto.createHash('sha256').update(String(provided)).digest();
+      const storedHash = crypto.createHash('sha256').update(String(stored)).digest();
+      return crypto.timingSafeEqual(providedHash, storedHash);
     } catch (error) {
       console.error("Erreur lors de la comparaison des mots de passe:", error);
       return false;
@@ -284,6 +277,34 @@ class JWTAuthMiddleware {
 
     // TODO: Implémenter un système de logging sécurisé en production
     // (fichier chiffré, base de données sécurisée, etc.)
+  }
+
+  /**
+   * Middleware de vérification du rôle admin
+   * Vérifie que l'utilisateur authentifié possède le rôle admin ou superadmin
+   */
+  checkAdminRole(req, res, next) {
+    if (!req.user) {
+      return res.status(401).json({
+        success: false,
+        error: "Authentification requise",
+      });
+    }
+
+    if (req.user.role !== "admin" && req.user.role !== "superadmin") {
+      this.logSecurityEvent("ADMIN_ACCESS_DENIED", {
+        user: req.user.id,
+        role: req.user.role,
+      }, req.ip);
+
+      return res.status(403).json({
+        success: false,
+        error: "Accès admin requis",
+        message: "Vous n'avez pas les permissions nécessaires pour cette action",
+      });
+    }
+
+    next();
   }
 
   /**

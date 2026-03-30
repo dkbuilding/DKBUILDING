@@ -53,10 +53,18 @@ router.post("/health", async (req, res) => {
       });
     }
 
-    // Réponse de succès
+    // Stocker le token dans un cookie HttpOnly sécurisé
+    res.cookie('jwt_token', authResult.token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      maxAge: 30 * 60 * 1000, // 30 minutes
+      path: '/',
+    });
+
+    // Réponse de succès (le token N'EST PAS renvoyé dans le body)
     res.json({
       success: true,
-      token: authResult.token,
       expires_in: authResult.expires_in,
       permissions: authResult.permissions,
       security_level: authResult.security_level,
@@ -71,6 +79,22 @@ router.post("/health", async (req, res) => {
       code: "INTERNAL_SERVER_ERROR",
     });
   }
+});
+
+/**
+ * POST /auth/logout
+ * Déconnexion - suppression du cookie JWT
+ *
+ * Response: { success: boolean, message: string }
+ */
+router.post("/logout", (req, res) => {
+  res.clearCookie('jwt_token', {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'strict',
+    path: '/',
+  });
+  res.json({ success: true, message: 'Déconnexion réussie' });
 });
 
 /**
@@ -111,42 +135,10 @@ router.post("/verify", jwtAuth.authenticateToken.bind(jwtAuth), (req, res) => {
  * Response: { configured: boolean, security_level: string, algorithm: string }
  */
 router.get("/status", (req, res) => {
-  try {
-    const jwtSecret = process.env.JWT_SECRET;
-    const jwtSalt = process.env.JWT_SALT;
-    const jwtVerificationHash = process.env.JWT_VERIFICATION_HASH;
-    const healthPassword = process.env.HEALTH_PASSWORD;
-
-    const isConfigured = !!(
-      jwtSecret &&
-      jwtSalt &&
-      jwtVerificationHash &&
-      healthPassword
-    );
-
-    res.json({
-      configured: isConfigured,
-      security_level: process.env.JWT_SECURITY_LEVEL || "NSA_128_BITS",
-      algorithm: process.env.JWT_ALGORITHM || "sha512",
-      key_length: process.env.SECURITY_KEY_LENGTH || "512",
-      iterations: process.env.SECURITY_ITERATIONS || "100000",
-      generated_at: process.env.SECURITY_GENERATED_AT || null,
-      message: isConfigured
-        ? "Configuration de sécurité active"
-        : "Configuration de sécurité manquante",
-    });
-  } catch (error) {
-    console.error(
-      "Erreur lors de la vérification du statut d'authentification:",
-      error,
-    );
-
-    res.status(500).json({
-      configured: false,
-      error: "Erreur interne du serveur",
-      code: "INTERNAL_SERVER_ERROR",
-    });
-  }
+  res.json({
+    configured: true,
+    message: "Système d'authentification actif",
+  });
 });
 
 /**
@@ -180,9 +172,17 @@ router.post("/refresh", jwtAuth.authenticateToken.bind(jwtAuth), (req, res) => {
       new_expires_at: new Date(payload.exp * 1000),
     });
 
+    // Mettre à jour le cookie HttpOnly avec le nouveau token
+    res.cookie('jwt_token', newToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      maxAge: 30 * 60 * 1000, // 30 minutes
+      path: '/',
+    });
+
     res.json({
       success: true,
-      token: newToken,
       expires_in: "30m",
       permissions: payload.permissions,
       security_level: payload.security_level,

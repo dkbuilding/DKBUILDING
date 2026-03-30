@@ -29,11 +29,8 @@ const AnnoncesManager = () => {
 
   const fetchAnnonces = async () => {
     try {
-      const token = localStorage.getItem('jwt_token');
       const response = await fetch(`${API_BASE_URL}/api/annonces`, {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
+        credentials: 'include',
       });
 
       if (!response.ok) throw new Error('Erreur lors de la récupération');
@@ -48,7 +45,6 @@ const AnnoncesManager = () => {
   };
 
   const onDropImages = async (acceptedFiles) => {
-    const token = localStorage.getItem('jwt_token');
     for (const file of acceptedFiles) {
       try {
         const formData = new FormData();
@@ -57,9 +53,7 @@ const AnnoncesManager = () => {
 
         const response = await fetch(`${API_BASE_URL}/api/media/upload`, {
           method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${token}`
-          },
+          credentials: 'include',
           body: formData
         });
 
@@ -75,7 +69,6 @@ const AnnoncesManager = () => {
   };
 
   const onDropDocuments = async (acceptedFiles) => {
-    const token = localStorage.getItem('jwt_token');
     for (const file of acceptedFiles) {
       try {
         const formData = new FormData();
@@ -84,9 +77,7 @@ const AnnoncesManager = () => {
 
         const response = await fetch(`${API_BASE_URL}/api/media/upload`, {
           method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${token}`
-          },
+          credentials: 'include',
           body: formData
         });
 
@@ -120,17 +111,16 @@ const AnnoncesManager = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const token = localStorage.getItem('jwt_token');
       const url = editingAnnonce
         ? `${API_BASE_URL}/api/annonces/${editingAnnonce.id}`
         : `${API_BASE_URL}/api/annonces`;
-      
+
       const method = editingAnnonce ? 'PUT' : 'POST';
 
       const response = await fetch(url, {
         method,
+        credentials: 'include',
         headers: {
-          'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
@@ -159,12 +149,9 @@ const AnnoncesManager = () => {
     if (!confirm('Êtes-vous sûr de vouloir supprimer cette annonce ?')) return;
 
     try {
-      const token = localStorage.getItem('jwt_token');
       const response = await fetch(`${API_BASE_URL}/api/annonces/${id}`, {
         method: 'DELETE',
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
+        credentials: 'include',
       });
 
       if (!response.ok) throw new Error('Erreur lors de la suppression');

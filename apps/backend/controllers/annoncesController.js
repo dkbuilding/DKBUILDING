@@ -1,25 +1,31 @@
-const db = require("../database/db");
+const AnnoncesRepository = require("../repositories/AnnoncesRepository");
 const Logger = require("../utils/logger");
 const { generateSlug } = require("../utils/slugify");
 const { annonceSchema } = require("../validators/schemas");
+const parseJSON = require("../utils/parseJSON");
 
 /**
  * Annonces Controller - Version Serverless (Turso + Cloudinary)
  * Architecture GovTech Zero-Cost pour DK BUILDING
+ *
+ * Utilise AnnoncesRepository pour l'accès aux données.
+ * Le controller gère uniquement la logique HTTP, la validation et le parsing JSON.
  */
 
-// Helper pour parser les colonnes JSON (SQLite/Turso stocke ça en TEXT)
-const parseJSON = (data) => {
-  try {
-    return JSON.parse(data);
-  } catch (e) {
-    return [];
-  }
-};
+const annoncesRepo = new AnnoncesRepository();
+
+/**
+ * Parse les champs JSON d'une annonce pour la réponse HTTP
+ */
+const parseAnnonce = (annonce) => ({
+  ...annonce,
+  images: parseJSON(annonce.images),
+  documents: parseJSON(annonce.documents),
+});
 
 class AnnoncesController {
   /**
-   * Récupérer toutes les annonces avec filtres (Turso Async)
+   * Récupérer toutes les annonces avec filtres
    */
   static async getAll(req, res) {
     try {
@@ -27,47 +33,17 @@ class AnnoncesController {
       const offset = Math.max(parseInt(req.query.offset) || 0, 0);
       const { statut, categorie, auteur_id, orderBy, order } = req.query;
 
-      let query = "SELECT * FROM annonces WHERE 1=1";
-      const args = [];
+      const rows = await annoncesRepo.getFiltered({
+        statut,
+        categorie,
+        auteur_id,
+        orderBy,
+        order,
+        limit,
+        offset,
+      });
 
-      if (statut) {
-        query += " AND statut = ?";
-        args.push(statut);
-      }
-
-      if (categorie) {
-        query += " AND categorie = ?";
-        args.push(categorie);
-      }
-
-      if (auteur_id) {
-        query += " AND auteur_id = ?";
-        args.push(auteur_id);
-      }
-
-      const allowedOrderBy = [
-        "date_publication",
-        "created_at",
-        "vue_count",
-        "titre",
-      ];
-      const safeOrderBy = allowedOrderBy.includes(orderBy)
-        ? orderBy
-        : "date_publication";
-      const safeOrder =
-        (order || "DESC").toUpperCase() === "ASC" ? "ASC" : "DESC";
-
-      query += ` ORDER BY ${safeOrderBy} ${safeOrder} LIMIT ? OFFSET ?`;
-      args.push(limit, offset);
-
-      // Exécution Turso
-      const result = await db.execute({ sql: query, args });
-
-      const annoncesParsed = result.rows.map((annonce) => ({
-        ...annonce,
-        images: parseJSON(annonce.images),
-        documents: parseJSON(annonce.documents),
-      }));
+      const annoncesParsed = rows.map(parseAnnonce);
 
       res.json({
         success: true,
@@ -90,12 +66,7 @@ class AnnoncesController {
   static async getById(req, res) {
     try {
       const { id } = req.params;
-      const result = await db.execute({
-        sql: "SELECT * FROM annonces WHERE id = ?",
-        args: [id],
-      });
-
-      const annonce = result.rows[0];
+      const annonce = await annoncesRepo.getById(id);
 
       if (!annonce) {
         return res
@@ -103,10 +74,7 @@ class AnnoncesController {
           .json({ success: false, error: "Annonce introuvable" });
       }
 
-      annonce.images = parseJSON(annonce.images);
-      annonce.documents = parseJSON(annonce.documents);
-
-      res.json({ success: true, data: annonce });
+      res.json({ success: true, data: parseAnnonce(annonce) });
     } catch (error) {
       console.error("Erreur getById:", error);
       res.status(500).json({ success: false, error: "Erreur système" });
@@ -116,12 +84,7 @@ class AnnoncesController {
   static async getBySlug(req, res) {
     try {
       const { slug } = req.params;
-      const result = await db.execute({
-        sql: "SELECT * FROM annonces WHERE slug = ?",
-        args: [slug],
-      });
-
-      const annonce = result.rows[0];
+      const annonce = await annoncesRepo.getBySlug(slug);
 
       if (!annonce) {
         return res
@@ -129,16 +92,10 @@ class AnnoncesController {
           .json({ success: false, error: "Annonce introuvable" });
       }
 
-      annonce.images = parseJSON(annonce.images);
-      annonce.documents = parseJSON(annonce.documents);
-
       // Update asynchrone du compteur de vue (Fire & Forget pour la perf)
-      db.execute({
-        sql: "UPDATE annonces SET vue_count = vue_count + 1 WHERE id = ?",
-        args: [annonce.id],
-      }).catch((err) => console.error("Erreur update vue_count", err));
+      annoncesRepo.incrementViewCount(annonce.id);
 
-      res.json({ success: true, data: annonce });
+      res.json({ success: true, data: parseAnnonce(annonce) });
     } catch (error) {
       console.error("Erreur getBySlug:", error);
       res.status(500).json({ success: false, error: "Erreur système" });
@@ -150,16 +107,8 @@ class AnnoncesController {
       const limit = Math.min(Math.max(parseInt(req.query.limit) || 10, 1), 50);
       const offset = Math.max(parseInt(req.query.offset) || 0, 0);
 
-      const result = await db.execute({
-        sql: `SELECT * FROM annonces WHERE statut = 'publie' ORDER BY date_publication DESC LIMIT ? OFFSET ?`,
-        args: [limit, offset],
-      });
-
-      const annoncesParsed = result.rows.map((annonce) => ({
-        ...annonce,
-        images: parseJSON(annonce.images),
-        documents: parseJSON(annonce.documents),
-      }));
+      const rows = await annoncesRepo.getPublic({ limit, offset });
+      const annoncesParsed = rows.map(parseAnnonce);
 
       res.json({
         success: true,
@@ -192,50 +141,38 @@ class AnnoncesController {
       const userId = req.user?.id || null;
 
       // 2. Génération Slug (vérif doublon)
-      const slugRes = await db.execute("SELECT slug FROM annonces");
-      const existingSlugs = slugRes.rows.map((a) => a.slug);
+      const existingSlugs = await annoncesRepo.getAllSlugs();
       const slug = generateSlug(data.titre, existingSlugs);
 
       // 3. Gestion Cloudinary (URLs directes)
-      // Multer-storage-cloudinary met l'URL dans file.path
       const images = req.files?.images || req.body.images || [];
       const documents = req.files?.documents || req.body.documents || [];
 
       const imageUrls = Array.isArray(images)
-        ? images.map((file) => file.path || file) // file.path est l'URL Cloudinary
+        ? images.map((file) => file.path || file)
         : [];
 
       const docUrls = Array.isArray(documents)
         ? documents.map((file) => file.path || file)
         : [];
 
-      // 4. Insertion Turso
-      const result = await db.execute({
-        sql: `
-          INSERT INTO annonces (
-            titre, description, contenu, categorie, statut,
-            images, documents, meta_keywords, meta_description,
-            slug, auteur_id, date_publication, date_modification
-          ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'), datetime('now'))
-          RETURNING id
-        `,
-        args: [
-          data.titre,
-          data.description,
-          data.contenu,
-          data.categorie,
-          data.statut,
-          JSON.stringify(imageUrls), // On stocke les URLs Cloudinary
-          JSON.stringify(docUrls),
-          data.meta_keywords,
-          data.meta_description,
-          slug,
-          userId,
-        ],
+      // 4. Insertion via Repository
+      const now = new Date().toISOString();
+      const newId = await annoncesRepo.createWithReturning({
+        titre: data.titre,
+        description: data.description,
+        contenu: data.contenu,
+        categorie: data.categorie,
+        statut: data.statut,
+        images: JSON.stringify(imageUrls),
+        documents: JSON.stringify(docUrls),
+        meta_keywords: data.meta_keywords,
+        meta_description: data.meta_description,
+        slug,
+        auteur_id: userId,
+        date_publication: now,
+        date_modification: now,
       });
-
-      // Turso renvoie l'ID inséré via RETURNING
-      const newId = result.rows[0]?.id || result.lastInsertRowid;
 
       Logger.createLog("create", "annonce", newId, userId, {
         titre: data.titre,
@@ -266,23 +203,17 @@ class AnnoncesController {
       const validation = annonceSchema.partial().safeParse(req.body);
 
       if (!validation.success) {
-        return res
-          .status(400)
-          .json({
-            success: false,
-            error: "Données invalides",
-            details: validation.error.format(),
-          });
+        return res.status(400).json({
+          success: false,
+          error: "Données invalides",
+          details: validation.error.format(),
+        });
       }
 
       const data = validation.data;
 
       // Vérif existence
-      const check = await db.execute({
-        sql: "SELECT * FROM annonces WHERE id = ?",
-        args: [id],
-      });
-      const existing = check.rows[0];
+      const existing = await annoncesRepo.getById(id);
 
       if (!existing) {
         return res
@@ -293,11 +224,7 @@ class AnnoncesController {
       // Slug
       let slug = existing.slug;
       if (data.titre && data.titre !== existing.titre) {
-        const slugRes = await db.execute({
-          sql: "SELECT slug FROM annonces WHERE id != ?",
-          args: [id],
-        });
-        const existingSlugs = slugRes.rows.map((a) => a.slug);
+        const existingSlugs = await annoncesRepo.getAllSlugs(id);
         slug = generateSlug(data.titre, existingSlugs);
       }
 
@@ -322,35 +249,17 @@ class AnnoncesController {
           : documentPaths;
       }
 
-      await db.execute({
-        sql: `
-          UPDATE annonces SET
-            titre = COALESCE(?, titre),
-            description = COALESCE(?, description),
-            contenu = COALESCE(?, contenu),
-            categorie = COALESCE(?, categorie),
-            statut = COALESCE(?, statut),
-            images = COALESCE(?, images),
-            documents = COALESCE(?, documents),
-            meta_keywords = COALESCE(?, meta_keywords),
-            meta_description = COALESCE(?, meta_description),
-            slug = COALESCE(?, slug),
-            date_modification = datetime('now')
-          WHERE id = ?
-        `,
-        args: [
-          data.titre || null,
-          data.description,
-          data.contenu,
-          data.categorie,
-          data.statut,
-          JSON.stringify(imagePaths),
-          JSON.stringify(documentPaths),
-          data.meta_keywords,
-          data.meta_description,
-          slug,
-          id,
-        ],
+      await annoncesRepo.updateWithCoalesce(id, {
+        titre: data.titre || null,
+        description: data.description,
+        contenu: data.contenu,
+        categorie: data.categorie,
+        statut: data.statut,
+        images: JSON.stringify(imagePaths),
+        documents: JSON.stringify(documentPaths),
+        meta_keywords: data.meta_keywords,
+        meta_description: data.meta_description,
+        slug,
       });
 
       Logger.createLog("update", "annonce", id, req.user?.id, {
@@ -367,11 +276,7 @@ class AnnoncesController {
   static async delete(req, res) {
     try {
       const { id } = req.params;
-      const check = await db.execute({
-        sql: "SELECT * FROM annonces WHERE id = ?",
-        args: [id],
-      });
-      const existing = check.rows[0];
+      const existing = await annoncesRepo.getById(id);
 
       if (!existing) {
         return res
@@ -382,10 +287,7 @@ class AnnoncesController {
       // NOTE: Avec Cloudinary, on pourrait appeler cloudinary.uploader.destroy(public_id)
       // pour nettoyer les fichiers orphelins, mais pour l'instant on supprime juste la ref DB
 
-      await db.execute({
-        sql: "DELETE FROM annonces WHERE id = ?",
-        args: [id],
-      });
+      await annoncesRepo.delete(id);
 
       Logger.createLog("delete", "annonce", id, req.user?.id, {
         titre: existing.titre,

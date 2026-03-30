@@ -10,8 +10,11 @@ const FormFieldContext = React.createContext(undefined);
 
 const FormField = ({ name, render }) => {
   const form = useFormContext();
+  const fieldId = `field-${name}`;
+  const errorId = `${fieldId}-error`;
   const field = {
     name,
+    id: fieldId,
     value: form.watch(name),
     onChange: (value) => form.setValue(name, value, { shouldValidate: true }),
     onBlur: () => form.trigger(name),
@@ -22,7 +25,7 @@ const FormField = ({ name, render }) => {
     isTouched: form.formState.touchedFields[name],
   };
   return (
-    <FormFieldContext.Provider value={{ name }}>
+    <FormFieldContext.Provider value={{ name, fieldId, errorId }}>
       {render({ field, fieldState, form })}
     </FormFieldContext.Provider>
   );
@@ -36,9 +39,11 @@ const FormItem = React.forwardRef(({ className, ...props }, ref) => {
 FormItem.displayName = "FormItem";
 
 const FormLabel = React.forwardRef(({ className, ...props }, ref) => {
+  const fieldContext = React.useContext(FormFieldContext);
   return (
     <label
       ref={ref}
+      htmlFor={fieldContext?.fieldId}
       className={cn(
         "text-sm font-medium text-dk-gray-300 leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70",
         className
@@ -49,8 +54,25 @@ const FormLabel = React.forwardRef(({ className, ...props }, ref) => {
 });
 FormLabel.displayName = "FormLabel";
 
-const FormControl = React.forwardRef(({ ...props }, ref) => {
-  return <div ref={ref} {...props} />;
+const FormControl = React.forwardRef(({ children, ...props }, ref) => {
+  const fieldContext = React.useContext(FormFieldContext);
+  const form = useFormContext();
+  const error = fieldContext?.name ? form?.formState?.errors?.[fieldContext.name] : null;
+
+  return (
+    <div ref={ref} {...props}>
+      {React.Children.map(children, child => {
+        if (React.isValidElement(child)) {
+          return React.cloneElement(child, {
+            id: fieldContext?.fieldId,
+            'aria-invalid': error ? 'true' : undefined,
+            'aria-describedby': error ? fieldContext?.errorId : undefined,
+          });
+        }
+        return child;
+      })}
+    </div>
+  );
 });
 FormControl.displayName = "FormControl";
 
@@ -79,6 +101,8 @@ const FormMessage = React.forwardRef(({ className, children, ...props }, ref) =>
   return (
     <p
       ref={ref}
+      id={fieldContext?.errorId}
+      role="alert"
       className={cn("text-sm font-medium text-red-400 mt-1", className)}
       {...props}
     >
@@ -99,4 +123,3 @@ export {
   FormMessage,
   useFormContext,
 };
-

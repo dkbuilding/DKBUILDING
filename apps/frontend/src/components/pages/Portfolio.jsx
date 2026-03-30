@@ -1,4 +1,4 @@
-import { useLayoutEffect, useRef, useState } from 'react';
+import { useLayoutEffect, useRef, useState, useEffect } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { motionTokens, gsapUtils, scrollTriggerDefaults } from '../../utils/motion';
@@ -106,6 +106,15 @@ const Portfolio = () => {
   useLayoutEffect(() => {
     if (!lightboxOpen || !lightboxRef.current) return;
 
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReducedMotion) {
+      // Afficher les éléments directement sans animation
+      gsap.set(lightboxRef.current, { opacity: 1 });
+      if (projectInfoRef.current) gsap.set(projectInfoRef.current, { opacity: 1, y: 0 });
+      if (navigationRef.current) gsap.set(navigationRef.current, { opacity: 1, y: 0 });
+      return;
+    }
+
     const ctx = gsap.context(() => {
       // Animation d'entrée de la lightbox
       const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
@@ -134,6 +143,12 @@ const Portfolio = () => {
   const prevImage = () => {
     setCurrentImage((prev) => (prev - 1 + projects.length) % projects.length);
   };
+  // Focus trap : donner le focus à la lightbox quand elle s'ouvre
+  useEffect(() => {
+    if (lightboxOpen && lightboxRef.current) {
+      lightboxRef.current.focus();
+    }
+  }, [lightboxOpen]);
   // Fonction pour gérer le clic sur le bouton CTA
   const handleStartProject = () => {
     // Fermer la lightbox
@@ -152,6 +167,19 @@ const Portfolio = () => {
   };
   useLayoutEffect(() => {
     if (!sectionRef.current) return;
+
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReducedMotion) {
+      // Afficher les éléments directement sans animation
+      if (titleRef.current) gsap.set(titleRef.current, { opacity: 1, y: 0 });
+      const gridItems = gridRef.current?.children;
+      if (gridItems && gridItems.length) {
+        Array.from(gridItems).forEach((item) => {
+          if (item) gsap.set(item, { opacity: 1, y: 0 });
+        });
+      }
+      return;
+    }
 
     const ctx = gsap.context(() => {
       // Animation du titre (sécurisée)
@@ -241,6 +269,15 @@ const Portfolio = () => {
               projects.map((project, index) => (
               <div
                 key={project.id}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    openLightbox(index);
+                  }
+                }}
+                aria-label={`Voir le projet ${project.title || ''}`}
                 className="portfolio-project-card group bg-dk-black/50 backdrop-blur-sm rounded-2xl overflow-hidden border border-dk-gray-800 card-hover cursor-pointer flex flex-col h-full"
                 onClick={() => openLightbox(index)}
               >
@@ -323,11 +360,24 @@ const Portfolio = () => {
 
       {/* Lightbox */}
       {lightboxOpen && (
-        <div ref={lightboxRef} className="fixed inset-0 z-50 bg-dk-black/95 backdrop-blur-sm flex items-center justify-center p-4">
+        <div
+          ref={lightboxRef}
+          role="dialog"
+          aria-modal="true"
+          aria-label={`Galerie du projet ${projects[currentImage]?.title || ''}`}
+          tabIndex={-1}
+          onKeyDown={(e) => {
+            if (e.key === 'Escape') closeLightbox();
+            if (e.key === 'ArrowLeft') prevImage();
+            if (e.key === 'ArrowRight') nextImage();
+          }}
+          className="fixed inset-0 z-50 bg-dk-black/95 backdrop-blur-sm flex items-center justify-center p-4"
+        >
           <div className="relative max-w-6xl max-h-[90vh] w-full">
             {/* Bouton fermer - au-dessus de tout */}
             <button
               onClick={closeLightbox}
+              aria-label="Fermer la galerie"
               className="fixed top-4 right-4 z-[9999] bg-dk-black/80 hover:bg-dk-black text-white p-3 rounded-full transition-colors duration-200 touch-target shadow-lg"
               style={{ zIndex: 9999 }}
             >
@@ -337,6 +387,7 @@ const Portfolio = () => {
             {/* Navigation */}
             <button
               onClick={prevImage}
+              aria-label="Image précédente"
               className="fixed left-4 top-1/2 transform -translate-y-1/2 z-[9998] bg-dk-black/80 hover:bg-dk-black text-white p-3 rounded-full transition-colors duration-200 touch-target shadow-lg"
               style={{ zIndex: 9998 }}
             >
@@ -345,6 +396,7 @@ const Portfolio = () => {
 
             <button
               onClick={nextImage}
+              aria-label="Image suivante"
               className="fixed right-4 top-1/2 transform -translate-y-1/2 z-[9998] bg-dk-black/80 hover:bg-dk-black text-white p-3 rounded-full transition-colors duration-200 touch-target shadow-lg"
               style={{ zIndex: 9998 }}
             >

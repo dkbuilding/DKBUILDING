@@ -1,3 +1,4 @@
+import { lazy, Suspense } from "react";
 import {
   BrowserRouter as Router,
   Routes,
@@ -14,15 +15,16 @@ import {
 import { isSiteLocked } from "./config/lockAccessConfig";
 import { isAdminSubdomain } from "./utils/subdomainDetector";
 import Home from "./pages/Home";
-import HealthPage from "./components/pages/HealthPage";
-import Admin from "./pages/Admin";
-import NewsDetail from "./pages/NewsDetail";
-import MentionsLegales from "./pages/legal/MentionsLegales";
-import PolitiqueConfidentialite from "./pages/legal/PolitiqueConfidentialite";
-import CGV from "./pages/legal/CGV";
-import ErrorPage from "./pages/ErrorPage";
 import "./App.css";
 import "./styles/lock-access.css";
+
+const Admin = lazy(() => import("./pages/Admin"));
+const NewsDetail = lazy(() => import("./pages/NewsDetail"));
+const MentionsLegales = lazy(() => import("./pages/legal/MentionsLegales"));
+const PolitiqueConfidentialite = lazy(() => import("./pages/legal/PolitiqueConfidentialite"));
+const CGV = lazy(() => import("./pages/legal/CGV"));
+const ErrorPage = lazy(() => import("./pages/ErrorPage"));
+const HealthPage = lazy(() => import("./components/pages/HealthPage"));
 
 function App() {
   const siteLocked = isSiteLocked();
@@ -31,6 +33,14 @@ function App() {
   return (
     <Router>
       <div className="App w-full max-w-full overflow-x-hidden">
+        {/* Lien d'évitement pour la navigation clavier (WCAG 2.4.1) */}
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[99999] focus:bg-dk-yellow focus:text-dk-black focus:px-4 focus:py-2 focus:rounded-lg focus:font-bold focus:shadow-lg"
+        >
+          Aller au contenu principal
+        </a>
+
         {/* Système de verrouillage sécurisé - intercepte tous les accès */}
         <LockAccess />
         {/* Contrôleur de sécurité pour les administrateurs */}
@@ -40,35 +50,37 @@ function App() {
           {/* Page de chargement */}
           <Preloader />
 
-          <main className="w-full max-w-full overflow-x-hidden">
-            <Routes>
-              {/* Si on est sur le sous-domaine admin, rediriger toutes les routes vers /admin */}
-              {isAdmin ? (
-                <>
-                  <Route path="/" element={<Navigate to="/admin" replace />} />
-                  <Route path="/admin" element={<Admin />} />
-                  <Route path="*" element={<Navigate to="/admin" replace />} />
-                </>
-              ) : (
-                <>
-                  <Route path="/" element={<Home />} />
-                  <Route path="/health" element={<HealthPage />} />
-                  <Route path="/admin" element={<Admin />} />
-                  <Route path="/news/:id" element={<NewsDetail />} />
-                  <Route
-                    path="/legal/mentions-legales"
-                    element={<MentionsLegales />}
-                  />
-                  <Route
-                    path="/legal/politique-confidentialite"
-                    element={<PolitiqueConfidentialite />}
-                  />
-                  <Route path="/legal/cgv" element={<CGV />} />
-                  <Route path="/error/:code" element={<ErrorPage />} />
-                  <Route path="*" element={<ErrorPage />} />
-                </>
-              )}
-            </Routes>
+          <main id="main-content" className="w-full max-w-full overflow-x-hidden">
+            <Suspense fallback={<div className="min-h-screen bg-dk-black" />}>
+              <Routes>
+                {/* Si on est sur le sous-domaine admin, rediriger toutes les routes vers /admin */}
+                {isAdmin ? (
+                  <>
+                    <Route path="/" element={<Navigate to="/admin" replace />} />
+                    <Route path="/admin" element={<Admin />} />
+                    <Route path="*" element={<Navigate to="/admin" replace />} />
+                  </>
+                ) : (
+                  <>
+                    <Route path="/" element={<Home />} />
+                    <Route path="/health" element={<HealthPage />} />
+                    <Route path="/admin" element={<Admin />} />
+                    <Route path="/news/:id" element={<NewsDetail />} />
+                    <Route
+                      path="/legal/mentions-legales"
+                      element={<MentionsLegales />}
+                    />
+                    <Route
+                      path="/legal/politique-confidentialite"
+                      element={<PolitiqueConfidentialite />}
+                    />
+                    <Route path="/legal/cgv" element={<CGV />} />
+                    <Route path="/error/:code" element={<ErrorPage />} />
+                    <Route path="*" element={<ErrorPage />} />
+                  </>
+                )}
+              </Routes>
+            </Suspense>
           </main>
         </LockAccessOverlay>
 

@@ -121,9 +121,20 @@ export default defineConfig(({ mode }) => {
       'import.meta.env.BASE_URL': JSON.stringify(env.BASE_URL || 'http://localhost:5173'),
       // Variables Cloudinary (exposées pour uploads frontend-only)
       'import.meta.env.CLOUDINARY_CLOUD_NAME': JSON.stringify(env.CLOUDINARY_CLOUD_NAME || ''),
-      'import.meta.env.CLOUDINARY_API_KEY': JSON.stringify(env.CLOUDINARY_API_KEY || ''),
       'import.meta.env.CLOUDINARY_UPLOAD_PRESET': JSON.stringify(env.CLOUDINARY_UPLOAD_PRESET || ''),
       'import.meta.env.CLOUDINARY_FOLDER': JSON.stringify(env.CLOUDINARY_FOLDER || ''),
+    },
+    build: {
+      rollupOptions: {
+        output: {
+          manualChunks: {
+            vendor: ['react', 'react-dom', 'react-router-dom'],
+            gsap: ['gsap'],
+            forms: ['react-hook-form', '@hookform/resolvers', 'zod'],
+            query: ['@tanstack/react-query'],
+          }
+        }
+      }
     }
   }
 })

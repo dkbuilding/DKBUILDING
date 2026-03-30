@@ -1,4 +1,4 @@
-import { useLayoutEffect, useRef } from 'react';
+import { useLayoutEffect, useRef, useEffect } from 'react';
 import { gsap } from 'gsap';
 import { motionTokens } from '../../utils/motion';
 import { useActiveSection } from '../../hooks/useActiveSection';
@@ -23,6 +23,15 @@ const Sidebar = ({ isOpen, onClose }) => {
   // Définir les IDs des sections à surveiller
   const sectionIds = ['home', 'news', 'services', 'portfolio', 'about', 'contact'];
   const activeSection = useActiveSection(sectionIds, -100);
+
+  // Fermeture avec la touche Escape
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape' && isOpen) onClose();
+    };
+    if (isOpen) document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, onClose]);
 
   const menuItems = [
     { 
@@ -65,6 +74,22 @@ const Sidebar = ({ isOpen, onClose }) => {
 
   useLayoutEffect(() => {
     if (!sidebarRef.current || !overlayRef.current) return;
+
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReducedMotion) {
+      // Afficher la sidebar directement sans transition
+      if (isOpen) {
+        gsap.set(overlayRef.current, { opacity: 1, pointerEvents: 'auto' });
+        gsap.set(sidebarRef.current, { x: 0, opacity: 1 });
+        gsap.set(sidebarRef.current.querySelectorAll('.sidebar-menu-item'), { x: 0, opacity: 1 });
+        gsap.set(sidebarRef.current.querySelectorAll('.sidebar-contact-item'), { y: 0, opacity: 1 });
+      } else {
+        gsap.set(overlayRef.current, { opacity: 0, pointerEvents: 'none' });
+        const sidebarWidth = window.innerWidth >= 1280 ? 512 : window.innerWidth >= 1024 ? 448 : window.innerWidth >= 768 ? 384 : 320;
+        gsap.set(sidebarRef.current, { x: sidebarWidth, opacity: 0 });
+      }
+      return;
+    }
 
     const ctx = gsap.context(() => {
       // Toujours stabiliser l'état initial et tuer d'éventuels tweens
@@ -172,9 +197,13 @@ const Sidebar = ({ isOpen, onClose }) => {
       />
       
       {/* Sidebar */}
-      <aside 
+      <aside
         ref={sidebarRef}
         onClick={handleSidebarClick}
+        role="dialog"
+        aria-modal="true"
+        aria-label="Menu de navigation"
+        aria-hidden={!isOpen}
         className={`fixed right-0 h-screen w-full max-w-full xs:w-[85vw] lg:w-[28rem] xl:w-[32rem] bg-dk-black/95 backdrop-blur-md z-40 will-change-transform overflow-x-hidden ${
           !isOpen ? 'pointer-events-none' : 'pointer-events-auto'
         }`}
@@ -185,7 +214,7 @@ const Sidebar = ({ isOpen, onClose }) => {
           <div className="flex-1 overflow-y-auto overscroll-contain min-h-0 flex items-center justify-center">
             <div className="w-full p-8 xs:p-12 sm:p-16 pb-8 xs:pb-12 sm:pb-16">
               {/* Navigation */}
-              <nav className="w-full max-w-sm xs:max-w-md sm:max-w-lg md:max-w-xl lg:max-w-2xl mx-auto">
+              <nav className="w-full max-w-sm xs:max-w-md sm:max-w-lg md:max-w-xl lg:max-w-2xl mx-auto" aria-label="Menu de navigation">
                 <div className="space-y-2">
                   {menuItems.map((item, index) => {
                     const Icon = item.icon;
@@ -196,9 +225,10 @@ const Sidebar = ({ isOpen, onClose }) => {
                         key={index}
                         href={item.href}
                         onClick={() => handleMenuClick(item.href)}
+                        aria-current={isActive ? 'true' : undefined}
                         className={`sidebar-menu-item group flex items-center p-4 rounded-xl transition-all duration-300 no-underline ${
-                          isActive 
-                            ? 'bg-dk-yellow/10 border border-dk-yellow/20 text-dk-yellow' 
+                          isActive
+                            ? 'bg-dk-yellow/10 border border-dk-yellow/20 text-dk-yellow'
                             : 'text-dk-gray-300 group-hover:text-white'
                         }`}
                       >

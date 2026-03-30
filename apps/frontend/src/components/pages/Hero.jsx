@@ -87,77 +87,28 @@ const Hero = () => {
     }
   }, []);
 
-  // Fonction pour surveiller et relancer la vidéo si elle s'arrête
-  const monitorPlayback = useCallback(() => {
-    if (videoRef.current && videoLoaded) {
-      if (videoRef.current.paused || videoRef.current.ended) {
-        logVideo("Relance de la vidéo...");
-        playVideo();
-      }
-    }
-  }, [videoLoaded, playVideo]);
-
-  // Effet pour gérer l'autoplay de la vidéo
+  // Effet unique pour gérer l'autoplay de la vidéo
+  // La balise <video> a déjà autoPlay, loop, muted, playsInline — pas besoin de monitoring redondant
   useEffect(() => {
     if (videoLoaded && !videoPlaying) {
-      const timer = setTimeout(() => {
-        playVideo();
-      }, 100);
-      return () => clearTimeout(timer);
+      playVideo();
     }
   }, [videoLoaded, videoPlaying, playVideo]);
-
-  // Effet pour surveiller en continu la lecture de la vidéo
-  useEffect(() => {
-    if (!videoLoaded) return;
-
-    // Surveiller toutes les 2 secondes si la vidéo est toujours en cours
-    const monitoringInterval = setInterval(monitorPlayback, 2000);
-
-    // Essayer de jouer immédiatement
-    playVideo();
-
-    return () => {
-      clearInterval(monitoringInterval);
-    };
-  }, [videoLoaded, monitorPlayback, playVideo]);
-
-  // Effet pour relancer la vidéo dès qu'elle se met en pause
-  useEffect(() => {
-    if (!videoRef.current || !videoLoaded) return;
-
-    const video = videoRef.current;
-
-    const handlePause = () => {
-      logVideo("Vidéo mise en pause, relance...");
-      setTimeout(() => playVideo(), 100);
-    };
-
-    const handleEnded = () => {
-      logVideo("Vidéo terminée, relance...");
-      setTimeout(() => playVideo(), 100);
-    };
-
-    const handleStalled = () => {
-      logVideo("Vidéo bloquée, relance...");
-      setTimeout(() => playVideo(), 500);
-    };
-
-    video.addEventListener("pause", handlePause);
-    video.addEventListener("ended", handleEnded);
-    video.addEventListener("stalled", handleStalled);
-
-    return () => {
-      video.removeEventListener("pause", handlePause);
-      video.removeEventListener("ended", handleEnded);
-      video.removeEventListener("stalled", handleStalled);
-    };
-  }, [videoLoaded, playVideo]);
 
   useLayoutEffect(() => {
     if (!heroRef.current) return;
 
     const ctx = gsap.context(() => {
+      // Respect de prefers-reduced-motion
+      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (prefersReducedMotion) {
+        gsap.set(
+          [logoRef.current, titleRef.current, subtitleRef.current, ctaRef.current, scrollIndicatorRef.current].filter(Boolean),
+          { opacity: 1, y: 0, scale: 1, rotation: 0 }
+        );
+        return;
+      }
+
       // Animation d'entrée du logo
       if (logoRef.current) {
         gsap.fromTo(
@@ -269,8 +220,10 @@ const Hero = () => {
         loop
         muted
         playsInline
-        preload="auto"
+        preload="metadata"
         controls={false}
+        aria-hidden="true"
+        role="presentation"
         controlsList="nodownload nofullscreen noremoteplayback"
         disablePictureInPicture
         disableRemotePlayback
@@ -487,10 +440,11 @@ const Hero = () => {
       </div>
 
       {/* Indicateur de scroll intelligent */}
-      <div
+      <button
         ref={scrollIndicatorRef}
         onClick={handleScrollToNext}
-        className="absolute left-0 right-0 bottom-4 xs:bottom-6 sm:bottom-8 md:bottom-12 z-30 flex justify-center cursor-pointer group safe-area-bottom"
+        aria-label="Faire défiler vers la section suivante"
+        className="absolute left-0 right-0 bottom-4 xs:bottom-6 sm:bottom-8 md:bottom-12 z-30 flex justify-center cursor-pointer group safe-area-bottom bg-transparent border-0"
       >
         <div className="flex flex-col items-center text-dk-yellow transition-all duration-300 touch-target">
           <span className="text-xs xs:text-sm mb-2 font-foundation-bold">
@@ -500,7 +454,7 @@ const Hero = () => {
             <div className="w-1 h-2 xs:h-3 bg-dk-yellow rounded-full mt-1 xs:mt-2 animate-bounce group-hover:bg-dk-yellow/80 transition-colors duration-300"></div>
           </div>
         </div>
-      </div>
+      </button>
     </section>
   );
 };

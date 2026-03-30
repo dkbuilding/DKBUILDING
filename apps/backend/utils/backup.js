@@ -126,8 +126,19 @@ function restoreBackup(backupFilename) {
  */
 function deleteBackup(backupFilename) {
   try {
+    // Validation du nom de fichier contre le path traversal
+    const safeFilename = path.basename(backupFilename);
+    if (!/^dkbuilding-backup-[\w-]+\.zip$/.test(safeFilename)) {
+      throw new Error('Nom de fichier de sauvegarde invalide');
+    }
+
     const backupDir = path.join(__dirname, '../../_backup');
-    const backupPath = path.join(backupDir, backupFilename);
+    const backupPath = path.resolve(backupDir, safeFilename);
+
+    // Vérifier que le chemin résolu est bien dans le répertoire de backup
+    if (!backupPath.startsWith(path.resolve(backupDir))) {
+      throw new Error('Accès non autorisé en dehors du répertoire de backup');
+    }
 
     if (!fs.existsSync(backupPath)) {
       throw new Error('Fichier de sauvegarde non trouvé');

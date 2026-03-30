@@ -22,11 +22,8 @@ const LockAccessManager = () => {
 
   const fetchConfig = async () => {
     try {
-      const token = localStorage.getItem('jwt_token');
       const response = await fetch(`${API_BASE_URL}/api/lockaccess/config`, {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
+        credentials: 'include',
       });
 
       if (!response.ok) throw new Error('Erreur lors de la récupération');
@@ -52,11 +49,10 @@ const LockAccessManager = () => {
     setIsSaving(true);
 
     try {
-      const token = localStorage.getItem('jwt_token');
       const response = await fetch(`${API_BASE_URL}/api/lockaccess/config`, {
         method: 'PUT',
+        credentials: 'include',
         headers: {
-          'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
@@ -85,11 +81,10 @@ const LockAccessManager = () => {
     setFormData(newFormData);
 
     try {
-      const token = localStorage.getItem('jwt_token');
       const response = await fetch(`${API_BASE_URL}/api/lockaccess/config`, {
         method: 'PUT',
+        credentials: 'include',
         headers: {
-          'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({

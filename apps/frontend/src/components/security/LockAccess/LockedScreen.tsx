@@ -35,7 +35,14 @@ const LockedScreen: React.FC<LockedScreenProps> = ({ onLogin, className = "" }) 
   // Animation d'entrée
   useLayoutEffect(() => {
     if (!root.current) return;
-    
+
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReducedMotion) {
+      // Afficher les éléments directement sans animation
+      gsap.set(root.current.querySelectorAll('.maintenance-icon, .maintenance-title, .maintenance-subtitle, .maintenance-form'), { opacity: 1, y: 0, scale: 1, rotation: 0 });
+      return;
+    }
+
     const ctx = gsap.context(() => {
       const tl = gsap.timeline({ defaults: { ease: "power3.out", duration: 0.8 }});
       

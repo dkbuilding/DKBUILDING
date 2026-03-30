@@ -1,31 +1,47 @@
+import { describe, it, expect } from 'vitest';
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import Hero from '../Hero';
 
 // Mock des hooks personnalisés
-jest.mock('../../../hooks/useSmartNavigation', () => ({
+vi.mock('../../../hooks/useSmartNavigation', () => ({
   useSmartNavigation: () => ({
     currentSection: 'home',
-    scrollToSection: jest.fn()
+    scrollToSection: vi.fn()
   })
 }));
 
-// Mock de GSAP
-jest.mock('gsap', () => ({
-  timeline: jest.fn(() => ({
-    from: jest.fn().mockReturnThis(),
-    to: jest.fn().mockReturnThis(),
-    set: jest.fn().mockReturnThis()
+// Mock de GSAP complet
+const gsapMock = {
+  timeline: vi.fn(() => ({
+    from: vi.fn().mockReturnThis(),
+    to: vi.fn().mockReturnThis(),
+    fromTo: vi.fn().mockReturnThis(),
+    set: vi.fn().mockReturnThis(),
   })),
-  context: jest.fn((callback) => {
-    callback();
-    return { revert: jest.fn() };
-  }),
-  registerPlugin: jest.fn()
+  context: vi.fn(() => ({ revert: vi.fn() })),
+  registerPlugin: vi.fn(),
+  fromTo: vi.fn(),
+  from: vi.fn(),
+  to: vi.fn(),
+  set: vi.fn(),
+  defaults: vi.fn(),
+  config: vi.fn(),
+};
+vi.mock('gsap', () => ({ default: gsapMock, ...gsapMock }));
+vi.mock('gsap/ScrollTrigger', () => ({ default: {}, ScrollTrigger: {} }));
+vi.mock('gsap/ScrollToPlugin', () => ({ default: {} }));
+vi.mock('../../../utils/gsapConfig', () => ({
+  gsap: gsapMock,
+  ScrollTrigger: {},
+  initGSAP: vi.fn(),
 }));
-
-jest.mock('gsap/ScrollTrigger', () => ({}));
+vi.mock('../../../utils/motion', () => ({
+  motionTokens: { durations: { fast: 0.3, normal: 0.6 }, easing: { smooth: 'power3.out' } },
+  gsapUtils: { fadeInUp: vi.fn(() => ({ opacity: 0, y: 30 })) },
+  scrollTriggerDefaults: {},
+}));
 
 describe('Hero Component', () => {
   describe('Rendering', () => {

@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const helmet = require("helmet");
 const morgan = require("morgan");
+const cookieParser = require("cookie-parser");
 require("dotenv").config();
 
 const contactRoutes = require("./routes/contact");
@@ -42,6 +43,8 @@ app.use(
         scriptSrc: ["'self'"],
       },
     },
+    referrerPolicy: { policy: 'strict-origin-when-cross-origin' },
+    hsts: { maxAge: 31536000, includeSubDomains: true, preload: true },
   }),
 );
 
@@ -66,8 +69,12 @@ app.use(
       // Vérifier si l'origine est autorisée
       if (
         allowedOrigins.includes(origin) ||
-        origin.includes("localhost") ||
-        origin.includes("127.0.0.1")
+        (() => {
+          try {
+            const url = new URL(origin);
+            return url.hostname === 'localhost' || url.hostname === '127.0.0.1';
+          } catch { return false; }
+        })()
       ) {
         callback(null, true);
       } else {
@@ -82,6 +89,9 @@ app.use(
 
 // Middleware de logging
 app.use(morgan("combined"));
+
+// Middleware pour parser les cookies (JWT HttpOnly)
+app.use(cookieParser());
 
 // Middleware pour parser le JSON
 app.use(express.json({ limit: "10mb" }));
@@ -146,48 +156,17 @@ app.use("/api/admin", adminGuard, adminRoutes);
 // Route de santé sécurisée
 app.get("/health", jwtAuth.authenticateToken.bind(jwtAuth), (req, res) => {
   const uptime = process.uptime();
-  const memoryUsage = process.memoryUsage();
 
   res.status(200).json({
     status: "OK",
-    message: "DK BUILDING API is running",
     timestamp: new Date().toISOString(),
-    version: "latest",
     uptime: {
       seconds: `${Math.floor(uptime)}s`,
       human: formatUptime(uptime),
     },
-    system: {
-      platform: process.platform,
-      nodeVersion: process.version,
-      pid: process.pid,
-      memory: {
-        rss: `${Math.round(memoryUsage.rss / 1024 / 1024)} MB`,
-        heapTotal: `${Math.round(memoryUsage.heapTotal / 1024 / 1024)} MB`,
-        heapUsed: `${Math.round(memoryUsage.heapUsed / 1024 / 1024)} MB`,
-        external: `${Math.round(memoryUsage.external / 1024 / 1024)} MB`,
-      },
-    },
     services: {
       email: emailService.isConfigured() ? "Configured" : "Not configured",
-      cors: "Enabled",
-      helmet: "Enabled",
-      morgan: "Enabled",
-      jwt: "Enabled",
-      lockaccess: {
-        enabled: process.env.LOCKACCESS === "true",
-        maintenanceMode: process.env.LOCKACCESS_MAINTENANCE_MODE === "true",
-      },
     },
-    security: {
-      level: process.env.JWT_SECURITY_LEVEL || "NSA_128_BITS",
-      algorithm: process.env.JWT_ALGORITHM || "sha512",
-      key_length: process.env.SECURITY_KEY_LENGTH || "512",
-      iterations: process.env.SECURITY_ITERATIONS || "100000",
-    },
-    environment: process.env.NODE_ENV || "development",
-    port: PORT,
-    authenticated_user: req.user.id,
   });
 });
 
@@ -214,23 +193,7 @@ app.get("/", (req, res) => {
   res.json({
     message: "DK BUILDING API",
     version: "latest",
-    security_level: process.env.JWT_SECURITY_LEVEL || "NSA_128_BITS",
-    endpoints: {
-      health: "/health (Authentifié)",
-      contact: "/api/contact",
-      auth: "/api/auth",
-      lockaccess: "/api/lockaccess",
-      news: "/api/news",
-      annonces: "/api/annonces",
-      projets: "/api/projets",
-      media: "/api/media",
-      admin: "/api/admin",
-    },
-    authentication: {
-      required_for_health: true,
-      algorithm: process.env.JWT_ALGORITHM || "sha512",
-      key_length: process.env.SECURITY_KEY_LENGTH || "512",
-    },
+    status: "OK",
   });
 });
 

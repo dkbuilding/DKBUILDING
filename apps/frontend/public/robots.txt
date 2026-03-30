@@ -4,9 +4,6 @@ Allow: /
 # Sitemap
 Sitemap: https://dkbuilding.fr/sitemap.xml
 
-# Crawl-delay pour éviter la surcharge
-Crawl-delay: 1
-
 # Disallow pour les fichiers sensibles
 Disallow: /api/
 Disallow: /admin/
@@ -20,20 +17,16 @@ Disallow: /vite.config.js
 Disallow: /tailwind.config.js
 
 # Allow pour les ressources importantes
-Allow: /src/assets/images/
-Allow: /src/assets/logos/
+Allow: /assets/
 Allow: /og-image.jpg
 Allow: /manifest.json
 
 # Spécifique aux moteurs de recherche
 User-agent: Googlebot
 Allow: /
-Crawl-delay: 1
 
 User-agent: Bingbot
 Allow: /
-Crawl-delay: 1
 
 User-agent: Slurp
 Allow: /
-Crawl-delay: 2

@@ -2,22 +2,23 @@ const API_BASE_URL =
   import.meta.env.VITE_API_URL || "http://localhost:3001/api";
 
 /**
- * Wrapper fetch sécurisé avec injection automatique de Token
+ * Wrapper fetch sécurisé avec cookie HttpOnly JWT
  * et gestion d'erreurs standardisée.
  * Architecture GovTech pour DK BUILDING
+ *
+ * Le token JWT est stocké dans un cookie HttpOnly géré par le navigateur.
+ * Il est envoyé automatiquement via credentials: 'include'.
  */
 async function client(
   endpoint,
-  { data, token, headers: customHeaders, ...customConfig } = {},
+  { data, headers: customHeaders, ...customConfig } = {},
 ) {
-  const jwt = token || localStorage.getItem("jwt_token");
-
   const config = {
     method: data ? "POST" : "GET",
     body: data ? JSON.stringify(data) : undefined,
+    credentials: "include",
     headers: {
-      "Content-Type": data ? "application/json" : undefined,
-      ...(jwt ? { Authorization: `Bearer ${jwt}` } : {}),
+      ...(data ? { "Content-Type": "application/json" } : {}),
       ...customHeaders,
     },
     ...customConfig,
@@ -28,7 +29,6 @@ async function client(
     .then(async (response) => {
       // Gestion du logout automatique si 401 (Token expiré/invalide)
       if (response.status === 401) {
-        localStorage.removeItem("jwt_token");
         window.location.assign("/admin/login");
         return Promise.reject({ message: "Session expirée" });
       }
@@ -52,10 +52,10 @@ export const api = {
 
   // Pour l'upload de fichiers (nécessite un traitement spécial des headers)
   upload: async (endpoint, formData) => {
-    const jwt = localStorage.getItem("jwt_token");
     const response = await fetch(`${API_BASE_URL}${endpoint}`, {
       method: "POST",
-      headers: { Authorization: `Bearer ${jwt}` }, // Pas de Content-Type, le navigateur le mettra (multipart)
+      credentials: "include",
+      // Pas de Content-Type, le navigateur le mettra (multipart)
       body: formData,
     });
     const data = await response.json();

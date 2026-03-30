@@ -1,40 +1,57 @@
+import { describe, it, expect } from 'vitest';
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import Navigation from '../Navigation';
 
 // Mock des hooks personnalisés
-jest.mock('../../../hooks/useScroll', () => ({
+vi.mock('../../../hooks/useScroll', () => ({
   useScroll: () => ({
     scrollY: 0,
     isScrolling: false
   })
 }));
 
-jest.mock('../../../hooks/useFooterProximity', () => ({
+vi.mock('../../../hooks/useFooterProximity', () => ({
   useFooterProximity: () => ({
     isNearFooter: false,
     footerDistance: 1000
   })
 }));
 
-// Mock de GSAP
-jest.mock('gsap', () => ({
-  timeline: jest.fn(() => ({
-    from: jest.fn().mockReturnThis(),
-    to: jest.fn().mockReturnThis(),
-    set: jest.fn().mockReturnThis()
+// Mock de GSAP complet
+const gsapMock = {
+  timeline: vi.fn(() => ({
+    from: vi.fn().mockReturnThis(),
+    to: vi.fn().mockReturnThis(),
+    fromTo: vi.fn().mockReturnThis(),
+    set: vi.fn().mockReturnThis(),
   })),
-  context: jest.fn((callback) => {
-    callback();
-    return { revert: jest.fn() };
-  }),
-  registerPlugin: jest.fn()
+  context: vi.fn(() => ({ revert: vi.fn() })),
+  registerPlugin: vi.fn(),
+  fromTo: vi.fn(),
+  from: vi.fn(),
+  to: vi.fn(),
+  set: vi.fn(),
+  defaults: vi.fn(),
+  config: vi.fn(),
+};
+vi.mock('gsap', () => ({ default: gsapMock, ...gsapMock }));
+vi.mock('gsap/ScrollTrigger', () => ({ default: {}, ScrollTrigger: {} }));
+vi.mock('../../../utils/gsapConfig', () => ({
+  gsap: gsapMock,
+  ScrollTrigger: {},
+  initGSAP: vi.fn(),
+}));
+vi.mock('../../../utils/motion', () => ({
+  motionTokens: { durations: { fast: 0.3, normal: 0.6 }, easing: { smooth: 'power3.out' } },
+  gsapUtils: { fadeInUp: vi.fn(() => ({ opacity: 0, y: 30 })) },
+  scrollTriggerDefaults: {},
 }));
 
 describe('Navigation Component', () => {
   const defaultProps = {
-    onToggleSidebar: jest.fn(),
+    onToggleSidebar: vi.fn(),
     isSidebarOpen: false,
     footerRef: { current: null }
   };
@@ -64,7 +81,7 @@ describe('Navigation Component', () => {
 
   describe('Interactions', () => {
     it('should call onToggleSidebar when menu button is clicked', () => {
-      const mockToggle = jest.fn();
+      const mockToggle = vi.fn();
       render(<Navigation {...defaultProps} onToggleSidebar={mockToggle} />);
       
       const menuButton = screen.getByRole('button', { name: /menu/i });

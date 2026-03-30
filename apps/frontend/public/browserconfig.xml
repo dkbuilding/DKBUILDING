@@ -2,10 +2,10 @@
 <browserconfig>
     <msapplication>
         <tile>
-            <square70x70logo src="/src/assets/images/logos/Logo — DK BUILDING — Structure 2.png"/>
-            <square150x150logo src="/src/assets/images/logos/Logo — DK BUILDING — Structure 2.png"/>
-            <square310x310logo src="/src/assets/images/logos/Logo — DK BUILDING — Structure 2.png"/>
-            <wide310x150logo src="/src/assets/images/logos/Logo — DK BUILDING — Structure 2.png"/>
+            <square70x70logo src="/assets/images/logos/Logo — DK BUILDING — Structure 2.png"/>
+            <square150x150logo src="/assets/images/logos/Logo — DK BUILDING — Structure 2.png"/>
+            <square310x310logo src="/assets/images/logos/Logo — DK BUILDING — Structure 2.png"/>
+            <wide310x150logo src="/assets/images/logos/Logo — DK BUILDING — Structure 2.png"/>
             <TileColor>#0E0E0E</TileColor>
         </tile>
     </msapplication>

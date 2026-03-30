@@ -2,8 +2,7 @@
 // Ce fichier permet de configurer facilement les paramètres de sécurité
 
 export const LOCKACCESS_CONFIG = {
-  // Configuration de base
-  DEFAULT_PASSWORD: 'dkbuilding2025',
+  // Configuration de base — le mot de passe est géré côté backend uniquement
   SITE_NAME: 'DK BUILDING',
   
   // Paramètres de sécurité

@@ -24,6 +24,17 @@ const SmartNavigationIndicator = () => {
   useLayoutEffect(() => {
     if (!containerRef.current) return;
 
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReducedMotion) {
+      // Afficher les éléments directement sans animation, pas de bounce infini
+      gsap.set(containerRef.current, { opacity: 1, x: 0, scale: 1 });
+      dotsRef.current.forEach((dot) => {
+        if (dot) gsap.set(dot, { opacity: 1, scale: 1, rotation: 0 });
+      });
+      if (arrowRef.current) gsap.set(arrowRef.current, { opacity: 1, y: 0, rotation: 0 });
+      return;
+    }
+
     const ctx = gsap.context(() => {
       // Animation d'entrée du conteneur
       gsap.fromTo(containerRef.current,
@@ -101,8 +112,26 @@ const SmartNavigationIndicator = () => {
   useLayoutEffect(() => {
     if (!progressRef.current) return;
 
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReducedMotion) {
+      // Mettre à jour la progression et les points sans animation
+      const progress = (currentSection / (sections.length - 1)) * 100;
+      gsap.set(progressRef.current, { height: `${progress}%` });
+      dotsRef.current.forEach((dot, index) => {
+        if (dot) {
+          const isActive = index === currentSection;
+          const isPassed = index < currentSection;
+          gsap.set(dot, {
+            scale: isActive ? 1.3 : 1,
+            backgroundColor: isActive ? '#F59E0B' : isPassed ? '#10B981' : '#6B7280'
+          });
+        }
+      });
+      return;
+    }
+
     const progress = (currentSection / (sections.length - 1)) * 100;
-    
+
     gsap.to(progressRef.current, {
       height: `${progress}%`,
       duration: 0.8,
@@ -127,6 +156,13 @@ const SmartNavigationIndicator = () => {
 
   // Masquer l'indicateur pendant le scroll
   useLayoutEffect(() => {
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReducedMotion) {
+      // Pas d'animation de fade pendant le scroll
+      gsap.set(containerRef.current, { opacity: 1, scale: 1 });
+      return;
+    }
+
     if (isScrolling) {
       gsap.to(containerRef.current, {
         opacity: 0.3,
