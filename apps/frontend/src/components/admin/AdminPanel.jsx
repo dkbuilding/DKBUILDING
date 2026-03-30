@@ -6,6 +6,7 @@ import AnnoncesManager from './AnnoncesManager';
 import ProjetsManager from './ProjetsManager';
 import MediaManager from './MediaManager';
 import LockAccessManager from './LockAccessManager';
+import SettingsManager from './SettingsManager';
 import toast from 'react-hot-toast';
 
 const API_BASE_URL = import.meta.env.API_BASE_URL || '';
@@ -49,12 +50,7 @@ const AdminPanel = () => {
       case 'lockaccess':
         return <LockAccessManager />;
       case 'settings':
-        return (
-          <div className="p-8">
-            <h2 className="text-2xl font-bold text-white mb-4">Paramètres</h2>
-            <p className="text-gray-400">Paramètres à venir...</p>
-          </div>
-        );
+        return <SettingsManager />;
       default:
         return <Dashboard />;
     }
