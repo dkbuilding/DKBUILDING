@@ -273,7 +273,7 @@ const SettingsManager = () => {
               value="DK BUILDING | Construction & Renovation a Albi"
             />
             <InfoRow
-              icon={SearchIcon}
+              icon={Globe}
               label="Description meta"
               value="Entreprise de construction et renovation basee a Albi. Travaux de qualite, devis gratuit."
             />
