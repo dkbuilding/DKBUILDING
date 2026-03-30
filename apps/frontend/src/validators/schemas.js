@@ -9,7 +9,7 @@
  */
 
 // Vite gère l'interop CJS → ESM automatiquement via le default export
-import * as shared from "@dkbuilding/shared/validators";
+import * as shared from "@dkbuilding/shared/validators/schemas.js";
 
 // Réexporter tous les schemas
 export const annonceSchema = shared.annonceSchema ?? shared.default?.annonceSchema;

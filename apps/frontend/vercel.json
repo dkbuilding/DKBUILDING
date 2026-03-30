@@ -1,6 +1,6 @@
 {
-  "installCommand": "pnpm install --no-frozen-lockfile",
-  "buildCommand": "pnpm --filter frontend build",
+  "installCommand": "npm install --legacy-peer-deps",
+  "buildCommand": "npx vite build",
   "outputDirectory": "dist",
   "framework": "vite",
   "rewrites": [
