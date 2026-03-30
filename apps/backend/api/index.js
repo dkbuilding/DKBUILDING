@@ -1,12 +1,10 @@
-// Raw Node.js handler — no Express
+/**
+ * Vercel Serverless Function Entry Point
+ * Wrapper pour Express 5 qui n'est pas nativement compatible avec @vercel/node
+ */
+const app = require("../server");
+
+// Express 5 app est un callable (req, res) — compatible Vercel
 module.exports = (req, res) => {
-  res.setHeader("Content-Type", "application/json");
-  res.end(JSON.stringify({
-    ok: true,
-    path: req.url,
-    method: req.method,
-    nodeVersion: process.version,
-    expressVersion: require("express/package.json").version,
-    hasDB: !!process.env.TURSO_DATABASE_URL,
-  }));
+  return app(req, res);
 };
