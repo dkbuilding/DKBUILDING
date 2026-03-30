@@ -120,19 +120,18 @@ app.use("/api", publicLimiter);
 // Initialisation du middleware JWT
 const jwtAuth = new JWTAuthMiddleware();
 
-// Initialisation de la base de données SQLite
-if (!isDatabaseInitialized()) {
-  console.log("🔄 Initialisation de la base de données SQLite...");
+// Initialisation de la base de données (async — Turso)
+(async () => {
   try {
-    initDatabase();
-    console.log("✅ Base de données initialisée");
+    const initialized = await isDatabaseInitialized();
+    if (!initialized) {
+      await initDatabase();
+      console.log("✅ Base de données initialisée");
+    }
   } catch (error) {
-    console.error(
-      "❌ Erreur lors de l'initialisation de la base de données:",
-      error,
-    );
+    console.error("❌ Erreur initialisation DB:", error.message);
   }
-}
+})();
 
 // ============================================
 // ROUTES WITH SECURITY MIDDLEWARE

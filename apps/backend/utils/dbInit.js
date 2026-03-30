@@ -3,13 +3,12 @@ const fs = require('fs');
 const path = require('path');
 
 /**
- * Initialise la base de données en exécutant toutes les migrations
+ * Initialise la base de données en exécutant toutes les migrations (Turso async)
  */
-function initDatabase() {
+async function initDatabase() {
   try {
-    console.log('🔄 Initialisation de la base de données SQLite...');
+    console.log('🔄 Initialisation de la base de données...');
 
-    // Lire et exécuter les migrations dans l'ordre
     const migrationsDir = path.join(__dirname, '../database/migrations');
     const migrationFiles = fs.readdirSync(migrationsDir)
       .filter(file => file.endsWith('.sql'))
@@ -18,9 +17,18 @@ function initDatabase() {
     for (const file of migrationFiles) {
       const migrationPath = path.join(migrationsDir, file);
       const sql = fs.readFileSync(migrationPath, 'utf8');
-      
+
       console.log(`  📄 Exécution de ${file}...`);
-      db.exec(sql);
+      // Turso/libsql execute() ne supporte qu'une requête à la fois
+      // Découper le SQL en statements individuels
+      const statements = sql
+        .split(';')
+        .map(s => s.trim())
+        .filter(s => s.length > 0 && !s.startsWith('--'));
+
+      for (const statement of statements) {
+        await db.execute(statement);
+      }
     }
 
     console.log('✅ Base de données initialisée avec succès');
@@ -32,16 +40,14 @@ function initDatabase() {
 }
 
 /**
- * Vérifie si la base de données est initialisée
+ * Vérifie si la base de données est initialisée (Turso async)
  */
-function isDatabaseInitialized() {
+async function isDatabaseInitialized() {
   try {
-    const result = db.prepare(`
-      SELECT name FROM sqlite_master 
-      WHERE type='table' AND name IN ('annonces', 'projets', 'admin_users', 'logs')
-    `).all();
-    
-    return result.length === 4;
+    const result = await db.execute(
+      "SELECT name FROM sqlite_master WHERE type='table' AND name IN ('annonces', 'projets', 'admin_users', 'logs')"
+    );
+    return result.rows.length === 4;
   } catch (error) {
     return false;
   }
@@ -51,4 +57,3 @@ module.exports = {
   initDatabase,
   isDatabaseInitialized
 };
-
