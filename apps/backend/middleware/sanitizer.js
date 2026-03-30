@@ -1,22 +1,39 @@
-const createDOMPurify = require("dompurify");
-const { JSDOM } = require("jsdom");
-
 /**
  * Request Sanitization - Protection XSS
- * Architecture GovTech pour DK BUILDING
+ * Remplace DOMPurify+JSDOM (incompatible Node 24 ESM) par un sanitizer léger
  */
 
-const window = new JSDOM("").window;
-const DOMPurify = createDOMPurify(window);
+/**
+ * Échappe les caractères HTML dangereux
+ */
+function escapeHtml(str) {
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#x27;');
+}
+
+/**
+ * Supprime les tags HTML et les attributs d'événements dangereux
+ */
+function stripTags(str) {
+  return str
+    // Supprimer tous les tags HTML
+    .replace(/<[^>]*>/g, '')
+    // Supprimer les event handlers (onclick, onerror, etc.)
+    .replace(/on\w+\s*=\s*["'][^"']*["']/gi, '')
+    // Supprimer les javascript: URLs
+    .replace(/javascript\s*:/gi, '')
+    // Supprimer les data: URLs potentiellement dangereuses
+    .replace(/data\s*:\s*text\/html/gi, '');
+}
 
 const sanitizeInput = (req, res, next) => {
-  // Fonction récursive pour sanitizer les objets imbriqués
   const sanitizeValue = (value) => {
     if (typeof value === "string") {
-      return DOMPurify.sanitize(value, {
-        ALLOWED_TAGS: [], // Retire tous les tags HTML
-        KEEP_CONTENT: true, // Garde le contenu texte
-      });
+      return stripTags(value);
     }
 
     if (Array.isArray(value)) {
@@ -34,17 +51,14 @@ const sanitizeInput = (req, res, next) => {
     return value;
   };
 
-  // Sanitize body
   if (req.body && typeof req.body === "object") {
     req.body = sanitizeValue(req.body);
   }
 
-  // Sanitize query params
   if (req.query && typeof req.query === "object") {
     req.query = sanitizeValue(req.query);
   }
 
-  // Sanitize params
   if (req.params && typeof req.params === "object") {
     req.params = sanitizeValue(req.params);
   }
