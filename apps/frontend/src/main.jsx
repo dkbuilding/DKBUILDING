@@ -49,7 +49,11 @@ const appTree = (
   </StrictMode>
 );
 
-if (container.hasChildNodes()) {
+// Vérifier si le contenu est pré-rendu (pas juste des scripts Vercel injectés)
+const hasPrerenderedContent = container.hasChildNodes() &&
+  container.querySelector('[data-prerendered]') !== null;
+
+if (hasPrerenderedContent) {
   hydrateRoot(container, appTree);
 } else {
   createRoot(container).render(appTree);
