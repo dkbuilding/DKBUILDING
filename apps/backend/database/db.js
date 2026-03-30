@@ -1,11 +1,9 @@
 const { createClient } = require("@libsql/client");
-require("dotenv").config();
 
 /**
  * Turso Database Connection
- * Architecture GovTech Zero-Cost pour DK BUILDING
- *
- * Remplace better-sqlite3 (local) par @libsql/client (cloud)
+ * Ne PAS appeler dotenv ici — c'est fait dans server.js
+ * Sur Vercel, les env vars sont injectées nativement dans process.env
  */
 
 const url = process.env.TURSO_DATABASE_URL;
@@ -13,22 +11,26 @@ const authToken = process.env.TURSO_AUTH_TOKEN;
 
 if (!url || !authToken) {
   console.error(
-    "❌ ERREUR CRITIQUE: Configuration Turso manquante dans le .env",
+    "⚠️ Configuration Turso manquante — TURSO_DATABASE_URL ou TURSO_AUTH_TOKEN absent",
   );
-  console.error("   Ajoutez TURSO_DATABASE_URL et TURSO_AUTH_TOKEN");
-
-  // En développement, on pourrait fallback sur un fichier local
-  // mais pour la migration serverless, on force le cloud
-  if (process.env.NODE_ENV === "production") {
-    process.exit(1);
-  }
+  console.error("   Les fonctionnalités base de données seront désactivées");
 }
 
-const db = createClient({
-  url,
-  authToken,
-});
-
-console.log(`✅ Connecté à Turso DB: ${url.substring(0, 40)}...`);
+let db;
+try {
+  db = createClient({
+    url: url || "file:local.db",
+    authToken: authToken || undefined,
+  });
+  if (url) {
+    console.log(`✅ Connecté à Turso DB: ${url.substring(0, 40)}...`);
+  }
+} catch (error) {
+  console.error("❌ Erreur connexion Turso:", error.message);
+  // Fallback — ne PAS crasher le processus
+  db = {
+    execute: async () => ({ rows: [] }),
+  };
+}
 
 module.exports = db;
