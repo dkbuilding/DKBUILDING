@@ -10,9 +10,6 @@ importers:
 
   apps/backend:
     dependencies:
-      '@dkbuilding/shared':
-        specifier: workspace:*
-        version: link:../shared
       '@libsql/client':
         specifier: ^0.17.0
         version: 0.17.2
