@@ -1,22 +1,43 @@
-const express = require("express");
-const cors = require("cors");
-const helmet = require("helmet");
-const morgan = require("morgan");
-const cookieParser = require("cookie-parser");
-require("dotenv").config();
+let express, cors, helmet, morgan, cookieParser;
+try {
+  express = require("express");
+  cors = require("cors");
+  helmet = require("helmet");
+  morgan = require("morgan");
+  cookieParser = require("cookie-parser");
+  require("dotenv").config();
+} catch (err) {
+  console.error("FATAL MODULE LOAD ERROR:", err.message, err.stack);
+  // Export un handler minimal pour diagnostiquer sur Vercel
+  module.exports = (req, res) => {
+    res.statusCode = 500;
+    res.end(JSON.stringify({ error: "Module load failed", details: err.message }));
+  };
+  return;
+}
 
-const contactRoutes = require("./routes/contact");
-const lockaccessRoutes = require("./routes/lockaccess");
-const authRoutes = require("./routes/auth");
-const newsRoutes = require("./routes/news");
-const annoncesRoutes = require("./routes/annonces");
-const projetsRoutes = require("./routes/projets");
-const mediaRoutes = require("./routes/media");
-const adminRoutes = require("./routes/admin");
-const emailService = require("./utils/emailService");
-const JWTAuthMiddleware = require("./middleware/jwtAuth");
-const { initDatabase, isDatabaseInitialized } = require("./utils/dbInit");
-const { loadConfig } = require("./utils/lockAccessConfig");
+let contactRoutes, lockaccessRoutes, authRoutes, newsRoutes, annoncesRoutes, projetsRoutes, mediaRoutes, adminRoutes, emailService, JWTAuthMiddleware, initDatabase, isDatabaseInitialized, loadConfig;
+try {
+  contactRoutes = require("./routes/contact");
+  lockaccessRoutes = require("./routes/lockaccess");
+  authRoutes = require("./routes/auth");
+  newsRoutes = require("./routes/news");
+  annoncesRoutes = require("./routes/annonces");
+  projetsRoutes = require("./routes/projets");
+  mediaRoutes = require("./routes/media");
+  adminRoutes = require("./routes/admin");
+  emailService = require("./utils/emailService");
+  JWTAuthMiddleware = require("./middleware/jwtAuth");
+  ({ initDatabase, isDatabaseInitialized } = require("./utils/dbInit"));
+  ({ loadConfig } = require("./utils/lockAccessConfig"));
+} catch (err) {
+  console.error("FATAL ROUTE/UTIL LOAD ERROR:", err.message, err.stack);
+  module.exports = (req, res) => {
+    res.statusCode = 500;
+    res.end(JSON.stringify({ error: "Route load failed", details: err.message }));
+  };
+  return;
+}
 
 const app = express();
 const PORT = process.env.PORT || 3001;
