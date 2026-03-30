@@ -75,7 +75,7 @@ export default defineConfig(({ mode }) => {
     resolve: {
       alias: {
         "@": resolve(__dirname, "./src"),
-        "@dkbuilding/shared": resolve(__dirname, "../shared"),
+        "@dkbuilding/shared": resolve(__dirname, process.env.VERCEL ? "./shared-local" : "../shared"),
       },
     },
     server: {
