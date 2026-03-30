@@ -1,12 +1,12 @@
-// Minimal test to diagnose Vercel crash
-const app = require("express")();
-app.all("/(.*)", (req, res) => {
-  res.json({
+// Raw Node.js handler — no Express
+module.exports = (req, res) => {
+  res.setHeader("Content-Type", "application/json");
+  res.end(JSON.stringify({
     ok: true,
-    path: req.path,
+    path: req.url,
     method: req.method,
-    hasDB: !!process.env.TURSO_DATABASE_URL,
     nodeVersion: process.version,
-  });
-});
-module.exports = app;
+    expressVersion: require("express/package.json").version,
+    hasDB: !!process.env.TURSO_DATABASE_URL,
+  }));
+};
