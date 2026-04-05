@@ -109,15 +109,28 @@ router.get("/status", (req, res) => {
 router.post("/refresh", jwtAuth.authenticateToken.bind(jwtAuth), (req, res) => {
   try {
     const secret = process.env.JWT_SECRET;
+
+    // Revalider le rôle et les permissions depuis la source de vérité
+    // (pas depuis l'ancien token — un admin révoqué ne doit pas pouvoir se rafraîchir)
+    const ROLE_PERMISSIONS = {
+      admin: ["health:read", "health:monitor"],
+    };
+    const role = req.user.role || "admin";
+    const validPermissions = ROLE_PERMISSIONS[role];
+    if (!validPermissions) {
+      return sendUnauthorized(res, "Rôle inconnu ou révoqué");
+    }
+
     const payload = {
       iss: req.user.issuer,
       sub: req.user.id,
       iat: Math.floor(Date.now() / 1000),
       exp: Math.floor(Date.now() / 1000) + 30 * 60,
+      role,
       security_level: req.user.securityLevel,
       algorithm: "sha512",
       iterations: parseInt(process.env.SECURITY_ITERATIONS) || 100000,
-      permissions: req.user.permissions || ["health:read", "health:monitor"],
+      permissions: validPermissions,
     };
 
     const newToken = jwt.sign(payload, secret, { algorithm: "HS512" });

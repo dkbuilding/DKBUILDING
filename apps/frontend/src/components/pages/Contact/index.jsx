@@ -207,7 +207,7 @@ const Contact = () => {
         body: JSON.stringify({
           field: fieldName,
           error: errorMessage,
-          formData: form.getValues(),
+          // Pas de formData — ne jamais envoyer les données personnelles (nom, email, téléphone)
           userAgent: navigator.userAgent,
           url: window.location.href,
           timestamp: new Date().toISOString(),
