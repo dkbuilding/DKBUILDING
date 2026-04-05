@@ -9,6 +9,7 @@
  *     Toute modification doit etre faite dans shared/validators/schemas.js
  */
 
+const { z } = require("zod");
 const {
   annonceSchema,
   annonceBackendSchema,
@@ -17,9 +18,37 @@ const {
   contactFormSchema,
 } = require("@dkbuilding/shared/validators");
 
+// ─────────────────────────────────────────────
+// Schémas backend-only (pas dans shared)
+// ─────────────────────────────────────────────
+
+const authHealthSchema = z.object({
+  password: z.string().min(1, "Le mot de passe est requis"),
+});
+
+const lockAccessConfigSchema = z.object({
+  enabled: z.boolean().optional(),
+  locked: z.boolean().optional(),
+  maintenanceMode: z.boolean().optional(),
+  allowedIPs: z.array(z.string()).optional(),
+  blockedIPs: z.array(z.string()).optional(),
+});
+
+const validationErrorReportSchema = z.object({
+  field: z.string(),
+  error: z.string(),
+  userAgent: z.string().optional(),
+  url: z.string().optional(),
+  timestamp: z.string().optional(),
+});
+
 module.exports = {
-  // Utiliser les variants backend quand disponibles (avec preprocess featured, etc.)
+  // Schemas partagés (depuis @dkbuilding/shared)
   annonceSchema: annonceBackendSchema || annonceSchema,
   projetSchema: projetBackendSchema || projetSchema,
   contactFormSchema,
+  // Schemas backend-only
+  authHealthSchema,
+  lockAccessConfigSchema,
+  validationErrorReportSchema,
 };
