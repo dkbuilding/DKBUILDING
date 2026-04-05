@@ -31,10 +31,10 @@ function cspPlugin() {
           "form-action 'self'"
         ].join('; ')
       } else {
-        // CSP strict pour la production
+        // CSP pour la production
         csp = [
           "default-src 'self'",
-          "script-src 'self' https://www.googletagmanager.com",
+          "script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://vercel.live",
           "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
           "font-src 'self' data: https://fonts.gstatic.com",
           "img-src 'self' data: blob: https://images.unsplash.com https://res.cloudinary.com",
@@ -45,8 +45,7 @@ function cspPlugin() {
           "object-src 'none'",
           "base-uri 'self'",
           "form-action 'self'",
-          "upgrade-insecure-requests",
-          "block-all-mixed-content"
+          "upgrade-insecure-requests"
         ].join('; ')
       }
       
@@ -75,8 +74,10 @@ export default defineConfig(({ mode }) => {
     resolve: {
       alias: {
         "@": resolve(__dirname, "./src"),
-        "@dkbuilding/shared": resolve(__dirname, "../shared"),
       },
+    },
+    optimizeDeps: {
+      include: ['@dkbuilding/shared'],
     },
     server: {
       port: parseInt(env.PORT) || 5173,
@@ -136,6 +137,10 @@ export default defineConfig(({ mode }) => {
       sourcemap: false,
       // Seuil d'alerte pour les chunks trop gros (en kB)
       chunkSizeWarningLimit: 500,
+      commonjsOptions: {
+        include: [/node_modules/, /shared/],
+        transformMixedEsModules: true,
+      },
       rollupOptions: {
         output: {
           manualChunks: {
