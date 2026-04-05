@@ -1,17 +1,15 @@
 const express = require('express');
 const router = express.Router();
-const db = require('../database/db');
+const AnnoncesRepository = require('../repositories/AnnoncesRepository');
+const parseJSON = require('../utils/parseJSON');
+
+const annoncesRepo = new AnnoncesRepository();
 
 /**
  * Formater une annonce Turso en article de news pour le frontend
  */
 function formatAnnonceAsNews(annonce) {
-  let images = [];
-  try {
-    images = annonce.images ? JSON.parse(annonce.images) : [];
-  } catch (e) {
-    // Images non parsables, on ignore
-  }
+  const images = parseJSON(annonce.images);
 
   const excerpt = annonce.description
     || (annonce.contenu ? annonce.contenu.substring(0, 150) + '...' : '');
@@ -32,15 +30,14 @@ function formatAnnonceAsNews(annonce) {
   };
 }
 
-// GET /api/news - Récupérer toutes les actualités publiées
+// GET /api/news - Récupérer toutes les actualités publiées (avec pagination)
 router.get('/news', async (req, res) => {
   try {
-    const result = await db.execute({
-      sql: "SELECT * FROM annonces WHERE statut = 'publie' OR statut = 'publié' ORDER BY date_publication DESC",
-      args: [],
-    });
+    const limit = Math.min(Math.max(parseInt(req.query.limit) || 20, 1), 50);
+    const offset = Math.max(parseInt(req.query.offset) || 0, 0);
 
-    const news = result.rows.map(formatAnnonceAsNews);
+    const rows = await annoncesRepo.getPublic({ limit, offset });
+    const news = rows.map(formatAnnonceAsNews);
 
     res.status(200).json({
       success: true,
@@ -61,19 +58,16 @@ router.get('/news/:id', async (req, res) => {
   try {
     const articleId = parseInt(req.params.id);
 
-    if (isNaN(articleId)) {
+    if (isNaN(articleId) || articleId < 1) {
       return res.status(400).json({
         success: false,
         error: 'ID d\'article invalide',
       });
     }
 
-    const result = await db.execute({
-      sql: "SELECT * FROM annonces WHERE id = ? AND (statut = 'publie' OR statut = 'publié')",
-      args: [articleId],
-    });
+    const annonce = await annoncesRepo.getById(articleId);
 
-    if (!result.rows.length) {
+    if (!annonce || (annonce.statut !== 'publie' && annonce.statut !== 'publié')) {
       return res.status(404).json({
         success: false,
         error: 'Article non trouvé',
@@ -81,9 +75,12 @@ router.get('/news/:id', async (req, res) => {
       });
     }
 
+    // Incrémenter le compteur de vues (fire & forget)
+    annoncesRepo.incrementViewCount(articleId);
+
     res.status(200).json({
       success: true,
-      data: formatAnnonceAsNews(result.rows[0]),
+      data: formatAnnonceAsNews(annonce),
     });
   } catch (error) {
     console.error('Erreur récupération article:', error);

@@ -1,11 +1,9 @@
 import { useLayoutEffect, useRef, useState, useEffect } from 'react';
-import { gsap } from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { gsap, ScrollTrigger } from '../../utils/gsapConfig';
 import { motionTokens, gsapUtils, scrollTriggerDefaults } from '../../utils/motion';
 import { X, ChevronLeft, ChevronRight } from 'lucide-react';
 import { ImagePlaceholder } from '../ui';
 
-gsap.registerPlugin(ScrollTrigger);
 
 // Styles CSS pour la grille responsive du Portfolio
 const portfolioGridStyles = `

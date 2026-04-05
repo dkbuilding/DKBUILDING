@@ -1,209 +1,229 @@
-# 🏗️ DK BUILDING - Site Web
+# DK BUILDING - Site Web
 
-Site web moderne pour DK BUILDING, entreprise spécialisée dans la construction métallique (charpente, bardage, couverture) basée à Albi, Tarn.
+Site web pour DK BUILDING, entreprise specialisee dans la construction metallique (charpente, bardage, couverture) basee a Albi, Tarn.
 
-## 🚀 Démarrage Rapide
+## Prerequis
 
-### Prérequis
+- Node.js >= 18
+- pnpm >= 9
 
-- Node.js (version 18 ou supérieure)
-- npm
-
-### Installation et Lancement
+## Installation
 
 ```bash
-# Naviguer vers le répertoire du projet
-cd "$(pwd)"
+pnpm install
+```
 
-# Lancer le script de démarrage automatique
+## Demarrage (developpement)
+
+```bash
+# Backend (port 3001)
+pnpm dev:backend
+
+# Frontend (port 5173)
+pnpm dev:frontend
+```
+
+Ou via le script tout-en-un :
+
+```bash
 ./start.sh
 ```
 
-Le script va :
+### Acces locaux
 
-- Installer automatiquement toutes les dépendances
-- Démarrer le backend sur le port 3001
-- Démarrer le frontend sur le port 5173
-- Ouvrir automatiquement le site dans votre navigateur
+| Service        | URL                          |
+|---------------|------------------------------|
+| Frontend       | http://localhost:5173         |
+| Backend API    | http://localhost:3001         |
+| Health Check   | http://localhost:3001/health  |
 
-### Accès
+## Structure du projet
 
-- **Frontend** : <http://localhost:5173>
-- **Backend API** : <http://localhost:3001>
-- **Health Check** : <http://localhost:3001/health>
-
-## 🎨 Caractéristiques
-
-### Design Moderne
-
-- **Palette de couleurs** : Jaune (#F3E719), Noir (#0E0E0E), Blanc (#FFFFFF)
-- **Typographie** : Space Grotesk (titres) + Inter (corps)
-- **Animations** : GSAP avec ScrollTrigger pour des effets fluides
-- **Responsive** : Mobile-first avec navigation hamburger
-
-### Fonctionnalités
-
-- ✅ **Hero animé** avec logo DK BUILDING et parallax
-- ✅ **Section Services** avec 3 cartes (Charpente, Bardage, Couverture)
-- ✅ **Galerie Portfolio** avec lightbox moderne
-- ✅ **Section A Propos** avec données réelles de l'entreprise
-- ✅ **Formulaire de contact** multi-étapes avec validation
-- ✅ **Navigation responsive** avec menu hamburger
-- ✅ **Footer complet** avec informations légales
-
-### Technologies
-
-- **Frontend** : React 18 + Vite + TailwindCSS + GSAP
-- **Backend** : Node.js + Express + Nodemailer
-- **SEO** : Meta tags optimisés + Schema.org + Sitemap
-- **Performance** : Lazy loading + Code splitting
-
-## 📋 Informations Entreprise
-
-- **Nom** : DK BUILDING
-- **SIREN** : 947 998 555
-- **RCS** : Albi B 947998555
-- **Adresse** : 59 Rue Pierre Cormary, 81000 Albi
-- **Dirigeant** : Dicalou KHAMIDOV
-- **Création** : 10 janvier 2023
-- **Services** : Charpente métallique, Bardage, Couverture
-
-## 🔧 Configuration Backend
-
-### Variables d'Environnement
-
-Copiez le fichier `backend/env.example` vers `backend/.env` et configurez :
-
-```bash
-# Configuration SMTP pour l'envoi d'emails
-SMTP_HOST=smtp.gmail.com
-SMTP_PORT=587
-SMTP_USER=your-email@gmail.com
-SMTP_PASS=your-app-password
-
-# Email de contact
-CONTACT_EMAIL=contact@dkbuilding.fr
-
-# URL du frontend (pour CORS)
-FRONTEND_URL=http://localhost:5173
+```
+Site Web/
+├── apps/
+│   ├── backend/          # API Express 5 (CommonJS)
+│   │   ├── controllers/  # Logique metier (annonces, projets, media, admin)
+│   │   ├── database/     # Client Turso (SQLite cloud)
+│   │   ├── middleware/    # JWT, rate limiting, sanitizer, admin guard, upload
+│   │   ├── routes/       # Endpoints API (contact, auth, news, annonces, projets, media, admin, lockaccess)
+│   │   ├── utils/        # Services (email, logger, backup, apiResponse, security)
+│   │   ├── validators/   # Schemas Zod (backend)
+│   │   └── server.js     # Point d'entree Express
+│   ├── frontend/         # React 19 + Vite 7 (ESM)
+│   │   └── src/
+│   │       ├── components/   # Composants React (Hero, Services, Portfolio, Contact, etc.)
+│   │       ├── config/       # Configuration frontend
+│   │       ├── hooks/        # Hooks custom (scroll, navigation, API, health check)
+│   │       ├── lib/          # Bibliotheques internes
+│   │       ├── pages/        # Pages (Home, Legal, Error)
+│   │       ├── utils/        # Utilitaires (cloudinary, GSAP, motion, URL matching)
+│   │       └── validators/   # Schemas Zod (frontend, types TS inferes)
+│   ├── shared/           # Package partage (@dkbuilding/shared)
+│   │   ├── constants/    # Constantes metier
+│   │   ├── types/        # Types partages
+│   │   └── validators/   # Schemas Zod de reference
+│   ├── docs/             # Documentation technique (guides, rapports, configurations)
+│   └── data/             # Donnees statiques
+├── package.json          # Workspace root (pnpm workspaces)
+├── pnpm-workspace.yaml
+├── start.sh              # Script de demarrage automatique
+└── _backup/              # Sauvegardes
 ```
 
-### Configuration Email
+## Variables d'environnement
 
-1. Activez l'authentification à 2 facteurs sur Gmail
-2. Générez un mot de passe d'application
-3. Utilisez ce mot de passe dans `SMTP_PASS`
+Copier `apps/backend/.env.example` vers `apps/backend/.env` et renseigner les valeurs.
 
-## 📱 Responsive Design
+| Variable                | Description                                    |
+|------------------------|------------------------------------------------|
+| `NODE_ENV`              | Environnement (`development` / `production`)   |
+| `PORT`                  | Port du serveur backend                         |
+| `FRONTEND_URL`          | URL du frontend (CORS)                          |
+| `TURSO_DATABASE_URL`    | URL de la base de donnees Turso                 |
+| `TURSO_AUTH_TOKEN`      | Token d'authentification Turso                  |
+| `CLOUDINARY_CLOUD_NAME` | Nom du cloud Cloudinary                         |
+| `CLOUDINARY_API_KEY`    | Cle API Cloudinary                              |
+| `CLOUDINARY_API_SECRET` | Secret API Cloudinary                           |
+| `RESEND_API_KEY`        | Cle API Resend (envoi d'emails)                 |
+| `RESEND_FROM_EMAIL`     | Adresse expediteur pour les emails              |
+| `CONTACT_EMAIL`         | Adresse de reception des demandes de devis      |
+| `JWT_SECRET`            | Secret JWT (generer avec `generateSecurity.js`) |
+| `JWT_SALT`              | Salt JWT                                        |
+| `HEALTH_PASSWORD`       | Mot de passe pour le Health Monitoring           |
+| `ADMIN_ALLOWED_IPS`     | IPs autorisees pour l'acces admin (production)  |
+| `LOCKACCESS`            | Activation du systeme LockAccess                |
 
-Le site est entièrement responsive avec :
+## Scripts disponibles
 
-- **Mobile** : Navigation hamburger, animations adaptées
-- **Tablet** : Layout adapté avec grilles flexibles
-- **Desktop** : Expérience complète avec toutes les animations
+### Racine (workspace)
 
-## 🎭 Animations GSAP
+| Script             | Commande                      |
+|-------------------|-------------------------------|
+| `dev:backend`      | Demarre le backend (nodemon)   |
+| `dev:frontend`     | Demarre le frontend (Vite)     |
+| `build:backend`    | Build du backend               |
+| `build:frontend`   | Build du frontend              |
 
-### Types d'Animations
+### Backend (`apps/backend/`)
 
-- **Hero Entrance** : Animation complexe au chargement
-- **Scroll Reveal** : Révélation des éléments au scroll
-- **Parallax** : Effets de profondeur
-- **Hover Effects** : Micro-interactions sur les cartes
-- **Stagger** : Animations en cascade
+| Script             | Commande                          |
+|-------------------|-----------------------------------|
+| `start`            | Demarre le serveur (production)    |
+| `dev`              | Demarre avec nodemon               |
+| `db:init`          | Initialise la base de donnees      |
+| `db:migrate`       | Execute les migrations             |
+| `backup:create`    | Cree une sauvegarde                |
+| `backup:restore`   | Restaure une sauvegarde            |
 
-### Respect des Préférences
+### Frontend (`apps/frontend/`)
 
-- **prefers-reduced-motion** : Animations réduites si demandé
-- **Performance** : Animations optimisées GPU
-- **Accessibilité** : Focus management et ARIA labels
+| Script             | Commande                              |
+|-------------------|---------------------------------------|
+| `dev`              | Serveur de developpement Vite          |
+| `build`            | Build de production                    |
+| `build:prerender`  | Build + prerendering SEO               |
+| `test`             | Tests unitaires (Vitest, mode watch)   |
+| `test:run`         | Tests unitaires (une seule execution)  |
+| `test:coverage`    | Tests avec couverture de code          |
+| `lint`             | Linting ESLint                         |
+| `lint:md`          | Linting des fichiers Markdown          |
 
-## 🔍 SEO et Performance
+## API Endpoints
 
-### Optimisations SEO
+### Routes publiques
 
-- Meta tags optimisés avec mots-clés locaux
-- Schema.org LocalBusiness avec données complètes
-- Sitemap.xml et robots.txt
-- Open Graph pour les réseaux sociaux
+| Methode | Endpoint                    | Description                          |
+|---------|----------------------------|--------------------------------------|
+| GET     | `/`                         | Informations API                     |
+| POST    | `/api/contact`              | Formulaire de demande de devis       |
+| GET     | `/api/status`               | Statut du service Contact            |
+| POST    | `/api/report-validation-error` | Signalement d'erreur de validation |
+| GET     | `/api/news`                 | Liste des actualites publiees        |
+| GET     | `/api/news/:id`             | Detail d'un article                  |
+| GET     | `/api/annonces/public`      | Annonces publiques                   |
+| GET     | `/api/annonces/slug/:slug`  | Annonce par slug                     |
+| GET     | `/api/projets/public`       | Projets publics                      |
+| GET     | `/api/projets/featured`     | Projets mis en avant                 |
+| GET     | `/api/projets/slug/:slug`   | Projet par slug                      |
+| GET     | `/api/media/:filename`      | Servir un fichier media (Cloudinary) |
+| GET     | `/api/lockaccess/config`    | Configuration LockAccess             |
+| GET     | `/api/lockaccess/check-access` | Verification d'acces IP          |
+| GET     | `/api/lockaccess/status`    | Statut complet LockAccess            |
 
-### Performance
+### Routes authentifiees (JWT)
 
-- Score Lighthouse > 90
-- Lazy loading des images
-- Code splitting avec React Router
-- Optimisation des fonts et assets
+| Methode | Endpoint                    | Description                          |
+|---------|----------------------------|--------------------------------------|
+| POST    | `/api/auth/health`          | Authentification Health Monitoring   |
+| POST    | `/api/auth/logout`          | Deconnexion (suppression cookie)     |
+| POST    | `/api/auth/verify`          | Verification d'un token JWT          |
+| POST    | `/api/auth/refresh`         | Renouvellement du token JWT          |
+| GET     | `/api/auth/status`          | Statut de la configuration auth      |
+| GET     | `/health`                   | Health check du serveur              |
+| GET     | `/api/annonces`             | Liste de toutes les annonces         |
+| GET     | `/api/annonces/:id`         | Detail d'une annonce                 |
+| GET     | `/api/projets`              | Liste de tous les projets            |
+| GET     | `/api/projets/:id`          | Detail d'un projet                   |
+| GET     | `/api/media`                | Liste des fichiers media             |
+| POST    | `/api/media/upload`         | Upload de fichier (Cloudinary)       |
+| DELETE  | `/api/media/:filename`      | Suppression de fichier               |
 
-## 📚 Documentation
+### Routes admin (JWT + role admin + IP whitelist)
 
-La documentation technique complète est disponible dans :
+| Methode | Endpoint                    | Description                          |
+|---------|----------------------------|--------------------------------------|
+| POST    | `/api/annonces`             | Creer une annonce                    |
+| PUT     | `/api/annonces/:id`         | Modifier une annonce                 |
+| DELETE  | `/api/annonces/:id`         | Supprimer une annonce                |
+| POST    | `/api/projets`              | Creer un projet                      |
+| PUT     | `/api/projets/:id`          | Modifier un projet                   |
+| DELETE  | `/api/projets/:id`          | Supprimer un projet                  |
+| GET     | `/api/admin/stats`          | Statistiques du dashboard            |
+| GET     | `/api/admin/logs`           | Logs d'audit                         |
+| POST    | `/api/admin/backup`         | Creer une sauvegarde                 |
+| GET     | `/api/admin/backup/list`    | Lister les sauvegardes               |
+| DELETE  | `/api/admin/backup/:filename` | Supprimer une sauvegarde           |
+| POST    | `/api/admin/backup/clean`   | Nettoyer les anciennes sauvegardes   |
+| PUT     | `/api/lockaccess/config`    | Modifier la configuration LockAccess |
 
-- `docs/DK-BUILDING-site-web.md` - Documentation détaillée
-- `backend/env.example` - Configuration backend
-- `frontend/tailwind.config.js` - Configuration TailwindCSS
+## Technologies
 
-## 🚀 Déploiement
+| Couche    | Technologies                                                |
+|-----------|-------------------------------------------------------------|
+| Frontend  | React 19, Vite 7, TailwindCSS 4, GSAP 3, React Router 7   |
+| Backend   | Express 5, Zod 4, JWT (HS512), Resend, Helmet, Morgan      |
+| Base      | Turso (libSQL / SQLite cloud)                               |
+| Stockage  | Cloudinary                                                  |
+| Tests     | Vitest 4, Testing Library                                   |
+| Linting   | ESLint 9, TypeScript 5.9                                    |
+| Package   | pnpm workspaces                                             |
+
+## Deploiement
 
 ### Frontend
 
 ```bash
-cd frontend
-npm run build
-# Génère le dossier dist/ prêt pour déploiement
+cd apps/frontend
+pnpm build
+# Genere dist/ pret pour deploiement statique
 ```
 
 ### Backend
 
 ```bash
-cd backend
-npm start
-# Serveur Express sur le port 3001
+cd apps/backend
+node server.js
+# Ou mode serverless via vercel.json (Vercel Functions)
 ```
 
-### Production
+**Production** : dkbuilding.fr (SSL Let's Encrypt, CDN Cloudflare)
 
-- **Domaine** : dkbuilding.fr
-- **SSL** : Certificat Let's Encrypt
-- **CDN** : Cloudflare pour la distribution des assets
-- **Monitoring** : Health checks et logs
+## Documentation
 
-## 🛠️ Développement
+La documentation technique detaillee se trouve dans `apps/docs/`. Les documents principaux :
 
-### Structure des Composants
-
-```bash
-src/components/
-├── Hero.jsx          # Section hero avec animations
-├── Services.jsx      # Grid des services
-├── Portfolio.jsx     # Galerie avec lightbox
-├── About.jsx         # Informations entreprise
-├── Contact.jsx       # Formulaire multi-étapes
-├── Footer.jsx        # Footer avec liens légaux
-└── Navigation.jsx    # Navigation responsive
-```
-
-### API Endpoints
-
-- `POST /api/contact` - Formulaire de contact
-- `GET /health` - Health check
-- `GET /api/status` - Statut de l'API
-
-## 📞 Support
-
-### Contact Technique
-
-- **Email** : <contact@dkbuilding.fr>
-- **Téléphone** : +33 7 68 11 38 39
-- **Adresse** : 59 Rue Pierre Cormary, 81000 Albi
-
-### Problèmes Courants
-
-1. **Port déjà utilisé** : Changez le port dans les variables d'environnement
-2. **Email non envoyé** : Vérifiez la configuration SMTP
-3. **Animations lentes** : Vérifiez les préférences de mouvement réduit
-
----
-
-**Version** : latest  
-**Dernière mise à jour** : 13 octobre 2025  
-**Auteur** : DK BUILDING
+- `Site Web — DK BUILDING.md` : specification complete du site
+- `Plan site web — DK BUILDING.plan.md` : plan de developpement
+- `CONFIGURATION_BACKEND.md` : configuration backend detaillee
+- `SECURITE JWT DK BUILDING - Systeme NSA.md` : architecture JWT

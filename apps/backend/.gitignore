@@ -14,12 +14,19 @@ node_modules/
 logs/
 *.log
 
-# Environment
+# Environment — tous les fichiers .env sauf .env.example
 .env
 .env.local
 .env.production
+.env.*.local
+.env.bak
+*.bak
 
 # Backup
 _backup/
 
+# Vercel
 .vercel
+
+# OS
+.DS_Store

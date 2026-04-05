@@ -1,6 +1,3 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-
 /**
  * Composant NoiseOverlay pour améliorer la netteté des vidéos
  * Utilise des techniques CSS avancées pour créer un effet de noise subtil
@@ -45,15 +42,6 @@ const NoiseOverlay = ({
         {...props}
         />
     );
-};
-
-NoiseOverlay.propTypes = {
-    variant: PropTypes.oneOf(['primary', 'svg', 'hd']),
-    intensity: PropTypes.oneOf(['subtle', 'medium', 'strong']),
-    color: PropTypes.oneOf(['default', 'warm', 'cool']),
-    animated: PropTypes.bool,
-    className: PropTypes.string,
-    style: PropTypes.object,
 };
 
 export default NoiseOverlay;

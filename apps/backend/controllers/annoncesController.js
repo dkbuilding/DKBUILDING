@@ -3,20 +3,23 @@ const Logger = require("../utils/logger");
 const { generateSlug } = require("../utils/slugify");
 const { annonceSchema } = require("../validators/schemas");
 const parseJSON = require("../utils/parseJSON");
+const {
+  sendSuccess,
+  sendCreated,
+  sendNoContent,
+  sendNotFound,
+  sendValidationError,
+  sendInternalError,
+  paginationMeta,
+} = require("../utils/apiResponse");
 
 /**
- * Annonces Controller - Version Serverless (Turso + Cloudinary)
- * Architecture GovTech Zero-Cost pour DK BUILDING
- *
- * Utilise AnnoncesRepository pour l'accès aux données.
- * Le controller gère uniquement la logique HTTP, la validation et le parsing JSON.
+ * Annonces Controller — DK BUILDING
+ * Turso + Cloudinary
  */
 
 const annoncesRepo = new AnnoncesRepository();
 
-/**
- * Parse les champs JSON d'une annonce pour la réponse HTTP
- */
 const parseAnnonce = (annonce) => ({
   ...annonce,
   images: parseJSON(annonce.images),
@@ -25,7 +28,8 @@ const parseAnnonce = (annonce) => ({
 
 class AnnoncesController {
   /**
-   * Récupérer toutes les annonces avec filtres
+   * GET /api/annonces
+   * Liste paginée avec filtres (protégé)
    */
   static async getAll(req, res) {
     try {
@@ -43,65 +47,69 @@ class AnnoncesController {
         offset,
       });
 
+      // Compter le total pour la pagination
+      const total = await annoncesRepo.countFiltered
+        ? await annoncesRepo.countFiltered({ statut, categorie, auteur_id })
+        : rows.length;
+
       const annoncesParsed = rows.map(parseAnnonce);
 
-      res.json({
-        success: true,
-        data: annoncesParsed,
-        count: annoncesParsed.length,
+      return sendSuccess(res, annoncesParsed, {
+        meta: paginationMeta({ total, limit, offset }),
       });
     } catch (error) {
       console.error("Erreur getAll:", error);
       Logger.createLog("error", "annonce", null, req.user?.id, {
         error: error.message,
       }).catch(console.error);
-
-      res.status(500).json({
-        success: false,
-        error: "Erreur système lors de la récupération",
-      });
+      return sendInternalError(res, "Erreur lors de la récupération des annonces");
     }
   }
 
+  /**
+   * GET /api/annonces/:id
+   */
   static async getById(req, res) {
     try {
       const { id } = req.params;
       const annonce = await annoncesRepo.getById(id);
 
       if (!annonce) {
-        return res
-          .status(404)
-          .json({ success: false, error: "Annonce introuvable" });
+        return sendNotFound(res, "Annonce introuvable");
       }
 
-      res.json({ success: true, data: parseAnnonce(annonce) });
+      return sendSuccess(res, parseAnnonce(annonce));
     } catch (error) {
       console.error("Erreur getById:", error);
-      res.status(500).json({ success: false, error: "Erreur système" });
+      return sendInternalError(res);
     }
   }
 
+  /**
+   * GET /api/annonces/slug/:slug
+   */
   static async getBySlug(req, res) {
     try {
       const { slug } = req.params;
       const annonce = await annoncesRepo.getBySlug(slug);
 
       if (!annonce) {
-        return res
-          .status(404)
-          .json({ success: false, error: "Annonce introuvable" });
+        return sendNotFound(res, "Annonce introuvable");
       }
 
-      // Update asynchrone du compteur de vue (Fire & Forget pour la perf)
+      // Fire & Forget : incrémenter le compteur de vues
       annoncesRepo.incrementViewCount(annonce.id);
 
-      res.json({ success: true, data: parseAnnonce(annonce) });
+      return sendSuccess(res, parseAnnonce(annonce));
     } catch (error) {
       console.error("Erreur getBySlug:", error);
-      res.status(500).json({ success: false, error: "Erreur système" });
+      return sendInternalError(res);
     }
   }
 
+  /**
+   * GET /api/annonces/public
+   */
   static async getPublic(req, res) {
     try {
       const limit = Math.min(Math.max(parseInt(req.query.limit) || 10, 1), 50);
@@ -110,53 +118,47 @@ class AnnoncesController {
       const rows = await annoncesRepo.getPublic({ limit, offset });
       const annoncesParsed = rows.map(parseAnnonce);
 
-      res.json({
-        success: true,
-        data: annoncesParsed,
-        count: annoncesParsed.length,
+      return sendSuccess(res, annoncesParsed, {
+        meta: { count: annoncesParsed.length },
       });
     } catch (error) {
       console.error("Erreur getPublic:", error);
-      res.status(500).json({ success: false, error: "Erreur système" });
+      return sendInternalError(res);
     }
   }
 
   /**
-   * Création avec Cloudinary + Turso
+   * POST /api/annonces
+   * Création (201 Created)
    */
   static async create(req, res) {
     try {
-      // 1. Validation Zero Trust (Zod)
       const validation = annonceSchema.safeParse(req.body);
 
       if (!validation.success) {
-        return res.status(400).json({
-          success: false,
-          error: "Données invalides",
-          details: validation.error.format(),
-        });
+        const details = validation.error.issues.map((issue) => ({
+          field: issue.path.join("."),
+          message: issue.message,
+        }));
+        return sendValidationError(res, details);
       }
 
       const data = validation.data;
       const userId = req.user?.id || null;
 
-      // 2. Génération Slug (vérif doublon)
       const existingSlugs = await annoncesRepo.getAllSlugs();
       const slug = generateSlug(data.titre, existingSlugs);
 
-      // 3. Gestion Cloudinary (URLs directes)
       const images = req.files?.images || req.body.images || [];
       const documents = req.files?.documents || req.body.documents || [];
 
       const imageUrls = Array.isArray(images)
         ? images.map((file) => file.path || file)
         : [];
-
       const docUrls = Array.isArray(documents)
         ? documents.map((file) => file.path || file)
         : [];
 
-      // 4. Insertion via Repository
       const now = new Date().toISOString();
       const newId = await annoncesRepo.createWithReturning({
         titre: data.titre,
@@ -178,24 +180,16 @@ class AnnoncesController {
         titre: data.titre,
       }).catch(console.error);
 
-      res.status(201).json({
-        success: true,
-        data: { id: newId, slug, titre: data.titre },
-        message: "Annonce créée avec succès",
-      });
+      return sendCreated(res, { id: newId, slug, titre: data.titre }, "Annonce créée avec succès");
     } catch (error) {
       console.error("Erreur create:", error);
-      res.status(500).json({
-        success: false,
-        error: "Erreur lors de la création",
-        message:
-          process.env.NODE_ENV === "development" ? error.message : undefined,
-      });
+      return sendInternalError(res, "Erreur lors de la création de l'annonce");
     }
   }
 
   /**
-   * Mise à jour
+   * PATCH /api/annonces/:id
+   * Mise à jour partielle
    */
   static async update(req, res) {
     try {
@@ -203,46 +197,37 @@ class AnnoncesController {
       const validation = annonceSchema.partial().safeParse(req.body);
 
       if (!validation.success) {
-        return res.status(400).json({
-          success: false,
-          error: "Données invalides",
-          details: validation.error.format(),
-        });
+        const details = validation.error.issues.map((issue) => ({
+          field: issue.path.join("."),
+          message: issue.message,
+        }));
+        return sendValidationError(res, details);
       }
 
       const data = validation.data;
-
-      // Vérif existence
       const existing = await annoncesRepo.getById(id);
 
       if (!existing) {
-        return res
-          .status(404)
-          .json({ success: false, error: "Annonce non trouvée" });
+        return sendNotFound(res, "Annonce non trouvée");
       }
 
-      // Slug
       let slug = existing.slug;
       if (data.titre && data.titre !== existing.titre) {
         const existingSlugs = await annoncesRepo.getAllSlugs(id);
         slug = generateSlug(data.titre, existingSlugs);
       }
 
-      // Fichiers (Mix entre existants et nouveaux uploads Cloudinary)
       const images = req.files?.images || req.body.images || null;
       const documents = req.files?.documents || req.body.documents || null;
 
       let imagePaths = existing.images ? parseJSON(existing.images) : [];
-      let documentPaths = existing.documents
-        ? parseJSON(existing.documents)
-        : [];
+      let documentPaths = existing.documents ? parseJSON(existing.documents) : [];
 
       if (images) {
         imagePaths = Array.isArray(images)
           ? images.map((file) => file.path || file)
           : imagePaths;
       }
-
       if (documents) {
         documentPaths = Array.isArray(documents)
           ? documents.map((file) => file.path || file)
@@ -266,26 +251,25 @@ class AnnoncesController {
         titre: data.titre || existing.titre,
       }).catch(console.error);
 
-      res.json({ success: true, message: "Annonce mise à jour" });
+      return sendSuccess(res, null, { message: "Annonce mise à jour" });
     } catch (error) {
       console.error("Erreur update:", error);
-      res.status(500).json({ success: false, error: "Erreur de mise à jour" });
+      return sendInternalError(res, "Erreur lors de la mise à jour");
     }
   }
 
+  /**
+   * DELETE /api/annonces/:id
+   * Suppression (204 No Content)
+   */
   static async delete(req, res) {
     try {
       const { id } = req.params;
       const existing = await annoncesRepo.getById(id);
 
       if (!existing) {
-        return res
-          .status(404)
-          .json({ success: false, error: "Annonce non trouvée" });
+        return sendNotFound(res, "Annonce non trouvée");
       }
-
-      // NOTE: Avec Cloudinary, on pourrait appeler cloudinary.uploader.destroy(public_id)
-      // pour nettoyer les fichiers orphelins, mais pour l'instant on supprime juste la ref DB
 
       await annoncesRepo.delete(id);
 
@@ -293,12 +277,10 @@ class AnnoncesController {
         titre: existing.titre,
       }).catch(console.error);
 
-      res.json({ success: true, message: "Annonce supprimée" });
+      return sendNoContent(res);
     } catch (error) {
       console.error("Erreur delete:", error);
-      res
-        .status(500)
-        .json({ success: false, error: "Erreur lors de la suppression" });
+      return sendInternalError(res, "Erreur lors de la suppression");
     }
   }
 }

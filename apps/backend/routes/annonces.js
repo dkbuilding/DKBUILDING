@@ -1,44 +1,49 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const AnnoncesController = require('../controllers/annoncesController');
-const JWTAuthMiddleware = require('../middleware/jwtAuth');
-const { uploadFields, handleUploadError } = require('../middleware/upload');
+const AnnoncesController = require("../controllers/annoncesController");
+const JWTAuthMiddleware = require("../middleware/jwtAuth");
+const { uploadFields, handleUploadError } = require("../middleware/upload");
 
 const jwtAuth = new JWTAuthMiddleware();
 
 // Routes publiques (sans authentification)
-router.get('/public', AnnoncesController.getPublic);
-router.get('/slug/:slug', AnnoncesController.getBySlug);
+router.get("/public", AnnoncesController.getPublic);
+router.get("/slug/:slug", AnnoncesController.getBySlug);
 
 // Routes protégées (avec authentification JWT)
-router.get('/', jwtAuth.authenticateToken.bind(jwtAuth), AnnoncesController.getAll);
-router.get('/:id', jwtAuth.authenticateToken.bind(jwtAuth), AnnoncesController.getById);
+router.get("/", jwtAuth.authenticateToken.bind(jwtAuth), AnnoncesController.getAll);
+router.get("/:id", jwtAuth.authenticateToken.bind(jwtAuth), AnnoncesController.getById);
 
 router.post(
-  '/',
+  "/",
   jwtAuth.authenticateToken.bind(jwtAuth),
   jwtAuth.checkAdminRole.bind(jwtAuth),
   uploadFields([
-    { name: 'images', maxCount: 10 },
-    { name: 'documents', maxCount: 10 }
+    { name: "images", maxCount: 10 },
+    { name: "documents", maxCount: 10 },
   ]),
   handleUploadError,
-  AnnoncesController.create
+  AnnoncesController.create,
 );
 
-router.put(
-  '/:id',
+// PATCH pour mise à jour partielle (était PUT avec .partial())
+router.patch(
+  "/:id",
   jwtAuth.authenticateToken.bind(jwtAuth),
   jwtAuth.checkAdminRole.bind(jwtAuth),
   uploadFields([
-    { name: 'images', maxCount: 10 },
-    { name: 'documents', maxCount: 10 }
+    { name: "images", maxCount: 10 },
+    { name: "documents", maxCount: 10 },
   ]),
   handleUploadError,
-  AnnoncesController.update
+  AnnoncesController.update,
 );
 
-router.delete('/:id', jwtAuth.authenticateToken.bind(jwtAuth), jwtAuth.checkAdminRole.bind(jwtAuth), AnnoncesController.delete);
+router.delete(
+  "/:id",
+  jwtAuth.authenticateToken.bind(jwtAuth),
+  jwtAuth.checkAdminRole.bind(jwtAuth),
+  AnnoncesController.delete,
+);
 
 module.exports = router;
-

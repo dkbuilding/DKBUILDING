@@ -9,9 +9,14 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="preconnect" href="https://res.cloudinary.com" />
+    <link rel="preconnect" href="https://static.vecteezy.com" />
+    <link rel="preconnect" href="https://static.vecteezy.com" crossorigin />
+    <link rel="dns-prefetch" href="//static.vecteezy.com" />
 
-    <!-- Google Fonts (non-bloquant, après preconnect) -->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Space+Grotesk:wght@400;500;700&display=swap" />
+    <!-- Google Fonts : chargement non-bloquant (perf) -->
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Space+Grotesk:wght@400;500;700&display=swap" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Space+Grotesk:wght@400;500;700&display=swap" media="print" onload="this.media='all'" />
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Space+Grotesk:wght@400;500;700&display=swap" /></noscript>
 
     <!-- Canonical URL -->
     <link rel="canonical" href="https://dkbuilding.fr/" />
@@ -82,6 +87,7 @@
       name="robots"
       content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"
     />
+    <meta name="keywords" content="construction métallique Albi, charpente métallique Tarn, bardage Albi, couverture métallique Occitanie, DK BUILDING, devis gratuit construction, photovoltaïque Albi, terrassement Tarn" />
 
     <!-- Additional SEO Meta Tags -->
     <meta name="googlebot" content="index, follow" />
@@ -104,25 +110,7 @@
     <meta name="geo.city" content="Albi" />
     <meta name="geo.street" content="59 Rue Pierre Cormary" />
 
-    <!-- Codes ISO et Standards -->
-    <meta name="country-code" content="FR" />
-    <meta name="region-code" content="FR-81" />
-    <meta name="city-code" content="Albi" />
-    <meta name="postal-code" content="81000" />
-    <meta name="timezone" content="Europe/Paris" />
-    <meta name="currency" content="EUR" />
-    <meta name="locale" content="fr-FR" />
-
-    <!-- Zone d'intervention -->
-    <meta
-      name="service-area"
-      content="Tarn, Haute-Garonne, Aveyron, Tarn-et-Garonne"
-    />
-    <meta name="service-radius" content="50km" />
-    <meta
-      name="service-cities"
-      content="Albi, Toulouse, Montauban, Rodez, Castres, Gaillac, Carmaux, Lavaur"
-    />
+    <!-- Zone d'intervention (données structurées dans Schema.org LocalBusiness) -->
 
 
     <!-- Open Graph / Facebook -->
@@ -136,7 +124,7 @@
       property="og:description"
       content="Expert en construction à Albi. Charpentes, bardages et couvertures métalliques. Devis gratuit."
     />
-    <meta property="og:image" content="/assets/images/OG/og-image.jpg" />
+    <meta property="og:image" content="https://dkbuilding.fr/assets/images/OG/og-image.jpg" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta
@@ -146,16 +134,7 @@
     <meta property="og:site_name" content="DK BUILDING" />
     <meta property="og:locale" content="fr_FR" />
 
-    <!-- Open Graph Géolocalisation -->
-    <meta property="og:country-name" content="France" />
-    <meta property="og:region" content="Occitanie" />
-    <meta property="og:locality" content="Albi" />
-    <meta property="og:postal-code" content="81000" />
-    <meta property="og:street-address" content="59 Rue Pierre Cormary" />
-    <meta property="og:latitude" content="43.9298" />
-    <meta property="og:longitude" content="2.1480" />
-    <meta property="og:timezone" content="Europe/Paris" />
-    <meta property="og:currency" content="EUR" />
+
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
@@ -170,7 +149,7 @@
     />
     <meta
       name="twitter:image"
-      content="/assets/images/OG/og-image.jpg"
+      content="https://dkbuilding.fr/assets/images/OG/og-image.jpg"
     />
     <meta
       name="twitter:image:alt"
@@ -356,35 +335,6 @@
           ]
         },
         "sameAs": ["https://www.linkedin.com/in/dk-building-281097364/"]
-      }
-    </script>
-    <!-- Schema.org Place pour géolocalisation -->
-    <script type="application/ld+json">
-      {
-        "@context": "https://schema.org",
-        "@type": "Place",
-        "name": "Albi",
-        "description": "Ville d'Albi dans le Tarn, France",
-        "address": {
-          "@type": "PostalAddress",
-          "addressLocality": "Albi",
-          "postalCode": "81000",
-          "addressRegion": "Tarn",
-          "addressCountry": "FR"
-        },
-        "geo": {
-          "@type": "GeoCoordinates",
-          "latitude": "43.9298",
-          "longitude": "2.1480"
-        },
-        "containedInPlace": {
-          "@type": "AdministrativeArea",
-          "name": "Tarn",
-          "containedInPlace": {
-            "@type": "AdministrativeArea",
-            "name": "Occitanie"
-          }
-        }
       }
     </script>
     <!-- Schema.org FAQ enrichi pour IA -->
@@ -577,7 +527,7 @@
         "url": "https://dkbuilding.fr",
         "description": "Site officiel de DK BUILDING - Expert en construction à Albi",
         "inLanguage": "fr-FR",
-        "copyrightYear": "2025",
+        "copyrightYear": "2026",
         "author": {
           "@type": "Organization",
           "name": "DK BUILDING"
@@ -666,116 +616,9 @@
         ]
       }
     </script>
-    <!-- Schema.org Article pour contenu éditorial -->
-    <script type="application/ld+json">
-      {
-        "@context": "https://schema.org",
-        "@type": "Article",
-        "headline": "DK BUILDING - Expert en construction à Albi",
-        "description": "Présentation de DK BUILDING, entreprise spécialisée dans la charpente métallique, le bardage, la couverture, le photovoltaïque et le terrassement à Albi et dans le Tarn",
-        "image": "https://dkbuilding.fr/assets/images/OG/og-image.jpg",
-        "author": {
-          "@type": "Organization",
-          "name": "DK BUILDING"
-        },
-        "publisher": {
-          "@type": "Organization",
-          "name": "DK BUILDING",
-          "logo": {
-            "@type": "ImageObject",
-            "url": "https://dkbuilding.fr/assets/images/logos/Logo — DK BUILDING — Structure 2.png"
-          }
-        },
-        "datePublished": "2024-01-15",
-        "dateModified": "2024-01-15",
-        "mainEntityOfPage": {
-          "@type": "WebPage",
-          "@id": "https://dkbuilding.fr/"
-        },
-        "articleSection": "Construction",
-        "keywords": "construction, charpente métallique, bardage, couverture, photovoltaïque, terrassement, Albi, Tarn",
-        "inLanguage": "fr-FR",
-        "about": [
-          {
-            "@type": "Thing",
-            "name": "Construction"
-          },
-          {
-            "@type": "Thing",
-            "name": "Charpente métallique"
-          },
-          {
-            "@type": "Thing",
-            "name": "Bardage"
-          },
-          {
-            "@type": "Thing",
-            "name": "Couverture"
-          },
-          {
-            "@type": "Thing",
-            "name": "Photovoltaïque"
-          },
-          {
-            "@type": "Thing",
-            "name": "Terrassement"
-          }
-        ]
-      }
-    </script>
-    <!-- Schema.org Product pour services -->
-    <script type="application/ld+json">
-      {
-        "@context": "https://schema.org",
-        "@type": "Product",
-        "name": "Services de Construction DK BUILDING",
-        "description": "Services complets de construction : charpente métallique, bardage, couverture, photovoltaïque et terrassement",
-        "brand": {
-          "@type": "Brand",
-          "name": "DK BUILDING"
-        },
-        "category": "Services de Construction",
-        "offers": {
-          "@type": "Offer",
-          "price": "0",
-          "priceCurrency": "EUR",
-          "priceSpecification": {
-            "@type": "PriceSpecification",
-            "price": "0",
-            "priceCurrency": "EUR",
-            "eligibleQuantity": {
-              "@type": "QuantitativeValue",
-              "value": "1",
-              "unitCode": "C62"
-            }
-          },
-          "availability": "https://schema.org/InStock",
-          "validFrom": "2024-01-15",
-          "seller": {
-            "@type": "Organization",
-            "name": "DK BUILDING"
-          }
-        },
-        "additionalProperty": [
-          {
-            "@type": "PropertyValue",
-            "name": "Zone d'intervention",
-            "value": "50km autour d'Albi"
-          },
-          {
-            "@type": "PropertyValue",
-            "name": "Devis",
-            "value": "Gratuit"
-          },
-          {
-            "@type": "PropertyValue",
-            "name": "Délai de réponse",
-            "value": "24h"
-          }
-        ]
-      }
-    </script>
-    <!-- Schema.org Service détaillé -->
+    <!-- Schema.org Article supprime : inapproprie pour une page d accueil entreprise. Utiliser Article uniquement sur les pages /news/:id -->
+        <!-- Schema.org Product supprime : un service BTP n est pas un Product. Les services sont deja decrits via hasOfferCatalog dans LocalBusiness et via le schema Service ci-dessous -->
+        <!-- Schema.org Service détaillé -->
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
@@ -847,10 +690,9 @@
     </script>
 
     <!-- Preload des polices critiques -->
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
-    />
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" media="print" onload="this.media='all'" />
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" /></noscript>
 
     <!-- DNS Prefetch pour les domaines externes -->
     <link rel="dns-prefetch" href="//www.google-analytics.com" />
@@ -909,108 +751,20 @@
       }
     </style>
   </head>
-  <body itemscope itemtype="https://schema.org/LocalBusiness">
-    <!-- Microdata géolocalisation -->
-    <div itemprop="name" class="sr-only" title="DK BUILDING">DK BUILDING</div>
-    <div
-      itemprop="description"
-      class="sr-only"
-      title="Expert en construction à Albi"
-    >
-      Expert en construction à Albi
-    </div>
-    <div itemprop="telephone" class="sr-only" title="+33768113839">
-      +33768113839
-    </div>
-    <div itemprop="email" class="sr-only" title="contact@dkbuilding.fr">
-      contact@dkbuilding.fr
-    </div>
-    <!-- Adresse microdata -->
-    <div
-      itemprop="address"
-      itemscope
-      itemtype="https://schema.org/PostalAddress"
-      class="sr-only"
-    >
-      <span itemprop="streetAddress">59 Rue Pierre Cormary</span>
-      <span itemprop="addressLocality">Albi</span>
-      <span itemprop="postalCode">81000</span>
-      <span itemprop="addressRegion">Tarn</span>
-      <span itemprop="addressCountry">FR</span>
-      <span itemprop="addressCountryCode">FR</span>
-      <span itemprop="addressRegionCode">FR-81</span>
-      <span itemprop="country">France</span>
-      <span itemprop="countryCode">FR</span>
-      <span itemprop="regionCode">FR-81</span>
-      <span itemprop="city">Albi</span>
-      <span itemprop="postalCode">81000</span>
-      <span itemprop="addressLocality">Albi</span>
-      <span itemprop="addressRegion">Tarn</span>
-      <span itemprop="addressCountry">FR</span>
-      <span itemprop="addressCountryCode">FR</span>
-    </div>
-    <!-- Géolocalisation microdata -->
-    <div
-      itemprop="geo"
-      itemscope
-      itemtype="https://schema.org/GeoCoordinates"
-      class="sr-only"
-    >
-      <span itemprop="latitude">43.9298</span>
-      <span itemprop="longitude">2.1480</span>
-    </div>
+  <body>
+    <!-- Donnees structurees gerees exclusivement via JSON-LD dans le head (best practice Google) -->
+    <!-- Noscript fallback pour les crawlers sans JS -->
+    <noscript>
+      <div style="padding:2rem;text-align:center;font-family:sans-serif;background:#0e0e0e;color:#fff;min-height:100vh">
+        <h1>DK BUILDING — Charpente, Bardage, Couverture a Albi (81)</h1>
+        <p>Expert en construction metallique a Albi dans le Tarn. Charpentes, bardages et couvertures.</p>
+        <p>Telephone : <a href="tel:+33768113839" style="color:#F3E719">07 68 11 38 39</a></p>
+        <p>Email : <a href="mailto:contact@dkbuilding.fr" style="color:#F3E719">contact@dkbuilding.fr</a></p>
+        <p>Adresse : 59 Rue Pierre Cormary, 81000 Albi, Tarn, France</p>
+        <p>SIREN : 947 998 555 | <a href="https://dkbuilding.fr" style="color:#F3E719">dkbuilding.fr</a></p>
+      </div>
+    </noscript>
 
-    <!-- Zone de service microdata -->
-    <div
-      itemprop="areaServed"
-      itemscope
-      itemtype="https://schema.org/City"
-      class="sr-only"
-    >
-      <span itemprop="name">Albi</span>
-    </div>
-    <div
-      itemprop="areaServed"
-      itemscope
-      itemtype="https://schema.org/City"
-      class="sr-only"
-    >
-      <span itemprop="name">Toulouse</span>
-    </div>
-    <div
-      itemprop="areaServed"
-      itemscope
-      itemtype="https://schema.org/City"
-      class="sr-only"
-    >
-      <span itemprop="name">Montauban</span>
-    </div>
-    <div
-      itemprop="areaServed"
-      itemscope
-      itemtype="https://schema.org/City"
-      class="sr-only"
-    >
-      <span itemprop="name">Rodez</span>
-    </div>
-    <div
-      itemprop="areaServed"
-      itemscope
-      itemtype="https://schema.org/City"
-      class="sr-only"
-    >
-      <span itemprop="name">Carmaux</span>
-    </div>
-    <div
-      itemprop="areaServed"
-      itemscope
-      itemtype="https://schema.org/City"
-      class="sr-only"
-    >
-      <span itemprop="name">Lavaur</span>
-    </div>
-
-    <!-- Contenu React -->
     <div id="root" aria-label="Site web DK BUILDING" tabindex="-1">
       <!-- Le contenu React sera injecté ici -->
     </div>

@@ -1,29 +1,44 @@
 /**
  * Hook personnalisé pour vérifier la santé du backend
  * Expose le statut de disponibilité du backend pour utilisation dans d'autres composants
- *
- * @author DK BUILDING
- * @version latest
  */
 
 import { useState, useEffect, useCallback } from "react";
-import { checkBackendHealth } from "../utils/backendHealthCheck";
+import { checkBackendHealth } from "@/utils/backendHealthCheck";
+import type { BackendHealthResult } from "@/utils/backendHealthCheck";
 
-/**
- * Hook pour vérifier et suivre la santé du backend
- *
- * @param {Object} options - Options de configuration
- * @param {number} options.timeout - Timeout en millisecondes (défaut: 3000)
- * @param {number} options.refreshInterval - Intervalle de rafraîchissement en ms (défaut: 30000)
- * @param {boolean} options.autoRefresh - Activer le rafraîchissement automatique (défaut: true)
- * @returns {Object} Statut et méthodes de contrôle
- */
+interface BackendHealthOptions {
+  /** Timeout en millisecondes (défaut: 3000) */
+  readonly timeout?: number;
+  /** Intervalle de rafraîchissement en ms (défaut: 30000) */
+  readonly refreshInterval?: number;
+  /** Activer le rafraîchissement automatique (défaut: true) */
+  readonly autoRefresh?: boolean;
+}
+
+interface BackendHealthStatus {
+  readonly checked: boolean;
+  readonly available: boolean | null;
+  readonly error: string | null;
+  readonly service: string | null;
+  readonly version: string | null;
+  readonly emailConfigured: boolean | null;
+}
+
+interface UseBackendHealthReturn extends BackendHealthStatus {
+  readonly loading: boolean;
+  readonly checkHealth: () => Promise<BackendHealthResult>;
+  readonly isAvailable: boolean;
+  readonly isUnavailable: boolean;
+  readonly isUnknown: boolean;
+}
+
 export function useBackendHealth({
   timeout = 3000,
   refreshInterval = 30000,
   autoRefresh = true,
-} = {}) {
-  const [status, setStatus] = useState({
+}: BackendHealthOptions = {}): UseBackendHealthReturn {
+  const [status, setStatus] = useState<BackendHealthStatus>({
     checked: false,
     available: null,
     error: null,
@@ -33,34 +48,34 @@ export function useBackendHealth({
   });
   const [loading, setLoading] = useState(true);
 
-  /**
-   * Vérifie la santé du backend
-   */
-  const checkHealth = useCallback(async () => {
+  const checkHealth = useCallback(async (): Promise<BackendHealthResult> => {
     setLoading(true);
     try {
       const result = await checkBackendHealth(null, timeout);
       setStatus({
         checked: true,
         available: result.available,
-        error: result.error || null,
-        service: result.service || null,
-        version: result.version || null,
-        emailConfigured: result.emailConfigured || null,
+        error: result.error ?? null,
+        service: result.service ?? null,
+        version: result.version ?? null,
+        emailConfigured: result.emailConfigured ?? null,
       });
       return result;
-    } catch (error) {
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error
+        ? err.message
+        : "Erreur lors de la vérification du backend";
       setStatus({
         checked: true,
         available: false,
-        error: error.message || "Erreur lors de la vérification du backend",
+        error: errorMessage,
         service: null,
         version: null,
         emailConfigured: null,
       });
       return {
         available: false,
-        error: error.message,
+        error: errorMessage,
       };
     } finally {
       setLoading(false);

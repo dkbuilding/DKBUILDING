@@ -1,6 +1,5 @@
 # ============================================
 # GITIGNORE - DK BUILDING Monorepo
-# Architecture GovTech Zero-Cost
 # ============================================
 
 # ============================================
@@ -13,6 +12,7 @@
 *.key
 *.p12
 *.pfx
+*.bak
 
 # ============================================
 # DEPENDENCIES
@@ -43,6 +43,7 @@ out/
 *.db
 *.db-shm
 *.db-wal
+*.db-journal
 *.sqlite
 *.sqlite3
 data/
@@ -83,19 +84,11 @@ lerna-debug.log*
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
+!.vscode/css.customData.json
 .idea/
 *.swp
 *.swo
 *~
-.DS_Store
-Thumbs.db
-
-# ============================================
-# TESTING
-# ============================================
-coverage/
-.nyc_output/
-*.lcov
 
 # ============================================
 # OS
@@ -107,6 +100,14 @@ coverage/
 .Trashes
 ehthumbs.db
 Desktop.ini
+Thumbs.db
+
+# ============================================
+# TESTING
+# ============================================
+coverage/
+.nyc_output/
+*.lcov
 
 # ============================================
 # TEMPORARY & BACKUPS
@@ -114,8 +115,6 @@ Desktop.ini
 tmp/
 temp/
 *.tmp
-*.bak
-*.backup
 _backup/
 
 # ============================================
@@ -134,6 +133,11 @@ apps/docs/confidentials/
 .vercel
 
 # ============================================
-# BRAIN (Artifacts Antigravity)
+# BRAIN (Artifacts AI)
 # ============================================
 .gemini/
+
+# ============================================
+# LOCK ACCESS CONFIG (Sensible)
+# ============================================
+lockaccess-config.json

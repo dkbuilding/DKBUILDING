@@ -3,59 +3,63 @@ const router = express.Router();
 const MediaController = require("../controllers/mediaController");
 const JWTAuthMiddleware = require("../middleware/jwtAuth");
 const { upload, handleUploadError } = require("../middleware/upload");
+const { uploadLimiter } = require("../middleware/rateLimiter");
+const {
+  sendSuccess,
+  sendCreated,
+  sendBadRequest,
+  sendInternalError,
+} = require("../utils/apiResponse");
 
 const jwtAuth = new JWTAuthMiddleware();
 
 /**
- * Routes Media - Version Cloudinary
- * Architecture GovTech Zero-Cost pour DK BUILDING
+ * Routes Media — Version Cloudinary
+ *
+ * IMPORTANT : L'ordre des routes est critique.
+ * Les routes statiques (/, /serve/:filename) doivent être déclarées
+ * AVANT les routes avec paramètres (/:filename) pour éviter les conflits.
  */
 
-// Route publique pour servir les fichiers (redirect vers Cloudinary)
-router.get("/:filename", MediaController.serve);
-
-// Routes protégées (avec authentification JWT)
+// GET /api/media — Lister tous les médias (protégé)
 router.get("/", jwtAuth.authenticateToken.bind(jwtAuth), MediaController.list);
 
+// POST /api/media — Upload d'un fichier (protégé, rate limited)
+// Note : était POST /upload, corrigé pour supprimer le verbe de l'URL
 router.post(
-  "/upload",
+  "/",
   jwtAuth.authenticateToken.bind(jwtAuth),
-  upload.single("file"), // Cloudinary upload
+  uploadLimiter,
+  upload.single("file"),
   handleUploadError,
   (req, res) => {
     try {
       if (!req.file) {
-        return res.status(400).json({
-          success: false,
-          error: "Aucun fichier uploadé",
-        });
+        return sendBadRequest(res, "Aucun fichier uploadé");
       }
 
-      // Cloudinary met les infos dans req.file
-      // path = URL Cloudinary complète
-      // filename = public_id
-      res.json({
-        success: true,
-        data: {
-          filename: req.file.filename || req.file.public_id, // Public ID Cloudinary
-          url: req.file.path, // URL complète Cloudinary
+      return sendCreated(
+        res,
+        {
+          filename: req.file.filename || req.file.public_id,
+          url: req.file.path,
           originalName: req.file.originalname,
           size: req.file.size || req.file.bytes,
           mimetype: req.file.mimetype || req.file.format,
         },
-        message: "Fichier uploadé avec succès sur Cloudinary",
-      });
+        "Fichier uploadé avec succès sur Cloudinary",
+      );
     } catch (error) {
       console.error("Erreur lors de l'upload:", error);
-      res.status(500).json({
-        success: false,
-        error: "Erreur lors de l'upload",
-        message: error.message,
-      });
+      return sendInternalError(res, "Erreur lors de l'upload");
     }
   },
 );
 
+// GET /api/media/serve/:filename — Servir un fichier (redirect Cloudinary, public)
+router.get("/serve/:filename", MediaController.serve);
+
+// DELETE /api/media/:filename — Supprimer un fichier (protégé)
 router.delete(
   "/:filename",
   jwtAuth.authenticateToken.bind(jwtAuth),

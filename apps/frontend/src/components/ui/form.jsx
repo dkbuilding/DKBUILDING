@@ -87,7 +87,7 @@ const FormDescription = React.forwardRef(({ className, ...props }, ref) => {
 });
 FormDescription.displayName = "FormDescription";
 
-const FormMessage = React.forwardRef(({ className, children, ...props }, ref) => {
+const FormMessage = React.forwardRef(({ className, _children, ...props }, ref) => {
   const form = useFormContext();
   const fieldContext = React.useContext(FormFieldContext);
   const name = fieldContext?.name;

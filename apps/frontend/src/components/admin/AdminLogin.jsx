@@ -2,8 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Lock, ArrowRight } from 'lucide-react';
 import toast from 'react-hot-toast';
 import logoStructure from '../../assets/images/logos/Logo — DK BUILDING — Structure.png';
-
-const API_BASE_URL = import.meta.env.API_BASE_URL || '';
+import { api } from '@/lib/api';
 
 const AdminLogin = ({ onLogin }) => {
   const [password, setPassword] = useState('');
@@ -22,26 +21,13 @@ const AdminLogin = ({ onLogin }) => {
     setIsLoading(true);
 
     try {
-      const response = await fetch(`${API_BASE_URL}/api/auth/health`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify({ password })
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.error || 'Mot de passe incorrect');
-      }
-
-      const result = await response.json();
+      const result = await api.post('/auth/login', { password });
 
       if (result.success) {
-        toast.success('Accès autorisé');
+        toast.success('Acces autorise');
         if (onLogin) onLogin();
-        setTimeout(() => window.location.reload(), 500);
       } else {
-        throw new Error('Authentification échouée');
+        throw new Error('Authentification echouee');
       }
     } catch (error) {
       toast.error(error.message || 'Identifiants invalides');

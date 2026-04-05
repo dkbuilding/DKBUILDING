@@ -3,20 +3,23 @@ const Logger = require("../utils/logger");
 const { generateSlug } = require("../utils/slugify");
 const { projetSchema } = require("../validators/schemas");
 const parseJSON = require("../utils/parseJSON");
+const {
+  sendSuccess,
+  sendCreated,
+  sendNoContent,
+  sendNotFound,
+  sendValidationError,
+  sendInternalError,
+  paginationMeta,
+} = require("../utils/apiResponse");
 
 /**
- * Projets Controller - Version Serverless (Turso + Cloudinary)
- * Architecture GovTech Zero-Cost pour DK BUILDING
- *
- * Utilise ProjetsRepository pour l'accès aux données.
- * Le controller gère uniquement la logique HTTP, la validation et le parsing JSON.
+ * Projets Controller — DK BUILDING
+ * Turso + Cloudinary
  */
 
 const projetsRepo = new ProjetsRepository();
 
-/**
- * Parse les champs JSON d'un projet pour la réponse HTTP
- */
 const parseProjet = (projet) => ({
   ...projet,
   images: parseJSON(projet.images),
@@ -26,6 +29,10 @@ const parseProjet = (projet) => ({
 });
 
 class ProjetsController {
+  /**
+   * GET /api/projets
+   * Liste paginée avec filtres (protégé)
+   */
   static async getAll(req, res) {
     try {
       const limit = Math.min(Math.max(parseInt(req.query.limit) || 50, 1), 100);
@@ -42,78 +49,84 @@ class ProjetsController {
         offset,
       });
 
+      const total = await projetsRepo.countFiltered
+        ? await projetsRepo.countFiltered({ statut, type_projet, featured })
+        : rows.length;
+
       const projetsParsed = rows.map(parseProjet);
 
-      res.json({
-        success: true,
-        data: projetsParsed,
-        count: projetsParsed.length,
+      return sendSuccess(res, projetsParsed, {
+        meta: paginationMeta({ total, limit, offset }),
       });
     } catch (error) {
       console.error("Erreur getAll:", error);
       Logger.createLog("error", "projet", null, req.user?.id, {
         error: error.message,
       }).catch(console.error);
-      res.status(500).json({ success: false, error: "Erreur système" });
+      return sendInternalError(res, "Erreur lors de la récupération des projets");
     }
   }
 
+  /**
+   * GET /api/projets/:id
+   */
   static async getById(req, res) {
     try {
       const { id } = req.params;
       const projet = await projetsRepo.getById(id);
 
       if (!projet) {
-        return res
-          .status(404)
-          .json({ success: false, error: "Projet non trouvé" });
+        return sendNotFound(res, "Projet non trouvé");
       }
 
-      res.json({ success: true, data: parseProjet(projet) });
+      return sendSuccess(res, parseProjet(projet));
     } catch (error) {
       console.error("Erreur getById:", error);
-      res.status(500).json({ success: false, error: "Erreur système" });
+      return sendInternalError(res);
     }
   }
 
+  /**
+   * GET /api/projets/slug/:slug
+   */
   static async getBySlug(req, res) {
     try {
       const { slug } = req.params;
       const projet = await projetsRepo.getBySlug(slug);
 
       if (!projet) {
-        return res
-          .status(404)
-          .json({ success: false, error: "Projet non trouvé" });
+        return sendNotFound(res, "Projet non trouvé");
       }
 
-      // Update vue count (fire & forget)
       projetsRepo.incrementViewCount(projet.id);
-
-      res.json({ success: true, data: parseProjet(projet) });
+      return sendSuccess(res, parseProjet(projet));
     } catch (error) {
       console.error("Erreur getBySlug:", error);
-      res.status(500).json({ success: false, error: "Erreur système" });
+      return sendInternalError(res);
     }
   }
 
+  /**
+   * GET /api/projets/featured
+   */
   static async getFeatured(req, res) {
     try {
       const limit = Math.min(Math.max(parseInt(req.query.limit) || 6, 1), 20);
       const rows = await projetsRepo.getFeatured(limit);
       const projetsParsed = rows.map(parseProjet);
 
-      res.json({
-        success: true,
-        data: projetsParsed,
-        count: projetsParsed.length,
+      return sendSuccess(res, projetsParsed, {
+        meta: { count: projetsParsed.length },
       });
     } catch (error) {
       console.error("Erreur getFeatured:", error);
-      res.status(500).json({ success: false, error: "Erreur système" });
+      return sendInternalError(res);
     }
   }
 
+  /**
+   * GET /api/projets/public
+   */
   static async getPublic(req, res) {
     try {
       const limit = Math.min(Math.max(parseInt(req.query.limit) || 20, 1), 50);
@@ -122,27 +135,29 @@ class ProjetsController {
       const rows = await projetsRepo.getPublic({ limit, offset });
       const projetsParsed = rows.map(parseProjet);
 
-      res.json({
-        success: true,
-        data: projetsParsed,
-        count: projetsParsed.length,
+      return sendSuccess(res, projetsParsed, {
+        meta: { count: projetsParsed.length },
       });
     } catch (error) {
       console.error("Erreur getPublic:", error);
-      res.status(500).json({ success: false, error: "Erreur système" });
+      return sendInternalError(res);
     }
   }
 
+  /**
+   * POST /api/projets
+   * Création (201 Created)
+   */
   static async create(req, res) {
     try {
       const validation = projetSchema.safeParse(req.body);
 
       if (!validation.success) {
-        return res.status(400).json({
-          success: false,
-          error: "Données invalides",
-          details: validation.error.format(),
-        });
+        const details = validation.error.issues.map((issue) => ({
+          field: issue.path.join("."),
+          message: issue.message,
+        }));
+        return sendValidationError(res, details);
       }
 
       const data = validation.data;
@@ -151,20 +166,13 @@ class ProjetsController {
       const existingSlugs = await projetsRepo.getAllSlugs();
       const slug = generateSlug(data.titre, existingSlugs);
 
-      // Cloudinary URLs
       const images = req.files?.images || req.body.images || [];
       const documents = req.files?.documents || req.body.documents || [];
       const videos = req.files?.videos || req.body.videos || [];
 
-      const imagePaths = Array.isArray(images)
-        ? images.map((file) => file.path || file)
-        : [];
-      const documentPaths = Array.isArray(documents)
-        ? documents.map((file) => file.path || file)
-        : [];
-      const videoPaths = Array.isArray(videos)
-        ? videos.map((file) => file.path || file)
-        : [];
+      const imagePaths = Array.isArray(images) ? images.map((file) => file.path || file) : [];
+      const documentPaths = Array.isArray(documents) ? documents.map((file) => file.path || file) : [];
+      const videoPaths = Array.isArray(videos) ? videos.map((file) => file.path || file) : [];
 
       const newId = await projetsRepo.createWithReturning({
         titre: data.titre,
@@ -189,45 +197,38 @@ class ProjetsController {
         titre: data.titre,
       }).catch(console.error);
 
-      res.status(201).json({
-        success: true,
-        data: { id: newId, slug, titre: data.titre },
-        message: "Projet créé avec succès",
-      });
+      return sendCreated(res, { id: newId, slug, titre: data.titre }, "Projet créé avec succès");
     } catch (error) {
       console.error("Erreur create:", error);
       Logger.createLog("error", "projet", null, req.user?.id, {
         error: error.message,
       }).catch(console.error);
-      res.status(500).json({
-        success: false,
-        error: "Erreur lors de la création",
-        message:
-          process.env.NODE_ENV === "development" ? error.message : undefined,
-      });
+      return sendInternalError(res, "Erreur lors de la création du projet");
     }
   }
 
+  /**
+   * PATCH /api/projets/:id
+   * Mise à jour partielle
+   */
   static async update(req, res) {
     try {
       const { id } = req.params;
       const validation = projetSchema.partial().safeParse(req.body);
 
       if (!validation.success) {
-        return res.status(400).json({
-          success: false,
-          error: "Données invalides",
-          details: validation.error.format(),
-        });
+        const details = validation.error.issues.map((issue) => ({
+          field: issue.path.join("."),
+          message: issue.message,
+        }));
+        return sendValidationError(res, details);
       }
 
       const data = validation.data;
       const existing = await projetsRepo.getById(id);
 
       if (!existing) {
-        return res
-          .status(404)
-          .json({ success: false, error: "Projet non trouvé" });
+        return sendNotFound(res, "Projet non trouvé");
       }
 
       let slug = existing.slug;
@@ -241,25 +242,17 @@ class ProjetsController {
       const videos = req.files?.videos || req.body.videos || null;
 
       let imagePaths = existing.images ? parseJSON(existing.images) : [];
-      let documentPaths = existing.documents
-        ? parseJSON(existing.documents)
-        : [];
+      let documentPaths = existing.documents ? parseJSON(existing.documents) : [];
       let videoPaths = existing.videos ? parseJSON(existing.videos) : [];
 
       if (images) {
-        imagePaths = Array.isArray(images)
-          ? images.map((file) => file.path || file)
-          : imagePaths;
+        imagePaths = Array.isArray(images) ? images.map((file) => file.path || file) : imagePaths;
       }
       if (documents) {
-        documentPaths = Array.isArray(documents)
-          ? documents.map((file) => file.path || file)
-          : documentPaths;
+        documentPaths = Array.isArray(documents) ? documents.map((file) => file.path || file) : documentPaths;
       }
       if (videos) {
-        videoPaths = Array.isArray(videos)
-          ? videos.map((file) => file.path || file)
-          : videoPaths;
+        videoPaths = Array.isArray(videos) ? videos.map((file) => file.path || file) : videoPaths;
       }
 
       await projetsRepo.updateWithCoalesce(id, {
@@ -285,46 +278,41 @@ class ProjetsController {
         titre: data.titre || existing.titre,
       }).catch(console.error);
 
-      res.json({ success: true, message: "Projet mis à jour" });
+      return sendSuccess(res, null, { message: "Projet mis à jour" });
     } catch (error) {
       console.error("Erreur update:", error);
       Logger.createLog("error", "projet", req.params.id, req.user?.id, {
         error: error.message,
       }).catch(console.error);
-      res
-        .status(500)
-        .json({ success: false, error: "Erreur lors de la mise à jour" });
+      return sendInternalError(res, "Erreur lors de la mise à jour");
     }
   }
 
+  /**
+   * DELETE /api/projets/:id
+   * Suppression (204 No Content)
+   */
   static async delete(req, res) {
     try {
       const { id } = req.params;
       const existing = await projetsRepo.getById(id);
 
       if (!existing) {
-        return res
-          .status(404)
-          .json({ success: false, error: "Projet non trouvé" });
+        return sendNotFound(res, "Projet non trouvé");
       }
-
-      // Note: Avec Cloudinary, on pourrait appeler cloudinary.uploader.destroy()
-      // pour nettoyer les fichiers, mais pour l'instant on supprime juste la ref DB
 
       await projetsRepo.delete(id);
       Logger.createLog("delete", "projet", id, req.user?.id, {
         titre: existing.titre,
       }).catch(console.error);
 
-      res.json({ success: true, message: "Projet supprimé" });
+      return sendNoContent(res);
     } catch (error) {
       console.error("Erreur delete:", error);
       Logger.createLog("error", "projet", req.params.id, req.user?.id, {
         error: error.message,
       }).catch(console.error);
-      res
-        .status(500)
-        .json({ success: false, error: "Erreur lors de la suppression" });
+      return sendInternalError(res, "Erreur lors de la suppression");
     }
   }
 }

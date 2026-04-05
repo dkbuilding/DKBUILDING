@@ -277,7 +277,7 @@ const ErrorPage = () => {
         <div ref={logoRef} className="mb-8">
           <a href="/" aria-label="DK BUILDING — Retour à l'accueil">
             <img
-              src="/src/assets/images/logos/Logo — DK BUILDING — Structure 2.png"
+              src="/images/logos/Logo — DK BUILDING — Structure 2.png"
               alt="DK BUILDING Logo"
               className="w-16 h-16 xs:w-20 xs:h-20 sm:w-24 sm:h-24 mx-auto hover:scale-105 transition-transform duration-300"
             />

@@ -1,5 +1,6 @@
 const { cloudinary } = require("../middleware/upload");
 const Logger = require("../utils/logger");
+const { formatFileSize } = require("../utils/format");
 
 /**
  * Media Controller - Version Cloudinary
@@ -121,17 +122,6 @@ class MediaController {
       });
     }
   }
-}
-
-/**
- * Formater la taille d'un fichier
- */
-function formatFileSize(bytes) {
-  if (!bytes || bytes === 0) return "0 Bytes";
-  const k = 1024;
-  const sizes = ["Bytes", "KB", "MB", "GB"];
-  const i = Math.floor(Math.log(bytes) / Math.log(k));
-  return Math.round((bytes / Math.pow(k, i)) * 100) / 100 + " " + sizes[i];
 }
 
 /**

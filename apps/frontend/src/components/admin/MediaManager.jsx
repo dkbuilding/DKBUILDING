@@ -65,7 +65,7 @@ function formatBytes(bytes) {
 function getFileUrl(file) {
   if (file.secure_url) return file.secure_url;
   if (file.url) return file.url;
-  return `${import.meta.env.VITE_API_URL || ""}/media/${file.filename}`;
+  return `/api/media/${file.filename}`;
 }
 
 // ──────────────────────────────────────────────

@@ -6,9 +6,20 @@
     "apps/*"
   ],
   "scripts": {
+    "dev": "pnpm run dev:backend & pnpm run dev:frontend",
     "dev:backend": "pnpm --filter backend dev",
     "dev:frontend": "pnpm --filter frontend dev",
+    "build": "pnpm run build:backend && pnpm run build:frontend",
     "build:backend": "pnpm --filter backend build",
-    "build:frontend": "pnpm --filter frontend build"
-  }
+    "build:frontend": "pnpm --filter frontend build",
+    "lint": "pnpm --filter frontend lint",
+    "test": "pnpm --filter frontend test:run",
+    "start": "./start.sh",
+    "check": "pnpm lint && pnpm test"
+  },
+  "engines": {
+    "node": ">=22.0.0",
+    "pnpm": ">=9.0.0"
+  },
+  "packageManager": "pnpm@9.15.0"
 }

@@ -1,10 +1,8 @@
 import { useLayoutEffect, useRef } from 'react';
-import { gsap } from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { gsap, ScrollTrigger } from '../../utils/gsapConfig';
 import { motionTokens, gsapUtils, scrollTriggerDefaults } from '../../utils/motion';
-import { Hammer, Shield, Home, Sun, Thermometer, Tractor } from 'lucide-react';
+import { Hammer, Shield, Home, Sun, Tractor } from 'lucide-react';
 
-gsap.registerPlugin(ScrollTrigger);
 
 // Styles CSS pour la grille responsive des Services
 const servicesGridStyles = `
@@ -262,9 +260,12 @@ const Services = () => {
             <p className="text-dk-gray-400 mb-4 xs:mb-6 text-xs xs:text-sm">
               Réponse sous 24h. Devis gratuit et sans engagement. Aucune obligation de votre part.
             </p>
-            <button className="btn-primary touch-target font-foundation-black">
+            <a
+              href="#contact"
+              className="btn btn-primary btn--lg touch-target font-foundation-black inline-flex"
+            >
               Demander mon devis gratuit
-            </button>
+            </a>
           </div>
         </div>
       </div>

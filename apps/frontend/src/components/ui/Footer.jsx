@@ -123,18 +123,8 @@ const Footer = forwardRef(({ className, ...props }, ref) => {
   // Fonction pour retourner en haut de page
   const scrollToTop = () => {
     window.scrollTo({
-      top: 0, // Position de l'animation
-      timeout: 1000, // Timeout de l'animation
-      delay: 1000, // Délai avant l'animation
-      duration: 1000, // Durée de l'animation
-      ease: 'power2.inOut', // Effet de l'animation
-      behavior: 'smooth', // Comportement de l'animation
-      scrollTrigger: { // Trigger de l'animation
-        trigger: scrollToTopRef.current, // Trigger de l'animation
-        start: 'top top', // Début de l'animation
-        end: 'bottom top', // Fin de l'animation
-        scrub: true // Scrub de l'animation
-      }
+      top: 0,
+      behavior: 'smooth',
     });
   };
 
@@ -205,7 +195,7 @@ const Footer = forwardRef(({ className, ...props }, ref) => {
     }
   };
 
-  // Hook pour gérer le responsive de la grille de navigation
+  // Hook pour gérer le responsive de la grille de navigation (avec debounce)
   useEffect(() => {
     const updateGridColumns = () => {
       if (typeof window === 'undefined') return;
@@ -213,15 +203,12 @@ const Footer = forwardRef(({ className, ...props }, ref) => {
       const width = window.innerWidth;
       
       if (width < 768) {
-        // Mobile : 1 colonne
         setGridColumns('1fr');
         setIsMobile(true);
       } else if (width < 1024) {
-        // Tablette : 2 colonnes
         setGridColumns('repeat(2, 1fr)');
         setIsMobile(false);
       } else {
-        // PC : 3 colonnes
         setGridColumns('repeat(3, 1fr)');
         setIsMobile(false);
       }
@@ -230,12 +217,19 @@ const Footer = forwardRef(({ className, ...props }, ref) => {
     // Calculer initialement
     updateGridColumns();
 
-    // Écouter les changements de taille
-    window.addEventListener('resize', updateGridColumns);
+    // Debounce pour éviter les recalculs excessifs pendant le resize
+    let resizeTimer;
+    const debouncedUpdate = () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(updateGridColumns, 150);
+    };
+
+    window.addEventListener('resize', debouncedUpdate);
     window.addEventListener('orientationchange', updateGridColumns);
 
     return () => {
-      window.removeEventListener('resize', updateGridColumns);
+      clearTimeout(resizeTimer);
+      window.removeEventListener('resize', debouncedUpdate);
       window.removeEventListener('orientationchange', updateGridColumns);
     };
   }, []);
@@ -251,8 +245,13 @@ const Footer = forwardRef(({ className, ...props }, ref) => {
       setBottomPosition(calculateBottomPosition());
     };
 
-    // Écouter les changements de taille de fenêtre
-    window.addEventListener('resize', handleResize);
+    // Écouter les changements de taille de fenêtre (avec debounce)
+    let resizeDebounce;
+    const debouncedHandleResize = () => {
+      clearTimeout(resizeDebounce);
+      resizeDebounce = setTimeout(handleResize, 150);
+    };
+    window.addEventListener('resize', debouncedHandleResize);
     window.addEventListener('orientationchange', handleResize);
 
     // Ajuster la taille de police pour que le texte tienne dans la largeur
@@ -336,7 +335,8 @@ const Footer = forwardRef(({ className, ...props }, ref) => {
 
     return () => {
       ctx.revert();
-      window.removeEventListener('resize', handleResize);
+      clearTimeout(resizeDebounce);
+      window.removeEventListener('resize', debouncedHandleResize);
       window.removeEventListener('orientationchange', handleResize);
       if (resizeObserver) {
         resizeObserver.disconnect();
@@ -489,10 +489,10 @@ const Footer = forwardRef(({ className, ...props }, ref) => {
                     href={social.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-8 h-8 flex items-center justify-center transition-all duration-300 hover:scale-110 no-underline group"
+                    className="flex items-center justify-center transition-all duration-300 hover:scale-110 no-underline group touch-target"
                     aria-label={social.label}
                   >
-                    <IconComponent className="w-8 h-8 text-dk-yellow group-hover:text-dk-yellow transition-colors duration-300" />
+                    <IconComponent className="w-6 h-6 sm:w-7 sm:h-7 text-dk-yellow group-hover:text-white transition-colors duration-300" />
                   </a>
                 );
               })}

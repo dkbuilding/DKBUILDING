@@ -10,13 +10,13 @@
  * Configuration Cloudinary depuis les variables d'environnement
  */
 const CLOUDINARY_CONFIG = {
-  cloudName: import.meta.env.CLOUDINARY_CLOUD_NAME || "dztbdnp3l",
-  apiKey: import.meta.env.CLOUDINARY_API_KEY || "",
+  cloudName: import.meta.env.VITE_CLOUDINARY_CLOUD_NAME || "dztbdnp3l",
+  apiKey: import.meta.env.VITE_CLOUDINARY_API_KEY || "",
   uploadPreset:
-    import.meta.env.CLOUDINARY_UPLOAD_PRESET || "dkbuilding-unsigned",
-  folder: import.meta.env.CLOUDINARY_FOLDER || "dkbuilding",
-  apiUrl: `https://api.cloudinary.com/v1_1/${import.meta.env.CLOUDINARY_CLOUD_NAME || "dztbdnp3l"}`,
-  uploadUrl: `https://api.cloudinary.com/v1_1/${import.meta.env.CLOUDINARY_CLOUD_NAME || "dztbdnp3l"}/upload`,
+    import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET || "dkbuilding-unsigned",
+  folder: import.meta.env.VITE_CLOUDINARY_FOLDER || "dkbuilding",
+  apiUrl: `https://api.cloudinary.com/v1_1/${import.meta.env.VITE_CLOUDINARY_CLOUD_NAME || "dztbdnp3l"}`,
+  uploadUrl: `https://api.cloudinary.com/v1_1/${import.meta.env.VITE_CLOUDINARY_CLOUD_NAME || "dztbdnp3l"}/upload`,
 };
 
 /**
@@ -134,7 +134,7 @@ export async function uploadToCloudinary(file, options = {}) {
  * @param {string} publicId - Public ID du fichier à supprimer
  * @returns {Promise<Object>} Résultat de la suppression
  */
-export async function deleteFromCloudinary(publicId) {
+export async function deleteFromCloudinary(_publicId) {
   // ⚠️ Cette fonction nécessite l'API Secret
   // Pour une suppression sécurisée, créez une fonction serverless
 

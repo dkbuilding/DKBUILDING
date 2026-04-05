@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Lock, Unlock, Wrench, Shield, Ban, CheckCircle, XCircle, AlertCircle } from 'lucide-react';
 import toast from 'react-hot-toast';
 
-const API_BASE_URL = import.meta.env.API_BASE_URL || '';
+// URL de base gérée par le proxy Vite (dev) ou les rewrites Vercel (prod)
 
 const LockAccessManager = () => {
   const [config, setConfig] = useState(null);
@@ -22,7 +22,7 @@ const LockAccessManager = () => {
 
   const fetchConfig = async () => {
     try {
-      const response = await fetch(`${API_BASE_URL}/api/lockaccess/config`, {
+      const response = await fetch(`/api/lockaccess/config`, {
         credentials: 'include',
       });
 
@@ -49,7 +49,7 @@ const LockAccessManager = () => {
     setIsSaving(true);
 
     try {
-      const response = await fetch(`${API_BASE_URL}/api/lockaccess/config`, {
+      const response = await fetch(`/api/lockaccess/config`, {
         method: 'PUT',
         credentials: 'include',
         headers: {
@@ -81,7 +81,7 @@ const LockAccessManager = () => {
     setFormData(newFormData);
 
     try {
-      const response = await fetch(`${API_BASE_URL}/api/lockaccess/config`, {
+      const response = await fetch(`/api/lockaccess/config`, {
         method: 'PUT',
         credentials: 'include',
         headers: {

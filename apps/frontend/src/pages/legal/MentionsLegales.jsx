@@ -1,6 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { gsap } from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { gsap, ScrollTrigger } from '../../utils/gsapConfig';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import Footer from '../../components/ui/Footer';
@@ -8,7 +7,6 @@ import ShapeTop from '../../components/ui/ShapeTop';
 import Breadcrumb from '../../components/ui/Breadcrumb';
 import { useMarkdownContent } from '../../hooks/useMarkdownContent';
 
-gsap.registerPlugin(ScrollTrigger);
 
 const MentionsLegales = () => {
   const pageRef = useRef(null);

@@ -6,6 +6,7 @@ import {
   Navigate,
 } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
+import ErrorBoundary from "./components/ErrorBoundary";
 import Preloader from "./components/ui/Preloader";
 import {
   LockAccess,
@@ -14,10 +15,11 @@ import {
 } from "./components/security/LockAccess";
 import { isSiteLocked } from "./config/lockAccessConfig";
 import { isAdminSubdomain } from "./utils/subdomainDetector";
-import Home from "./pages/Home";
 import "./App.css";
 import "./styles/lock-access.css";
 
+// Toutes les pages en lazy loading pour un code splitting optimal
+const Home = lazy(() => import("./pages/Home"));
 const Admin = lazy(() => import("./pages/Admin"));
 const NewsDetail = lazy(() => import("./pages/NewsDetail"));
 const MentionsLegales = lazy(() => import("./pages/legal/MentionsLegales"));
@@ -25,6 +27,14 @@ const PolitiqueConfidentialite = lazy(() => import("./pages/legal/PolitiqueConfi
 const CGV = lazy(() => import("./pages/legal/CGV"));
 const ErrorPage = lazy(() => import("./pages/ErrorPage"));
 const HealthPage = lazy(() => import("./components/pages/HealthPage"));
+
+/**
+ * Fallback de chargement minimaliste pour Suspense
+ * Fond dk-black pour eviter le flash blanc entre les routes
+ */
+const RouteFallback = () => (
+  <div className="min-h-screen bg-dk-black" />
+);
 
 function App() {
   const siteLocked = isSiteLocked();
@@ -51,40 +61,42 @@ function App() {
           <Preloader />
 
           <main id="main-content" className="w-full max-w-full overflow-x-hidden">
-            <Suspense fallback={<div className="min-h-screen bg-dk-black" />}>
-              <Routes>
-                {/* Si on est sur le sous-domaine admin, rediriger toutes les routes vers /admin */}
-                {isAdmin ? (
-                  <>
-                    <Route path="/" element={<Navigate to="/admin" replace />} />
-                    <Route path="/admin" element={<Admin />} />
-                    <Route path="*" element={<Navigate to="/admin" replace />} />
-                  </>
-                ) : (
-                  <>
-                    <Route path="/" element={<Home />} />
-                    <Route path="/health" element={<HealthPage />} />
-                    <Route path="/admin" element={<Admin />} />
-                    <Route path="/news/:id" element={<NewsDetail />} />
-                    <Route
-                      path="/legal/mentions-legales"
-                      element={<MentionsLegales />}
-                    />
-                    <Route
-                      path="/legal/politique-confidentialite"
-                      element={<PolitiqueConfidentialite />}
-                    />
-                    <Route path="/legal/cgv" element={<CGV />} />
-                    <Route path="/error/:code" element={<ErrorPage />} />
-                    <Route path="*" element={<ErrorPage />} />
-                  </>
-                )}
-              </Routes>
-            </Suspense>
+            <ErrorBoundary>
+              <Suspense fallback={<RouteFallback />}>
+                <Routes>
+                  {/* Si on est sur le sous-domaine admin, rediriger toutes les routes vers /admin */}
+                  {isAdmin ? (
+                    <>
+                      <Route path="/" element={<Navigate to="/admin" replace />} />
+                      <Route path="/admin" element={<Admin />} />
+                      <Route path="*" element={<Navigate to="/admin" replace />} />
+                    </>
+                  ) : (
+                    <>
+                      <Route path="/" element={<Home />} />
+                      <Route path="/health" element={<HealthPage />} />
+                      <Route path="/admin" element={<Admin />} />
+                      <Route path="/news/:id" element={<NewsDetail />} />
+                      <Route
+                        path="/legal/mentions-legales"
+                        element={<MentionsLegales />}
+                      />
+                      <Route
+                        path="/legal/politique-confidentialite"
+                        element={<PolitiqueConfidentialite />}
+                      />
+                      <Route path="/legal/cgv" element={<CGV />} />
+                      <Route path="/error/:code" element={<ErrorPage />} />
+                      <Route path="*" element={<ErrorPage />} />
+                    </>
+                  )}
+                </Routes>
+              </Suspense>
+            </ErrorBoundary>
           </main>
         </LockAccessOverlay>
 
-        {/* Toast notifications - GovTech style */}
+        {/* Toast notifications — unique instance pour toute l'app */}
         <Toaster
           position="top-right"
           toastOptions={{

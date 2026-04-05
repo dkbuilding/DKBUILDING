@@ -6,7 +6,10 @@ const multer = require("multer");
  * Upload Middleware - Cloudinary Storage
  * Architecture GovTech Zero-Cost pour DK BUILDING
  *
- * Remplace le stockage local par Cloudinary
+ * SÉCURITÉ :
+ * - Validation MIME type via fileFilter (pas seulement l'extension)
+ * - Taille maximale 50MB
+ * - Formats autorisés explicitement listés
  */
 
 cloudinary.config({
@@ -38,10 +41,46 @@ const storage = new CloudinaryStorage({
   },
 });
 
+/**
+ * MIME types autorisés — sécurité supplémentaire par rapport aux extensions seules.
+ * Un attaquant peut renommer un fichier .exe en .jpg, mais le MIME type
+ * du buffer sera détecté correctement par multer.
+ */
+const ALLOWED_MIME_TYPES = new Set([
+  // Images
+  'image/jpeg',
+  'image/png',
+  'image/webp',
+  // Documents
+  'application/pdf',
+  'application/msword',
+  'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+  // Vidéos
+  'video/mp4',
+  'video/quicktime',
+]);
+
+/**
+ * Filtre les fichiers par MIME type réel.
+ * Rejette tout fichier dont le MIME type n'est pas dans la whitelist.
+ */
+const fileFilter = (req, file, cb) => {
+  if (ALLOWED_MIME_TYPES.has(file.mimetype)) {
+    cb(null, true);
+  } else {
+    cb(new multer.MulterError(
+      'LIMIT_UNEXPECTED_FILE',
+      `Type de fichier non autorisé: ${file.mimetype}. Types acceptés: images (jpg, png, webp), documents (pdf, doc, docx), vidéos (mp4, mov).`
+    ));
+  }
+};
+
 const upload = multer({
   storage: storage,
+  fileFilter: fileFilter,
   limits: {
     fileSize: 50 * 1024 * 1024, // 50MB max
+    files: 15, // Maximum 15 fichiers par requête
   },
 });
 
@@ -53,6 +92,20 @@ const handleUploadError = (err, req, res, next) => {
         success: false,
         error: "Fichier trop volumineux",
         message: "La taille maximale autorisée est de 50MB",
+      });
+    }
+    if (err.code === "LIMIT_FILE_COUNT") {
+      return res.status(400).json({
+        success: false,
+        error: "Trop de fichiers",
+        message: "Maximum 15 fichiers par requête",
+      });
+    }
+    if (err.code === "LIMIT_UNEXPECTED_FILE") {
+      return res.status(400).json({
+        success: false,
+        error: "Type de fichier non autorisé",
+        message: err.field || err.message,
       });
     }
     return res.status(400).json({

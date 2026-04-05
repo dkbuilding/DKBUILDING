@@ -1,13 +1,23 @@
-import { useState, useEffect } from 'react';
-
 /**
  * Hook personnalisé pour détecter la largeur et la hauteur de l'écran en temps réel
- * @param {number} minWidth - Largeur minimale requise (défaut: 480px)
- * @param {number} minHeight - Hauteur minimale requise (défaut: 480px)
- * @returns {object} - { width: number, height: number, isWidthBelowMinimum: boolean, isHeightBelowMinimum: boolean, isBelowMinimum: boolean }
  */
-export function useScreenDimensions(minWidth = 480, minHeight = 480) {
-  const [screenData, setScreenData] = useState({
+
+import { useState, useEffect } from 'react';
+
+interface ScreenData {
+  readonly width: number;
+  readonly height: number;
+  readonly isWidthBelowMinimum: boolean;
+  readonly isHeightBelowMinimum: boolean;
+  readonly isBelowMinimum: boolean;
+}
+
+/**
+ * @param minWidth - Largeur minimale requise (défaut: 480px)
+ * @param minHeight - Hauteur minimale requise (défaut: 480px)
+ */
+export function useScreenDimensions(minWidth = 480, minHeight = 480): ScreenData {
+  const [screenData, setScreenData] = useState<ScreenData>({
     width: typeof window !== 'undefined' ? window.innerWidth : 1024,
     height: typeof window !== 'undefined' ? window.innerHeight : 768,
     isWidthBelowMinimum: false,
@@ -16,20 +26,18 @@ export function useScreenDimensions(minWidth = 480, minHeight = 480) {
   });
 
   useEffect(() => {
-    // Guard SSR
     if (typeof window === 'undefined') return;
 
-    let timeoutId;
+    let timeoutId: ReturnType<typeof setTimeout>;
 
-    const handleResize = () => {
-      // Debounce pour optimiser les performances
+    const handleResize = (): void => {
       clearTimeout(timeoutId);
       timeoutId = setTimeout(() => {
         const width = window.innerWidth;
         const height = window.innerHeight;
         const isWidthBelow = width < minWidth;
         const isHeightBelow = height < minHeight;
-        
+
         setScreenData({
           width,
           height,
@@ -40,13 +48,9 @@ export function useScreenDimensions(minWidth = 480, minHeight = 480) {
       }, 150);
     };
 
-    // Initialisation
     handleResize();
-
-    // Ajouter le listener
     window.addEventListener('resize', handleResize, { passive: true });
 
-    // Cleanup
     return () => {
       clearTimeout(timeoutId);
       window.removeEventListener('resize', handleResize);
@@ -57,4 +61,3 @@ export function useScreenDimensions(minWidth = 480, minHeight = 480) {
 }
 
 export default useScreenDimensions;
-
