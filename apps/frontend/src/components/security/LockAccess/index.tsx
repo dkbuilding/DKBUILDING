@@ -395,10 +395,9 @@ const LockAccessStatus = ({ className = "" }: { className?: string }) => {
     const [securityStatus, setSecurityStatus] = useState(getSecurityStatus());
 
     useEffect(() => {
-        // Polling réduit à 30s — pas besoin de vérifier le localStorage chaque seconde
         const interval = setInterval(() => {
         setSecurityStatus(getSecurityStatus());
-        }, 30_000);
+        }, 1000);
 
         return () => clearInterval(interval);
     }, []);
@@ -422,7 +421,7 @@ const useLockAccess = () => {
     useEffect(() => {
         const interval = setInterval(() => {
         setSecurityStatus(getSecurityStatus());
-        }, 30_000);
+        }, 1000);
 
         return () => clearInterval(interval);
     }, []);

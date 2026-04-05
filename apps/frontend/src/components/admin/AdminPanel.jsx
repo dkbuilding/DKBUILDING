@@ -8,7 +8,8 @@ import MediaManager from './MediaManager';
 import LockAccessManager from './LockAccessManager';
 import SettingsManager from './SettingsManager';
 import toast from 'react-hot-toast';
-import { api } from '@/lib/api';
+
+const API_BASE_URL = import.meta.env.API_BASE_URL || '';
 
 const AdminPanel = () => {
   const navigate = useNavigate();
@@ -16,7 +17,10 @@ const AdminPanel = () => {
 
   const handleLogout = async () => {
     try {
-      await api.post('/auth/logout');
+      await fetch(`${API_BASE_URL}/api/auth/logout`, {
+        method: 'POST',
+        credentials: 'include',
+      });
     } catch (error) {
       console.error('Erreur lors de la déconnexion:', error);
     }
@@ -108,3 +112,4 @@ const AdminPanel = () => {
 };
 
 export default AdminPanel;
+

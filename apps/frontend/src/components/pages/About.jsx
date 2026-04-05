@@ -1,8 +1,10 @@
 import { useLayoutEffect, useRef } from 'react';
-import { gsap, ScrollTrigger } from '../../utils/gsapConfig';
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { motionTokens, gsapUtils, scrollTriggerDefaults } from '../../utils/motion';
 import { Award, Users, Calendar, MapPin, CheckCircle } from 'lucide-react';
 
+gsap.registerPlugin(ScrollTrigger);
 
 // Styles CSS pour les grilles responsive de la section About
 const aboutGridStyles = `

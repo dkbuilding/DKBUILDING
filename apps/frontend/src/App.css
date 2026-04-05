@@ -13,20 +13,6 @@ html {
   scroll-behavior: smooth;
 }
 
-/* Respect de prefers-reduced-motion pour le scroll smooth (WCAG 2.3.3) */
-@media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto;
-  }
-  
-  *, *::before, *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
-  }
-}
-
 /* Styles pour les sections */
 section {
   position: relative;
@@ -50,20 +36,13 @@ img[loading="lazy"].loaded {
   opacity: 1;
 }
 
-/* Focus visible global pour tous les éléments interactifs (WCAG 2.4.7) */
-button:focus-visible,
-a:focus-visible,
-input:focus-visible,
-textarea:focus-visible,
-select:focus-visible,
-[tabindex]:focus-visible,
-[role="button"]:focus-visible,
-[role="link"]:focus-visible,
+/* Styles pour les boutons avec focus visible - DÉSACTIVÉ */
+/* button:focus-visible,
 .btn-primary:focus-visible,
 .btn-secondary:focus-visible {
   outline: 2px solid #F3E719;
   outline-offset: 2px;
-}
+} */
 
 /* Styles pour les animations GSAP */
 .gsap-element {

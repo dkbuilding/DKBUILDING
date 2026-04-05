@@ -31,10 +31,10 @@ function cspPlugin() {
           "form-action 'self'"
         ].join('; ')
       } else {
-        // CSP pour la production
+        // CSP strict pour la production
         csp = [
           "default-src 'self'",
-          "script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://vercel.live",
+          "script-src 'self' https://www.googletagmanager.com",
           "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
           "font-src 'self' data: https://fonts.gstatic.com",
           "img-src 'self' data: blob: https://images.unsplash.com https://res.cloudinary.com",
@@ -45,7 +45,8 @@ function cspPlugin() {
           "object-src 'none'",
           "base-uri 'self'",
           "form-action 'self'",
-          "upgrade-insecure-requests"
+          "upgrade-insecure-requests",
+          "block-all-mixed-content"
         ].join('; ')
       }
       
@@ -74,10 +75,8 @@ export default defineConfig(({ mode }) => {
     resolve: {
       alias: {
         "@": resolve(__dirname, "./src"),
+        "@dkbuilding/shared": resolve(__dirname, "../shared"),
       },
-    },
-    optimizeDeps: {
-      include: ['@dkbuilding/shared'],
     },
     server: {
       port: parseInt(env.PORT) || 5173,
@@ -94,7 +93,7 @@ export default defineConfig(({ mode }) => {
       ],
       proxy: {
         '/api': {
-          target: env.API_BASE_URL || env.API_URL || 'http://localhost:3001',
+          target: env.API_BASE_URL || 'http://localhost:3001',
           changeOrigin: true,
           secure: false,
           rewrite: (path) => path, // Garder le chemin tel quel
@@ -108,52 +107,32 @@ export default defineConfig(({ mode }) => {
           },
         },
         '/health': {
-          target: env.API_BASE_URL || env.API_URL || 'http://localhost:3001',
+          target: env.API_BASE_URL || 'http://localhost:3001',
           changeOrigin: true,
           secure: false,
         }
       }
     },
     define: {
-      // Variables d'environnement injectées dans le bundle client.
-      // ATTENTION : ne PAS écraser import.meta.env.BASE_URL (variable interne Vite).
-      //
-      // Stratégie : on injecte uniquement les variables sans préfixe VITE_
-      // qui doivent être accessibles côté client (via define).
-      // Les variables préfixées VITE_ sont auto-exposées par Vite.
+      // Exposer les variables d'environnement nécessaires
+      // En développement, on utilise le proxy Vite, donc on laisse API_BASE_URL vide
+      // pour forcer l'utilisation du proxy /api
       'import.meta.env.API_URL': JSON.stringify(env.API_URL || env.API_BASE_URL || ''),
       'import.meta.env.API_BASE_URL': JSON.stringify(env.API_BASE_URL || env.API_URL || ''),
+      'import.meta.env.BASE_URL': JSON.stringify(env.BASE_URL || 'http://localhost:5173'),
       // Variables Cloudinary (exposées pour uploads frontend-only)
       'import.meta.env.CLOUDINARY_CLOUD_NAME': JSON.stringify(env.CLOUDINARY_CLOUD_NAME || ''),
       'import.meta.env.CLOUDINARY_UPLOAD_PRESET': JSON.stringify(env.CLOUDINARY_UPLOAD_PRESET || ''),
       'import.meta.env.CLOUDINARY_FOLDER': JSON.stringify(env.CLOUDINARY_FOLDER || ''),
     },
     build: {
-      // Optimisation du bundle : target moderne pour réduire les polyfills
-      target: 'es2020',
-      // Activer la minification CSS
-      cssMinify: true,
-      // Générer un sourcemap pour le debugging en production (Sentry, etc.)
-      sourcemap: false,
-      // Seuil d'alerte pour les chunks trop gros (en kB)
-      chunkSizeWarningLimit: 500,
-      commonjsOptions: {
-        include: [/node_modules/, /shared/],
-        transformMixedEsModules: true,
-      },
       rollupOptions: {
         output: {
           manualChunks: {
-            // Core React : chargé en premier, cache longue durée
             vendor: ['react', 'react-dom', 'react-router-dom'],
-            // GSAP : chunk séparé (lourd, pas toujours nécessaire sur chaque page)
             gsap: ['gsap'],
-            // Formulaires : lazy-loaded avec la page Contact
             forms: ['react-hook-form', '@hookform/resolvers', 'zod'],
-            // React Query : utilisé globalement mais léger
             query: ['@tanstack/react-query'],
-            // Markdown : uniquement pour pages légales et NewsDetail (lazy-loaded)
-            markdown: ['react-markdown', 'remark-gfm'],
           }
         }
       }

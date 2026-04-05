@@ -1,12 +1,14 @@
 import { useLayoutEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { gsap, ScrollTrigger } from '../../utils/gsapConfig';
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { motionTokens, gsapUtils, scrollTriggerDefaults } from '../../utils/motion';
 import { useNewsAPI } from '../../hooks/useNewsAPI';
 import { Calendar, ArrowRight, ExternalLink, Loader2, AlertCircle, Mail } from 'lucide-react';
 import { ImagePlaceholder } from '../ui';
 import { calculateArticleReadingTime } from '../../utils/readingTime';
 
+gsap.registerPlugin(ScrollTrigger);
 
 // Styles CSS pour la grille responsive des News
 const newsGridStyles = `

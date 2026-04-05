@@ -8,8 +8,5 @@
     "./validators": "./validators/schemas.js",
     "./constants": "./constants/index.js",
     "./types": "./types/index.js"
-  },
-  "dependencies": {
-    "zod": "^4.2.0"
   }
 }

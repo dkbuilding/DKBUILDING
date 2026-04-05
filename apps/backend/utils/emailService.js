@@ -7,21 +7,6 @@ class EmailService {
     this.init();
   }
 
-  /**
-   * Échappe les caractères HTML pour prévenir les injections XSS dans les emails
-   * @param {string} str - Chaîne à échapper
-   * @returns {string} Chaîne échappée
-   */
-  escapeHtml(str) {
-    if (str == null) return '';
-    return String(str)
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;')
-      .replace(/'/g, '&#039;');
-  }
-
   init() {
     try {
       const apiKey = process.env.RESEND_API_KEY;
@@ -141,47 +126,47 @@ class EmailService {
             <div class="content">
                 <div class="field">
                     <div class="label">👤 Client:</div>
-                    <div class="value">${this.escapeHtml(data.name)}</div>
+                    <div class="value">${data.name}</div>
                 </div>
                 <div class="field">
                     <div class="label">📧 Email:</div>
-                    <div class="value">${this.escapeHtml(data.email)}</div>
+                    <div class="value">${data.email}</div>
                 </div>
                 <div class="field">
                     <div class="label">📞 Téléphone:</div>
-                    <div class="value">${this.escapeHtml(data.phone)}</div>
+                    <div class="value">${data.phone}</div>
                 </div>
                 <div class="field">
                     <div class="label">🏗️ Type de projet:</div>
-                    <div class="value">${this.escapeHtml(data.projectType)}</div>
+                    <div class="value">${data.projectType}</div>
                 </div>
                 <div class="field">
                     <div class="label">📝 Description:</div>
-                    <div class="value">${this.escapeHtml(data.projectDetails)}</div>
+                    <div class="value">${data.projectDetails}</div>
                 </div>
                 <div class="field">
                     <div class="label">📐 Surface:</div>
-                    <div class="value">${this.escapeHtml(data.surface)}</div>
+                    <div class="value">${data.surface}</div>
                 </div>
                 <div class="field">
                     <div class="label">⏰ Délai souhaité:</div>
-                    <div class="value">${this.escapeHtml(data.deadline)}</div>
+                    <div class="value">${data.deadline}</div>
                 </div>
                 <div class="field">
                     <div class="label">📍 Localisation:</div>
-                    <div class="value">${this.escapeHtml(data.location)}</div>
+                    <div class="value">${data.location}</div>
                 </div>
                 <div class="field">
                     <div class="label">💬 Message:</div>
-                    <div class="value">${this.escapeHtml(data.message)}</div>
+                    <div class="value">${data.message}</div>
                 </div>
                 <div class="field">
                     <div class="label">🕒 Date de demande:</div>
-                    <div class="value">${this.escapeHtml(data.timestamp)}</div>
+                    <div class="value">${data.timestamp}</div>
                 </div>
                 <div class="field">
                     <div class="label">🌐 IP Client:</div>
-                    <div class="value">${this.escapeHtml(data.clientIP)}</div>
+                    <div class="value">${data.clientIP}</div>
                 </div>
             </div>
             <div class="footer">
@@ -217,8 +202,8 @@ class EmailService {
                 <h2>Confirmation de votre demande</h2>
             </div>
             <div class="content">
-                <p>Bonjour ${this.escapeHtml(data.name)},</p>
-                <p>Nous avons bien reçu votre demande de devis pour un projet de <strong>${this.escapeHtml(data.projectType)}</strong>.</p>
+                <p>Bonjour ${data.name},</p>
+                <p>Nous avons bien reçu votre demande de devis pour un projet de <strong>${data.projectType}</strong>.</p>
                 <p>Notre équipe va étudier votre demande et vous contactera dans les plus brefs délais pour discuter de votre projet.</p>
                 <p>En attendant, n'hésitez pas à nous contacter directement :</p>
                 <ul>
@@ -248,7 +233,7 @@ class EmailService {
     </head>
     <body>
         <h1>Message de DK BUILDING</h1>
-        <pre>${this.escapeHtml(JSON.stringify(data, null, 2))}</pre>
+        <p>${JSON.stringify(data, null, 2)}</p>
     </body>
     </html>
     `;

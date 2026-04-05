@@ -72,12 +72,8 @@ export function generateCSPMetaTag(mode = 'production') {
  */
 export function detectMode() {
   // Vérifier import.meta.env.MODE (Vite)
-  try {
-    if (import.meta && import.meta.env) {
-      return import.meta.env.MODE || 'production';
-    }
-  } catch {
-    // import.meta non disponible dans cet environnement
+  if (typeof import !== 'undefined' && import.meta && import.meta.env) {
+    return import.meta.env.MODE || 'production';
   }
   
   // Vérifier process.env.NODE_ENV (Node.js)
@@ -98,3 +94,4 @@ export function generateCSPForCurrentMode() {
   const mode = detectMode();
   return generateCSP(mode);
 }
+

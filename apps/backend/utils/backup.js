@@ -1,7 +1,6 @@
 const fs = require('fs');
 const path = require('path');
 const archiver = require('archiver');
-const { formatFileSize } = require('./format');
 
 /**
  * Créer une sauvegarde complète (base de données + storage)
@@ -190,6 +189,17 @@ function cleanOldBackups(keepCount = 10) {
   } catch (error) {
     throw error;
   }
+}
+
+/**
+ * Formater la taille d'un fichier
+ */
+function formatFileSize(bytes) {
+  if (bytes === 0) return '0 Bytes';
+  const k = 1024;
+  const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
 }
 
 module.exports = {

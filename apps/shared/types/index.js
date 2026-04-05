@@ -1,11 +1,8 @@
 /**
- * Types JSDoc partages — @dkbuilding/shared
+ * Types JSDoc partagés — @dkbuilding/shared
  *
  * Pas de TypeScript car le backend est en CommonJS pur.
  * Ces typedefs sont utilisables via JSDoc dans les deux environnements.
- *
- * IMPORTANT : Les types reels sont inferes des schemas Zod dans schemas.d.ts.
- * Ce fichier fournit des typedefs JSDoc pour le DX en JavaScript pur.
  */
 
 /**
@@ -73,15 +70,6 @@
  * @property {string} email
  * @property {string} phone
  * @property {string} [message]
- */
-
-/**
- * @typedef {Object} APIResponse
- * @template T
- * @property {boolean} success
- * @property {T} data
- * @property {string} [message]
- * @property {string} [error]
  */
 
 module.exports = {};

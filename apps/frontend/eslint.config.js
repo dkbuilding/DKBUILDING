@@ -7,7 +7,7 @@ import tsparser from '@typescript-eslint/parser'
 import { defineConfig, globalIgnores } from 'eslint/config'
 
 export default defineConfig([
-  globalIgnores(['dist', '_backup', '**/src/_backup/**', 'scripts/**']),
+  globalIgnores(['dist']),
   {
     files: ['**/*.{js,jsx}'],
     extends: [
@@ -28,7 +28,7 @@ export default defineConfig([
       },
     },
     rules: {
-      'no-unused-vars': ['error', { varsIgnorePattern: '^[A-Z_]', argsIgnorePattern: '^(_|Icon$)', destructuredArrayIgnorePattern: '^_' }],
+      'no-unused-vars': ['error', { varsIgnorePattern: '^[A-Z_]', argsIgnorePattern: '^_' }],
     },
   },
   {
@@ -38,19 +38,15 @@ export default defineConfig([
         ...globals.browser,
         ...globals.jest,
         process: 'readonly',
-        vi: 'readonly',
-        vitest: 'readonly',
       },
     },
   },
   {
-    files: ['tailwind.config.js', 'vite.config.js', 'vitest.config.js', 'scripts/**/*.js'],
+    files: ['tailwind.config.js', 'vite.config.js'],
     languageOptions: {
       globals: {
         ...globals.node,
         require: 'readonly',
-        __dirname: 'readonly',
-        __filename: 'readonly',
       },
     },
   },
@@ -90,12 +86,6 @@ export default defineConfig([
   },
   {
     files: ['**/LockAccess/index.tsx'],
-    rules: {
-      'react-refresh/only-export-components': 'off',
-    },
-  },
-  {
-    files: ['**/ui/button.jsx', '**/ui/form.jsx'],
     rules: {
       'react-refresh/only-export-components': 'off',
     },

@@ -1,74 +1,88 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
-const AdminController = require("../controllers/adminController");
-const { createBackup, listBackups, deleteBackup, cleanOldBackups } = require("../utils/backup");
-const {
-  sendSuccess,
-  sendCreated,
-  sendNoContent,
-  sendInternalError,
-} = require("../utils/apiResponse");
+const AdminController = require('../controllers/adminController');
+const { createBackup, listBackups, deleteBackup, cleanOldBackups } = require('../utils/backup');
+const JWTAuthMiddleware = require('../middleware/jwtAuth');
 
-// Note: L'authentification JWT et la vérification du rôle admin
-// sont déjà gérées par adminGuard dans server.js
+const jwtAuth = new JWTAuthMiddleware();
 
-// GET /api/admin/stats
-router.get("/stats", AdminController.getStats);
+// Toutes les routes admin nécessitent une authentification
+router.use(jwtAuth.authenticateToken.bind(jwtAuth));
 
-// GET /api/admin/logs
-router.get("/logs", AdminController.getLogs);
+router.get('/stats', AdminController.getStats);
+router.get('/logs', AdminController.getLogs);
 
-// ─── Sauvegardes ────────────────────────────────
-
-// POST /api/admin/backups — Créer une sauvegarde
-router.post("/backups", async (req, res) => {
+// Routes de sauvegarde
+router.post('/backup', async (req, res) => {
   try {
     const backup = await createBackup();
-    return sendCreated(res, backup, "Sauvegarde créée avec succès");
-  } catch (error) {
-    console.error("Erreur lors de la création de la sauvegarde:", error);
-    return sendInternalError(res, "Erreur lors de la création de la sauvegarde");
-  }
-});
-
-// GET /api/admin/backups — Lister les sauvegardes
-router.get("/backups", (req, res) => {
-  try {
-    const backups = listBackups();
-    return sendSuccess(res, backups, {
-      meta: { count: backups.length },
+    res.json({
+      success: true,
+      data: backup,
+      message: 'Sauvegarde créée avec succès'
     });
   } catch (error) {
-    console.error("Erreur lors de la liste des sauvegardes:", error);
-    return sendInternalError(res, "Erreur lors de la liste des sauvegardes");
+    console.error('Erreur lors de la création de la sauvegarde:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Erreur lors de la création de la sauvegarde',
+      message: error.message
+    });
   }
 });
 
-// DELETE /api/admin/backups/:filename — Supprimer une sauvegarde
-router.delete("/backups/:filename", (req, res) => {
+router.get('/backup/list', (req, res) => {
+  try {
+    const backups = listBackups();
+    res.json({
+      success: true,
+      data: backups,
+      count: backups.length
+    });
+  } catch (error) {
+    console.error('Erreur lors de la liste des sauvegardes:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Erreur lors de la liste des sauvegardes',
+      message: error.message
+    });
+  }
+});
+
+router.delete('/backup/:filename', (req, res) => {
   try {
     const { filename } = req.params;
-    deleteBackup(filename);
-    return sendNoContent(res);
+    const result = deleteBackup(filename);
+    res.json({
+      success: true,
+      message: result.message
+    });
   } catch (error) {
-    console.error("Erreur lors de la suppression de la sauvegarde:", error);
-    return sendInternalError(res, "Erreur lors de la suppression de la sauvegarde");
+    console.error('Erreur lors de la suppression de la sauvegarde:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Erreur lors de la suppression de la sauvegarde',
+      message: error.message
+    });
   }
 });
 
-// DELETE /api/admin/backups/old — Nettoyage des anciennes sauvegardes
-// Note : doit être déclaré AVANT /:filename pour éviter le conflit
-// On le met en POST car c'est une action avec side effects et un body
-router.post("/backups/cleanup", (req, res) => {
+router.post('/backup/clean', (req, res) => {
   try {
     const { keepCount = 10 } = req.body;
     const result = cleanOldBackups(keepCount);
-    return sendSuccess(res, {
-      deleted: result.deleted,
-    }, { message: result.message });
+    res.json({
+      success: true,
+      message: result.message,
+      deleted: result.deleted
+    });
   } catch (error) {
-    console.error("Erreur lors du nettoyage des sauvegardes:", error);
-    return sendInternalError(res, "Erreur lors du nettoyage des sauvegardes");
+    console.error('Erreur lors du nettoyage des sauvegardes:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Erreur lors du nettoyage des sauvegardes',
+      message: error.message
+    });
   }
 });
 

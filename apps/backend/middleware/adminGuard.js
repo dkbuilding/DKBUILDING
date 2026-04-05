@@ -1,6 +1,6 @@
 const { adminLimiter } = require("./rateLimiter");
 const ipWhitelist = require("./ipWhitelist");
-const { jwtAuth } = require("./jwtAuth");
+const JWTAuthMiddleware = require("./jwtAuth");
 
 /**
  * Admin Guard - Middleware de Protection Admin
@@ -12,6 +12,9 @@ const { jwtAuth } = require("./jwtAuth");
  * 3. Authentification JWT
  * 4. Vérification du rôle admin
  */
+
+// Instance du middleware JWT
+const jwtAuth = new JWTAuthMiddleware();
 
 // Middleware de vérification du rôle admin
 const checkAdminRole = (req, res, next) => {

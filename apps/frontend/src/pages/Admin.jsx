@@ -2,8 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import AdminPanel from '../components/admin/AdminPanel';
 import AdminLogin from '../components/admin/AdminLogin';
+import { Toaster } from 'react-hot-toast';
 import { isAdminSubdomain } from '../utils/subdomainDetector';
-import { api } from '@/lib/api';
+
+const API_BASE_URL = import.meta.env.API_BASE_URL || '';
 
 const Admin = () => {
   const navigate = useNavigate();
@@ -16,12 +18,25 @@ const Admin = () => {
     // Le token est dans un cookie HttpOnly, donc on ne peut pas le lire côté client
     const verifyAuth = async () => {
       try {
-        const result = await api.post('/auth/verify');
-        if (result.valid) {
-          setIsAuthenticated(true);
+        const response = await fetch(`${API_BASE_URL}/api/auth/verify`, {
+          method: 'POST',
+          credentials: 'include',
+        });
+
+        if (response.ok) {
+          const result = await response.json();
+          if (result.valid) {
+            setIsAuthenticated(true);
+          }
+        } else {
+          // Token invalide ou absent
+          if (!isAdminDomain) {
+            navigate('/');
+            return;
+          }
         }
-      } catch {
-        // Token invalide ou absent — rediriger vers l'accueil si pas sur le sous-domaine admin
+      } catch (error) {
+        // Erreur réseau ou serveur inaccessible
         if (!isAdminDomain) {
           navigate('/');
           return;
@@ -45,6 +60,7 @@ const Admin = () => {
   if (!isAuthenticated) {
     return (
       <div className="min-h-screen bg-[#0E0E0E]">
+        <Toaster position="top-right" />
         <AdminLogin onLogin={() => setIsAuthenticated(true)} />
       </div>
     );
@@ -52,6 +68,7 @@ const Admin = () => {
 
   return (
     <div className="min-h-screen bg-[#0E0E0E]">
+      <Toaster position="top-right" />
       <AdminPanel />
     </div>
   );

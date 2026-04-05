@@ -1,314 +1,365 @@
-# Site Web DK BUILDING - Documentation technique
-
-## Table des matieres
-
-- [Vue d'ensemble](#vue-densemble)
-- [Architecture](#architecture)
-- [Frontend](#frontend)
-- [Backend](#backend)
-- [Base de donnees](#base-de-donnees)
-- [Services externes](#services-externes)
-- [Securite](#securite)
-- [SEO et Performance](#seo-et-performance)
-- [Deploiement](#deploiement)
+# Site Web DK BUILDING - Documentation Technique
 
 ## Vue d'ensemble
 
-Site web pour DK BUILDING, SAS specialisee dans la construction metallique (charpente, bardage, couverture) a Albi, Tarn.
+Site web moderne pour DK BUILDING, entreprise spécialisée dans la construction métallique (charpente, bardage, couverture, terrassement) basée à Albi, Tarn.
 
-### Informations entreprise
+### Informations Entreprise
 
-| Champ               | Valeur                              |
-|---------------------|-------------------------------------|
-| Raison sociale      | DK BUILDING (SAS)                   |
-| SIREN               | 947 998 555                         |
-| RCS                 | Albi B 947998555                    |
-| TVA Intracommunautaire | FR06947998555                    |
-| Siege social        | 59 Rue Pierre Cormary, 81000 Albi  |
-| Dirigeant           | Dicalou KHAMIDOV                    |
-| Creation            | 9 janvier 2023                      |
-| Capital social      | 1 000 EUR                           |
+- **Nom** : DK BUILDING
+- **SIREN** : 947 998 555
+- **RCS** : Albi B 947998555
+- **Adresse** : 59 Rue Pierre Cormary, 81000 Albi
+- **Dirigeant** : Dicalou KHAMIDOV
+- **Création** : 9 janvier 2023
+- **Forme juridique** : SAS
+- **Capital** : 1 000 €
 
-## Architecture
+## Architecture Technique
 
-### Diagramme general
+### Frontend
 
-```mermaid
-graph TB
-    subgraph Client
-        Browser[Navigateur]
-    end
+- **Framework** : React 18 + Vite
+- **Styling** : TailwindCSS + CSS Custom
+- **Animations** : GSAP + ScrollTrigger
+- **Routing** : React Router DOM
+- **Icônes** : Lucide React
+- **Build** : Vite (optimisé pour la production)
 
-    subgraph Vercel
-        Frontend["Frontend<br/>React 19 + Vite 7<br/>CDN Vercel"]
-        Backend["Backend<br/>Express 5<br/>Serverless Functions"]
-    end
+### Backend
 
-    subgraph Services
-        Turso["Turso<br/>SQLite Cloud"]
-        Cloudinary["Cloudinary<br/>Stockage Medias"]
-        Resend["Resend<br/>Service Email"]
-    end
+- **Runtime** : Node.js
+- **Framework** : Express.js
+- **Email** : Nodemailer
+- **Validation** : Express Validator
+- **Sécurité** : Helmet, CORS
+- **Logs** : Morgan
 
-    Browser --> Frontend
-    Browser --> Backend
-    Backend --> Turso
-    Backend --> Cloudinary
-    Backend --> Resend
-```
+### Palette de Couleurs
 
-### Pattern architectural
+- **Jaune primaire** : `#F3E719` (CTA, accents, hover)
+- **Noir profond** : `#0E0E0E` (backgrounds, textes)
+- **Blanc** : `#FFFFFF` (textes sur fond sombre)
+- **Gris** : Palette complète de `#F8F8F8` à `#101010`
 
-- **Monorepo pnpm** : `apps/frontend`, `apps/backend`, `apps/shared`, `apps/docs`
-- **Backend** : Architecture en couches (Routes > Controllers > Repositories > Database)
-- **Frontend** : Composants React avec React Query pour le cache serveur
-- **Validation** : Schemas Zod partages entre frontend et backend (`apps/shared/validators/`)
-
-## Frontend
-
-### Stack technique
-
-| Technologie       | Version | Role                                    |
-|-------------------|---------|-----------------------------------------|
-| React             | 19      | Framework UI                            |
-| Vite              | 7       | Build tool et serveur de developpement  |
-| TailwindCSS       | 4       | Styling utility-first                   |
-| GSAP              | 3       | Animations (ScrollTrigger, timelines)   |
-| React Router      | 7       | Routing SPA                             |
-| React Query       | 5       | Cache et synchronisation serveur        |
-| React Hook Form   | 7       | Gestion des formulaires                 |
-| Zod               | 4       | Validation des formulaires              |
-| Lucide React      | 0.5+    | Bibliotheque d'icones                   |
-
-### Design
-
-**Palette de couleurs** :
-
-| Nom          | Hex       | Utilisation                          |
-|--------------|-----------|--------------------------------------|
-| Jaune primaire| `#F3E719` | CTA, accents, hover, logo           |
-| Noir profond | `#0E0E0E` | Backgrounds, textes principaux       |
-| Blanc        | `#FFFFFF` | Textes sur fond sombre               |
-
-**Typographie** :
-- Titres : Space Grotesk
-- Corps : Inter
-
-### Animations GSAP
-
-**Tokens d'animation** :
-
-| Token    | Valeur   | Usage                    |
-|----------|----------|--------------------------|
-| fast     | 0.3s     | Micro-interactions       |
-| normal   | 0.6s     | Animations standard      |
-| slow     | 0.9s     | Animations complexes     |
-| hero     | 1.2s     | Animations hero          |
-
-**Easing par defaut** : `power3.out`
-
-**Accessibilite** : Toutes les animations respectent `prefers-reduced-motion`. Les fallbacks statiques sont fournis quand le mouvement est reduit.
-
-### Sections de la page d'accueil
-
-1. **Hero** : Logo anime, parallax, CTA "Demander un devis gratuit"
-2. **Services** : 5 cartes (Charpente, Bardage, Couverture, Photovoltaique, Climatisation)
-3. **Portfolio** : Galerie avec lightbox, lazy loading, filtres par type
-4. **A propos** : Donnees legales, compteurs animes, valeurs, timeline
-5. **Contact** : Formulaire multi-etapes (3 etapes) avec validation temps reel
-6. **Footer** : Informations legales, liens rapides, contact, reseaux sociaux
-
-## Backend
-
-### Stack technique
-
-| Technologie        | Version | Role                                 |
-|--------------------|---------|--------------------------------------|
-| Express            | 5       | Framework HTTP                       |
-| Turso (libSQL)     | 0.17+   | Base de donnees SQLite cloud         |
-| Cloudinary         | 2.9+    | Stockage et optimisation medias      |
-| Resend             | 4.8+    | Service d'envoi d'emails             |
-| JWT (jsonwebtoken) | 9       | Authentification (HS512)             |
-| Zod                | 4       | Validation des donnees entrantes     |
-| Helmet             | 8       | En-tetes de securite HTTP            |
-| Multer             | 2       | Parsing multipart (Cloudinary)       |
-| express-rate-limit | 8       | Protection contre les abus           |
-| Morgan             | 1.10    | Logging HTTP                         |
-
-### Architecture en couches
-
-```mermaid
-graph LR
-    A[Routes] --> B[Controllers]
-    B --> C[Repositories]
-    C --> D[Database]
-    B --> E[Validators]
-    A --> F[Middleware]
-    F --> |sanitizer| A
-    F --> |jwtAuth| A
-    F --> |rateLimiter| A
-    F --> |adminGuard| A
-    F --> |upload| A
-```
-
-**Routes** (`routes/`) : Definition des endpoints et chaine de middlewares.
-
-**Controllers** (`controllers/`) : Logique HTTP, orchestration, parsing des reponses. Quatre controllers :
-- `adminController` : Statistiques et logs du dashboard
-- `annoncesController` : CRUD annonces avec gestion des fichiers Cloudinary
-- `projetsController` : CRUD projets avec gestion des fichiers Cloudinary
-- `mediaController` : Listing, serving et suppression de medias Cloudinary
-
-**Repositories** (`repositories/`) : Couche d'acces aux donnees. Pattern Repository avec heritage :
-- `BaseRepository` : CRUD generique (getAll, getById, getBySlug, create, update, delete, count, incrementViewCount, getAllSlugs)
-- `AnnoncesRepository` : Etend BaseRepository avec getPublic, getFiltered, slugExists, createWithReturning, updateWithCoalesce
-- `ProjetsRepository` : Etend BaseRepository avec getPublic, getFeatured, getFiltered, slugExists, createWithReturning, updateWithCoalesce
-
-**Middleware** (`middleware/`) :
-- `jwtAuth` : Authentification et autorisation JWT (HS512, cookie HttpOnly ou header Bearer)
-- `sanitizer` : Nettoyage XSS sur body, query et params
-- `rateLimiter` : Trois niveaux (public 100/15min, admin 50/15min, login 5/15min)
-- `adminGuard` : Guard multi-couches (rate limit + IP whitelist + JWT + role admin)
-- `upload` : Integration Multer/Cloudinary avec optimisation automatique des images
-
-**Validators** (`validators/`) : Schemas Zod pour annonces, projets et formulaire de contact.
-
-**Utils** (`utils/`) :
-- `emailService` : Service d'envoi d'emails via Resend avec templates HTML
-- `logger` : Logs d'audit persistants en base de donnees (Turso)
-- `slugify` : Generation de slugs uniques
-- `parseJSON` : Parsing JSON securise pour les colonnes TEXT de SQLite
-- `dbInit` : Initialisation de la base et execution des migrations
-- `backup` : Creation et gestion des sauvegardes
-- `lockAccessConfig` : Gestion de la configuration du systeme LockAccess
-
-## Base de donnees
-
-### Turso (SQLite Cloud)
-
-Base de donnees SQLite hebergee dans le cloud via Turso. Connexion asynchrone via `@libsql/client`.
-
-**Tables** :
-
-| Table        | Description                         |
-|--------------|-------------------------------------|
-| `annonces`   | Actualites et annonces de l'entreprise |
-| `projets`    | Projets realises et en cours        |
-| `admin_users`| Comptes administrateurs             |
-| `logs`       | Logs d'audit (actions, erreurs)     |
-
-Les migrations SQL sont dans `database/migrations/` et executees automatiquement au premier demarrage.
-
-### Fallback local
-
-Si `TURSO_DATABASE_URL` n'est pas defini, le systeme bascule sur un fichier SQLite local (`file:local.db`). Les operations base de donnees sont alors desactivees en mode degrade.
-
-## Services externes
-
-### Cloudinary
-
-Stockage et distribution des medias (images, documents, videos). Configuration dans le middleware `upload.js`.
-
-- Dossier de base : `dkbuilding/`
-- Optimisation automatique : `quality: auto`, `fetch_format: auto`
-- Taille max : 50 Mo par fichier
-- Formats : jpg, jpeg, png, webp, pdf, doc, docx, mp4, mov
-
-### Resend
-
-Service d'envoi d'emails transactionnels. Deux templates :
-1. **contact-form** : Notification au gerant avec les details du devis
-2. **confirmation** : Accusé de reception envoye au client
-
-Configuration : cle API (`RESEND_API_KEY`) + domaine verifie dans le dashboard Resend.
-
-### Vercel
-
-Hebergement en mode Serverless Functions. Le backend exporte `module.exports = app` pour compatibilite Vercel.
-
-## Securite
-
-### Couches de protection
-
-1. **Helmet** : CSP strict, HSTS preload, Referrer-Policy strict-origin-when-cross-origin
-2. **CORS** : Origines explicitement listees (localhost, dkbuilding.fr, sous-domaines admin)
-3. **Rate Limiting** : 3 niveaux de protection par IP
-4. **Sanitization XSS** : Nettoyage des entrees (suppression des tags HTML, event handlers, javascript: URLs)
-5. **JWT HS512** : Token signe avec secret de 512 bits, verification d'integrite (hash SHA-512)
-6. **Cookie HttpOnly** : Token non accessible depuis JavaScript client
-7. **Validation Zod** : Schemas stricts sur toutes les donnees entrantes
-8. **Admin Guard** : IP whitelisting + rate limit + JWT + role check en production
-9. **Timing-safe compare** : Comparaison de mots de passe resistante aux attaques par timing
-
-### Generation des secrets
+## Structure du Projet
 
 ```bash
-cd apps/backend
-node generateSecurity.js
+Site Web/apps/
+├── frontend/                 # Application React
+│   ├── src/
+│   │   ├── components/      # Composants réutilisables
+│   │   │   ├── Hero.jsx
+│   │   │   ├── Services.jsx
+│   │   │   ├── Portfolio.jsx
+│   │   │   ├── About.jsx
+│   │   │   ├── Contact.jsx
+│   │   │   ├── Footer.jsx
+│   │   │   └── Navigation.jsx
+│   │   ├── pages/           # Pages de l'application
+│   │   │   └── Home.jsx
+│   │   ├── utils/           # Utilitaires
+│   │   │   └── motion.js    # Tokens d'animation GSAP
+│   │   ├── styles/          # Styles globaux
+│   │   │   └── index.css
+│   │   ├── App.jsx          # Composant racine
+│   │   └── main.jsx         # Point d'entrée
+│   ├── public/              # Assets statiques
+│   │   ├── robots.txt
+│   │   └── sitemap.xml
+│   ├── tailwind.config.js   # Configuration TailwindCSS
+│   ├── postcss.config.js    # Configuration PostCSS
+│   └── package.json         # Dépendances frontend
+└── backend/                 # API Node.js
+    ├── routes/              # Routes API
+    │   └── contact.js       # Route formulaire de contact
+    ├── utils/               # Utilitaires backend
+    │   └── emailService.js  # Service d'envoi d'emails
+    ├── server.js            # Serveur Express principal
+    ├── env.example          # Variables d'environnement
+    └── package.json         # Dépendances backend
 ```
 
-Genere automatiquement `JWT_SECRET`, `JWT_SALT`, `JWT_VERIFICATION_HASH` et `HEALTH_PASSWORD` dans le fichier `.env`.
+## Fonctionnalités
+
+### 1. Page d'Accueil (Hero)
+
+- **Logo animé** : Animation GSAP au chargement
+- **Typographie forte** : Police Space Grotesk pour les titres
+- **Parallax** : Éléments de fond avec ScrollTrigger
+- **CTA principal** : Bouton "Demander un devis gratuit"
+- **Indicateur de scroll** : Animation bounce continue
+
+### 2. Section Services
+
+- **Grid responsive** : 5 cartes (Charpente, Bardage, Couverture, Photovoltaïque, Climatisation)
+- **Animations reveal** : Stagger GSAP au scroll
+- **Hover effects** : Transform GPU-friendly
+- **Icônes** : Lucide React (Hammer, Shield, Home, Sun, Thermometer)
+- **Détails techniques** : Liste des fonctionnalités par service
+
+### 3. Galerie Portfolio
+
+- **Lightbox moderne** : Navigation avec clavier et boutons
+- **Lazy loading** : Optimisation des performances
+- **Filtres** : Par type de projet (optionnel)
+- **Layout masonry** : Responsive et fluide
+- **Données réelles** : Projets avec localisation
+
+### 4. Section À Propos
+
+- **Données légales** : SIREN, RCS, adresse complète
+- **Statistiques** : Compteurs animés (années, projets, etc.)
+- **Valeurs** : Expertise, qualité, proximité
+- **Timeline** : Histoire de l'entreprise depuis 2023
+
+### 5. Formulaire de Contact
+
+- **Multi-étapes** : 3 étapes progressives
+- **Validation temps réel** : Express Validator
+- **Types de projet** : Charpente, Bardage, Couverture, Mixte
+- **Backend intégré** : Envoi d'emails automatiques
+- **Confirmation** : Email de confirmation au client
+
+### 6. Navigation
+
+- **Responsive** : Menu hamburger mobile
+- **Sticky** : Changement d'apparence au scroll
+- **Smooth scroll** : Navigation fluide entre sections
+- **Accessibilité** : ARIA labels et focus management
+
+### 7. Footer
+
+- **Informations légales** : SIREN, RCS, adresse
+- **Liens rapides** : Navigation et services
+- **Contact** : Téléphone, email, adresse, horaires
+- **Réseaux sociaux** : LinkedIn intégré
+
+## Animations GSAP
+
+### Tokens d'Animation
+
+```javascript
+// Durées
+durations: {
+  fast: 0.3,      // Micro-interactions
+  normal: 0.6,    // Animations standard
+  slow: 0.9,      // Animations complexes
+  hero: 1.2       // Animations hero
+}
+
+// Easing
+easing: {
+  smooth: "power3.out",    // Mouvement naturel
+  bounce: "power2.out",    // Effet rebond
+  elastic: "elastic.out(1, 0.3)"  // Effet élastique
+}
+```
+
+### Types d'Animations
+
+- **fadeInUp** : Entrée avec translation verticale
+- **scaleIn** : Entrée avec mise à l'échelle
+- **slideInLeft/Right** : Entrée horizontale
+- **heroEntrance** : Animation complexe pour hero
+- **parallax** : Effet parallax avec ScrollTrigger
+
+### ScrollTrigger Configuration
+
+```javascript
+scrollTriggerDefaults: {
+  start: "top 80%",        // Déclenchement
+  end: "bottom 20%",       // Fin
+  toggleActions: "play none none reverse",  // Actions
+  markers: false           // Désactivé en production
+}
+```
+
+## API Backend
+
+### Endpoints
+
+#### POST /api/contact
+
+**Description** : Traitement du formulaire de contact
+
+**Body** :
+
+```json
+{
+  "projectType": "charpente|bardage|couverture|mixte",
+  "projectDetails": "string",
+  "surface": "number",
+  "deadline": "urgent|1-3mois|3-6mois|6mois+",
+  "location": "string",
+  "name": "string",
+  "email": "string",
+  "phone": "string",
+  "message": "string"
+}
+```
+
+**Response** :
+
+```json
+{
+  "success": true,
+  "message": "Votre demande a été envoyée avec succès",
+  "messageId": "email-message-id"
+}
+```
+
+#### GET /health
+
+**Description** : Vérification de l'état de l'API
+
+**Response** :
+
+```json
+{
+  "status": "OK",
+  "message": "DK BUILDING API is running",
+  "timestamp": "2024-01-15T10:30:00.000Z",
+  "version": "latest"
+}
+```
+
+### Service Email
+
+- **Templates HTML** : Contact form et confirmation
+- **Validation** : Express Validator
+- **SMTP** : Configuration flexible (Gmail, etc.)
+- **Sécurité** : Protection contre le spam
+
+## Configuration
+
+### Variables d'Environnement Backend
+
+```bash
+# Port du serveur
+PORT=3001
+
+# URL du frontend (CORS)
+FRONTEND_URL=http://localhost:5173
+
+# Configuration SMTP
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=587
+SMTP_SECURE=false
+SMTP_USER=your-email@gmail.com
+SMTP_PASS=your-app-password
+
+# Email de contact
+CONTACT_EMAIL=contact@dkbuilding.fr
+
+# Environnement
+NODE_ENV=development
+```
+
+### Configuration TailwindCSS
+
+```javascript
+theme: {
+  extend: {
+    colors: {
+      'dk-yellow': '#F3E719',
+      'dk-black': '#0E0E0E',
+      'dk-white': '#FFFFFF',
+      'dk-gray': { /* Palette complète */ }
+    },
+    fontFamily: {
+      'display': ['Space Grotesk', 'Inter', 'system-ui'],
+      'body': ['Inter', 'system-ui']
+    }
+  }
+}
+```
 
 ## SEO et Performance
 
-### SEO
+### Métadonnées
 
-- Meta tags optimises avec mots-cles locaux (charpente metallique, Albi, Tarn)
-- Schema.org LocalBusiness avec donnees completes
-- Sitemap.xml et robots.txt
-- Open Graph pour les reseaux sociaux
-- Canonical URL
+- **Title** : Optimisé avec mots-clés locaux
+- **Description** : 160 caractères avec SIREN
+- **Keywords** : Charpente métallique, bardage, couverture, Albi, Tarn
+- **Open Graph** : Facebook et Twitter
+- **Schema.org** : LocalBusiness avec données complètes
 
 ### Performance
 
-- Lazy loading des images et composants
-- Code splitting avec React Router
-- Optimisation automatique des images via Cloudinary (WebP, qualite auto)
-- Fonts optimisees avec preconnect
-- Score Lighthouse > 90
+- **Lazy loading** : Images et composants
+- **Code splitting** : React Router
+- **Optimisation bundle** : Vite
+- **Fonts** : Google Fonts avec preconnect
+- **Images** : Formats optimisés (WebP)
 
-### Accessibilite
+### Accessibilité
 
-- `prefers-reduced-motion` respecte
-- ARIA labels sur la navigation et les formulaires
-- Focus management pour la navigation au clavier
-- Contraste WCAG AA minimum
+- **prefers-reduced-motion** : Respect des préférences utilisateur
+- **ARIA labels** : Navigation et formulaires
+- **Focus management** : Tab navigation
+- **Contraste** : Couleurs conformes WCAG
+- **Sémantique** : HTML5 sémantique
 
-## Deploiement
+## Déploiement
 
-### Architecture de production
-
-```mermaid
-graph LR
-    DNS["DNS<br/>dkbuilding.fr"] --> Vercel["Vercel<br/>CDN + Serverless"]
-    Vercel --> Frontend["Frontend<br/>React (CDN static)"]
-    Vercel --> Backend["Backend<br/>Serverless Functions"]
-    Backend --> Turso["Turso<br/>SQLite Cloud"]
-    Backend --> Cloudinary["Cloudinary<br/>CDN Medias"]
-    Backend --> Resend["Resend<br/>Emails"]
-```
-
-### Commandes de deploiement
+### Frontend (Vite)
 
 ```bash
-# Frontend
-cd apps/frontend
-pnpm build              # Genere dist/
-pnpm build:prerender    # Build + prerendering SEO
-
-# Backend
-cd apps/backend
-vercel deploy           # Deploiement Vercel
+cd frontend
+npm run build
+# Génère le dossier dist/ prêt pour déploiement
 ```
 
-### Cout
+### Backend (Node.js)
 
-L'architecture est concue pour fonctionner avec les plans gratuits de tous les services :
-- Vercel : plan gratuit (100 Go/mois bande passante)
-- Turso : plan gratuit (500 Mo stockage, 9 Mo total rows read/mois)
-- Cloudinary : plan gratuit (25 credits/mois)
-- Resend : plan gratuit (3000 emails/mois)
+```bash
+cd backend
+npm start
+# Serveur Express sur le port 3001
+```
+
+### Production
+
+- **Frontend** : Serveur web statique (Nginx, Apache)
+- **Backend** : PM2 ou Docker
+- **Domaine** : dkbuilding.fr
+- **SSL** : Certificat Let's Encrypt
+- **CDN** : Cloudflare pour les assets
+
+## Maintenance
+
+### Mises à jour
+
+- **Dépendances** : npm audit et mise à jour régulière
+- **Sécurité** : Helmet et CORS configurés
+- **Logs** : Morgan pour le monitoring
+- **Backup** : Sauvegarde régulière des données
+
+### Monitoring
+
+- **Health check** : Endpoint /health
+- **Logs** : Console et fichiers
+- **Performance** : Lighthouse CI
+- **Uptime** : Monitoring externe
+
+## Support et Contact
+
+### Développement
+
+- **Framework** : React + Node.js
+- **Styling** : TailwindCSS
+- **Animations** : GSAP
+- **Email** : Nodemailer
+
+### Contact Technique
+
+- **Email** : <contact@dkbuilding.fr>
+- **Téléphone** : +33 7 68 11 38 39
+- **Adresse** : 59 Rue Pierre Cormary, 81000 Albi
 
 ---
 
-**Derniere mise a jour** : 5 avril 2026
+**Version** : latest  
+**Dernière mise à jour** : 13 octobre 2025  
+**Auteur** : DK BUILDING

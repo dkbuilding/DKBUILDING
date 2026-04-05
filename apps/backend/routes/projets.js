@@ -1,50 +1,47 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
-const ProjetsController = require("../controllers/projetsController");
-const { jwtAuth } = require("../middleware/jwtAuth");
-const { uploadFields, handleUploadError } = require("../middleware/upload");
+const ProjetsController = require('../controllers/projetsController');
+const JWTAuthMiddleware = require('../middleware/jwtAuth');
+const { uploadFields, handleUploadError } = require('../middleware/upload');
+
+const jwtAuth = new JWTAuthMiddleware();
 
 // Routes publiques (sans authentification)
-router.get("/public", ProjetsController.getPublic);
-router.get("/featured", ProjetsController.getFeatured);
-router.get("/slug/:slug", ProjetsController.getBySlug);
+router.get('/public', ProjetsController.getPublic);
+router.get('/featured', ProjetsController.getFeatured);
+router.get('/slug/:slug', ProjetsController.getBySlug);
 
 // Routes protégées (avec authentification JWT)
-router.get("/", jwtAuth.authenticateToken.bind(jwtAuth), ProjetsController.getAll);
-router.get("/:id", jwtAuth.authenticateToken.bind(jwtAuth), ProjetsController.getById);
+router.get('/', jwtAuth.authenticateToken.bind(jwtAuth), ProjetsController.getAll);
+router.get('/:id', jwtAuth.authenticateToken.bind(jwtAuth), ProjetsController.getById);
 
 router.post(
-  "/",
+  '/',
   jwtAuth.authenticateToken.bind(jwtAuth),
   jwtAuth.checkAdminRole.bind(jwtAuth),
   uploadFields([
-    { name: "images", maxCount: 10 },
-    { name: "documents", maxCount: 10 },
-    { name: "videos", maxCount: 5 },
+    { name: 'images', maxCount: 10 },
+    { name: 'documents', maxCount: 10 },
+    { name: 'videos', maxCount: 5 }
   ]),
   handleUploadError,
-  ProjetsController.create,
+  ProjetsController.create
 );
 
-// PATCH pour mise à jour partielle (était PUT avec .partial())
-router.patch(
-  "/:id",
+router.put(
+  '/:id',
   jwtAuth.authenticateToken.bind(jwtAuth),
   jwtAuth.checkAdminRole.bind(jwtAuth),
   uploadFields([
-    { name: "images", maxCount: 10 },
-    { name: "documents", maxCount: 10 },
-    { name: "videos", maxCount: 5 },
+    { name: 'images', maxCount: 10 },
+    { name: 'documents', maxCount: 10 },
+    { name: 'videos', maxCount: 5 }
   ]),
   handleUploadError,
-  ProjetsController.update,
+  ProjetsController.update
 );
 
-router.delete(
-  "/:id",
-  jwtAuth.authenticateToken.bind(jwtAuth),
-  jwtAuth.checkAdminRole.bind(jwtAuth),
-  ProjetsController.delete,
-);
+router.delete('/:id', jwtAuth.authenticateToken.bind(jwtAuth), jwtAuth.checkAdminRole.bind(jwtAuth), ProjetsController.delete);
 
 module.exports = router;
+

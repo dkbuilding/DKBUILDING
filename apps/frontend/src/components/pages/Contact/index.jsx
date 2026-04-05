@@ -1,7 +1,8 @@
 import { useLayoutEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { gsap, ScrollTrigger } from "../../../utils/gsapConfig";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import {
   motionTokens,
   gsapUtils,
@@ -23,6 +24,7 @@ import ProjectTypeStep from "./steps/ProjectTypeStep";
 import ProjectDetailsStep from "./steps/ProjectDetailsStep";
 import ContactInfoStep from "./steps/ContactInfoStep";
 
+gsap.registerPlugin(ScrollTrigger);
 
 // Styles pour les grilles responsive du formulaire de contact
 const contactGridStyles = `
@@ -207,7 +209,7 @@ const Contact = () => {
         body: JSON.stringify({
           field: fieldName,
           error: errorMessage,
-          // Pas de formData — ne jamais envoyer les données personnelles (nom, email, téléphone)
+          formData: form.getValues(),
           userAgent: navigator.userAgent,
           url: window.location.href,
           timestamp: new Date().toISOString(),
@@ -228,7 +230,7 @@ const Contact = () => {
 
     try {
       // Nettoyer le numéro de téléphone avant l'envoi
-      const cleanedPhone = data.phone.replace(/[\s.-]/g, "");
+      const cleanedPhone = data.phone.replace(/[\s.\-]/g, "");
       const dataToSend = {
         ...data,
         phone: cleanedPhone,
@@ -409,25 +411,17 @@ const Contact = () => {
               En attendant, découvrez nos réalisations ou consultez nos
               services.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-              <a
-                href="/#portfolio"
-                className="btn btn-primary touch-target font-foundation-black"
-              >
-                Découvrir nos réalisations
-              </a>
-              <Button
-                onClick={() => {
-                  setIsSubmitted(false);
-                  setCurrentStep(1);
-                  form.reset();
-                  setSubmitError("");
-                }}
-                className="btn-secondary touch-target"
-              >
-                Faire une autre demande
-              </Button>
-            </div>
+            <Button
+              onClick={() => {
+                setIsSubmitted(false);
+                setCurrentStep(1);
+                form.reset();
+                setSubmitError("");
+              }}
+              className="btn-primary"
+            >
+              Faire une autre demande
+            </Button>
           </div>
         </div>
       </section>
@@ -531,49 +525,37 @@ const Contact = () => {
                 )}
 
                 {/* Boutons de navigation */}
-                <div className="flex flex-col xs:flex-row justify-between gap-3 pt-6">
+                <div className="flex justify-between pt-6">
                   <Button
                     type="button"
                     variant="ghost"
                     onClick={prevStep}
                     disabled={currentStep === 1}
-                    className="flex items-center touch-target order-2 xs:order-1"
+                    className="flex items-center"
                   >
                     <ChevronLeft className="w-5 h-5 mr-2" />
                     Précédent
                   </Button>
 
                   {currentStep < 3 ? (
-                    <div className="flex flex-col items-end order-1 xs:order-2">
-                      <Button
-                        type="button"
-                        onClick={nextStep}
-                        disabled={!form.watch("projectType") && currentStep === 1}
-                        className="btn-primary flex items-center touch-target"
-                      >
-                        {currentStep === 1 ? "Détailler mon projet" : "Finaliser ma demande"}
-                        <ChevronRight className="w-5 h-5 ml-2" />
-                      </Button>
-                      {currentStep === 1 && !form.watch("projectType") && (
-                        <p className="text-xs text-dk-gray-400 mt-2">
-                          Sélectionnez un type de projet pour continuer
-                        </p>
-                      )}
-                    </div>
+                    <Button
+                      type="button"
+                      onClick={nextStep}
+                      disabled={!form.watch("projectType")}
+                      className="btn-primary flex items-center"
+                    >
+                      Continuer
+                      <ChevronRight className="w-5 h-5 ml-2" />
+                    </Button>
                   ) : (
                     <Button
                       type="submit"
                       disabled={isSubmitting}
-                      className="btn-primary flex items-center touch-target order-1 xs:order-2"
+                      className="btn-primary flex items-center"
                     >
-                      {isSubmitting ? (
-                        <>
-                          <span className="animate-spin rounded-full h-4 w-4 border-b-2 border-dk-black mr-2" />
-                          Envoi en cours...
-                        </>
-                      ) : (
-                        "Envoyer ma demande de devis"
-                      )}
+                      {isSubmitting
+                        ? "Envoi de votre demande en cours..."
+                        : "Envoyer ma demande"}
                     </Button>
                   )}
                 </div>

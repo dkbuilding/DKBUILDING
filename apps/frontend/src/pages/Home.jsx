@@ -17,15 +17,11 @@ const Home = () => {
 
   return (
     <div className="min-h-screen bg-dk-black w-full max-w-full overflow-x-hidden">
-      {/* Header avec Navigation (WCAG landmark: banner) */}
-      <header>
-        <Navigation 
-          onToggleSidebar={toggleSidebar} 
-          isSidebarOpen={isSidebarOpen}
-          footerRef={footerRef}
-        />
-      </header>
-      
+      <Navigation 
+        onToggleSidebar={toggleSidebar} 
+        isSidebarOpen={isSidebarOpen}
+        footerRef={footerRef}
+      />
       <Sidebar 
         isOpen={isSidebarOpen} 
         onClose={closeSidebar} 
@@ -34,27 +30,26 @@ const Home = () => {
       {/* Indicateur de navigation intelligent */}
       <SmartNavigationIndicator />
       
-      {/* Suppression du <main> dupliqué — le <main> est dans App.jsx (WCAG 1.3.1) */}
-      <div className={`transition-all duration-300 ${isSidebarOpen ? 'blur-sm' : ''}`} aria-hidden={isSidebarOpen ? 'true' : undefined}>
-        <section id="home" aria-label="Accueil">
+      <main className={`transition-all duration-300 ${isSidebarOpen ? 'blur-sm' : ''}`}>
+        <section id="home">
           <Hero />
         </section>
-        <section id="news" aria-label="Actualités">
+        <section id="news">
           <News />
         </section>
-        <section id="services" aria-label="Services">
+        <section id="services">
           <Services />
         </section>
-        <section id="portfolio" aria-label="Réalisations">
+        <section id="portfolio">
           <Portfolio />
         </section>
-        <section id="about" aria-label="À propos">
+        <section id="about">
           <About />
         </section>
-        <section id="contact" aria-label="Contact">
+        <section id="contact">
           <Contact />
         </section>
-      </div>
+      </main>
       
       {/* Footer refondé style ChatGPT */}
       <Footer ref={footerRef} className={`transition-all duration-300 ${isSidebarOpen ? 'blur-sm' : ''}`} />

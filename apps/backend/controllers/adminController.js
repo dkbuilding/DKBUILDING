@@ -1,48 +1,42 @@
 const db = require("../database/db");
 const Logger = require("../utils/logger");
 const { cloudinary } = require("../middleware/upload");
-const { formatFileSize } = require("../utils/format");
 
 /**
  * Admin Controller - Version Serverless (Turso + Cloudinary)
  * Architecture GovTech Zero-Cost pour DK BUILDING
- *
- * OPTIMISATION: Requêtes agrégées pour les statistiques (2 requêtes SQL au lieu de 9)
  */
 
 class AdminController {
   /**
    * Récupérer les statistiques (Async Turso)
-   *
-   * AVANT: 9 requêtes séquentielles COUNT(*)
-   * APRÈS: 2 requêtes avec agrégation conditionnelle
    */
   static async getStats(req, res) {
     try {
-      // Une seule requête pour toutes les stats annonces + projets
-      const [annoncesStats, projetsStats, logsStats] = await Promise.all([
-        db.execute(`
-          SELECT
-            COUNT(*) as total,
-            SUM(CASE WHEN statut = 'publie' THEN 1 ELSE 0 END) as publiees,
-            SUM(CASE WHEN statut = 'brouillon' THEN 1 ELSE 0 END) as brouillon
-          FROM annonces
-        `),
-        db.execute(`
-          SELECT
-            COUNT(*) as total,
-            SUM(CASE WHEN statut = 'termine' THEN 1 ELSE 0 END) as termines,
-            SUM(CASE WHEN statut = 'en_cours' THEN 1 ELSE 0 END) as en_cours,
-            SUM(CASE WHEN featured = 1 THEN 1 ELSE 0 END) as featured
-          FROM projets
-        `),
-        db.execute(`
-          SELECT
-            COUNT(*) as total,
-            SUM(CASE WHEN timestamp > datetime('now', '-7 days') THEN 1 ELSE 0 END) as recent
-          FROM logs
-        `),
-      ]);
+      // Statistiques annonces
+      const annoncesTotal = await db.execute(
+        "SELECT COUNT(*) as count FROM annonces",
+      );
+      const annoncesPubliees = await db.execute(
+        "SELECT COUNT(*) as count FROM annonces WHERE statut = 'publie'",
+      );
+      const annoncesBrouillon = await db.execute(
+        "SELECT COUNT(*) as count FROM annonces WHERE statut = 'brouillon'",
+      );
+
+      // Statistiques projets
+      const projetsTotal = await db.execute(
+        "SELECT COUNT(*) as count FROM projets",
+      );
+      const projetsTermines = await db.execute(
+        "SELECT COUNT(*) as count FROM projets WHERE statut = 'termine'",
+      );
+      const projetsEnCours = await db.execute(
+        "SELECT COUNT(*) as count FROM projets WHERE statut = 'en_cours'",
+      );
+      const projetsFeatured = await db.execute(
+        "SELECT COUNT(*) as count FROM projets WHERE featured = 1",
+      );
 
       // Statistiques médias (Cloudinary API)
       let mediaCount = 0;
@@ -67,23 +61,26 @@ class AdminController {
         );
       }
 
-      const annRow = annoncesStats.rows[0] || {};
-      const projRow = projetsStats.rows[0] || {};
-      const logsRow = logsStats.rows[0] || {};
+      // Statistiques logs
+      const logsTotal = await db.execute("SELECT COUNT(*) as count FROM logs");
+      const logsRecent = await db.execute(`
+        SELECT COUNT(*) as count FROM logs 
+        WHERE timestamp > datetime('now', '-7 days')
+      `);
 
       res.json({
         success: true,
         data: {
           annonces: {
-            total: annRow.total || 0,
-            publiees: annRow.publiees || 0,
-            brouillon: annRow.brouillon || 0,
+            total: annoncesTotal.rows[0]?.count || 0,
+            publiees: annoncesPubliees.rows[0]?.count || 0,
+            brouillon: annoncesBrouillon.rows[0]?.count || 0,
           },
           projets: {
-            total: projRow.total || 0,
-            termines: projRow.termines || 0,
-            en_cours: projRow.en_cours || 0,
-            featured: projRow.featured || 0,
+            total: projetsTotal.rows[0]?.count || 0,
+            termines: projetsTermines.rows[0]?.count || 0,
+            en_cours: projetsEnCours.rows[0]?.count || 0,
+            featured: projetsFeatured.rows[0]?.count || 0,
           },
           medias: {
             total: mediaCount,
@@ -91,8 +88,8 @@ class AdminController {
             totalSizeFormatted: formatFileSize(totalSize),
           },
           logs: {
-            total: logsRow.total || 0,
-            recent: logsRow.recent || 0,
+            total: logsTotal.rows[0]?.count || 0,
+            recent: logsRecent.rows[0]?.count || 0,
           },
         },
       });
@@ -141,6 +138,17 @@ class AdminController {
       });
     }
   }
+}
+
+/**
+ * Formater la taille d'un fichier
+ */
+function formatFileSize(bytes) {
+  if (bytes === 0) return "0 Bytes";
+  const k = 1024;
+  const sizes = ["Bytes", "KB", "MB", "GB"];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return Math.round((bytes / Math.pow(k, i)) * 100) / 100 + " " + sizes[i];
 }
 
 module.exports = AdminController;

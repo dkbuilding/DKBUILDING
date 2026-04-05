@@ -17,12 +17,8 @@
     "noFallthroughCasesInSwitch": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
-    "forceConsistentCasingInFileNames": true,
-    "baseUrl": ".",
-    "paths": {
-      "@/*": ["./src/*"],
-      "@dkbuilding/shared/*": ["../shared/*"]
-    }
+    "forceConsistentCasingInFileNames": true
   },
   "include": ["src"]
 }
+

@@ -9,7 +9,7 @@
  * @date 2025-01-25
  */
 
-const http = require("http");
+const https = require("http");
 
 class SecurityTester {
   constructor() {
@@ -34,7 +34,7 @@ class SecurityTester {
         },
       };
 
-      const req = http.request(options, (res) => {
+      const req = https.request(options, (res) => {
         let data = "";
         res.on("data", (chunk) => {
           data += chunk;

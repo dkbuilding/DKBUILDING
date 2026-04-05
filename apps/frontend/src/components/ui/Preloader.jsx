@@ -65,6 +65,17 @@ export default function Preloader() {
     let cancelled = false;
     const mountStart = typeof performance !== 'undefined' && performance.now ? performance.now() : Date.now();
 
+    async function waitForWindowLoad() {
+      if (document.readyState === 'complete') return;
+      await new Promise((resolve) => {
+        const onLoad = () => {
+          window.removeEventListener('load', onLoad);
+          resolve();
+        };
+        window.addEventListener('load', onLoad, { passive: true });
+      });
+    }
+
     async function waitForFonts() {
       if (document.fonts && document.fonts.ready) {
         try {

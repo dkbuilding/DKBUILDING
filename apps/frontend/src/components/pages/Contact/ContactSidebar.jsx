@@ -4,18 +4,10 @@ import { Card } from "../../ui/card";
 const ContactSidebar = ({ currentStep, contactInfoRef }) => {
   return (
     <div ref={contactInfoRef} className="space-y-8">
-      <Card className="p-6 xs:p-8">
-        <h3 className="text-xl xs:text-2xl font-foundation-bold mb-4 xs:mb-6 text-white">
+      <Card className="p-8">
+        <h3 className="text-2xl font-foundation-bold mb-6 text-white">
           CONTACTEZ-NOUS DIRECTEMENT
         </h3>
-        {/* CTA d'appel rapide — accessible au pouce sur mobile */}
-        <a
-          href="tel:+33768113839"
-          className="btn btn-primary btn--lg w-full touch-target font-foundation-black mb-6 text-center"
-        >
-          <Phone className="w-5 h-5" />
-          Appeler maintenant
-        </a>
         <div className="space-y-6">
           <div className="flex items-start">
             <Phone className="w-6 h-6 text-dk-yellow mt-1 mr-4 flex-shrink-0" />

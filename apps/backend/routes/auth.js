@@ -1,160 +1,202 @@
 /**
- * Routes d'Authentification — DK BUILDING
- * Endpoints sécurisés pour l'authentification JWT
+ * Route d'Authentification Health Monitoring DK BUILDING
+ * Endpoint sécurisé pour l'authentification JWT
+ *
+ * @author DK BUILDING Security Team
+ * @version latest
+ * @date 2025-01-25
  */
 
 const express = require("express");
 const router = express.Router();
 const jwt = require("jsonwebtoken");
-const { jwtAuth } = require("../middleware/jwtAuth");
-const validateZod = require("../middleware/validateZod");
-const { authHealthSchema } = require("../validators/schemas");
-const {
-  sendSuccess,
-  sendBadRequest,
-  sendUnauthorized,
-  sendInternalError,
-} = require("../utils/apiResponse");
+const JWTAuthMiddleware = require("../middleware/jwtAuth");
+
+const jwtAuth = new JWTAuthMiddleware();
 
 /**
- * POST /api/auth/health
+ * POST /auth/health
  * Authentification pour l'accès au Health Monitoring
  *
  * Body: { password: string }
- * Validation: Zod (authHealthSchema)
+ * Response: { success: boolean, token?: string, error?: string }
  */
-router.post("/health", validateZod(authHealthSchema), async (req, res) => {
+router.post("/health", async (req, res) => {
   try {
     const { password } = req.body;
 
+    // Validation de l'entrée
+    if (!password || typeof password !== "string") {
+      return res.status(400).json({
+        success: false,
+        error: "Mot de passe requis",
+        code: "MISSING_PASSWORD",
+      });
+    }
+
+    // Vérification de la longueur minimale
+    if (password.length < 8) {
+      return res.status(400).json({
+        success: false,
+        error: "Mot de passe trop court (minimum 8 caractères)",
+        code: "PASSWORD_TOO_SHORT",
+      });
+    }
+
+    // Génération du token JWT
     const authResult = jwtAuth.generateHealthToken(password);
 
     if (!authResult.success) {
-      return sendUnauthorized(res, authResult.error);
+      return res.status(401).json({
+        success: false,
+        error: authResult.error,
+        code: authResult.code,
+      });
     }
 
-    // Cookie HttpOnly sécurisé
-    res.cookie("jwt_token", authResult.token, {
+    // Stocker le token dans un cookie HttpOnly sécurisé
+    res.cookie('jwt_token', authResult.token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
-      maxAge: 30 * 60 * 1000,
-      path: "/",
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 30 * 60 * 1000, // 30 minutes
+      path: '/',
     });
 
-    return sendSuccess(res, {
+    // Réponse de succès (le token N'EST PAS renvoyé dans le body)
+    res.json({
+      success: true,
       expires_in: authResult.expires_in,
       permissions: authResult.permissions,
       security_level: authResult.security_level,
-    }, { message: "Authentification réussie" });
+      message: "Authentification réussie",
+    });
   } catch (error) {
     console.error("Erreur lors de l'authentification Health:", error);
-    return sendInternalError(res);
+
+    res.status(500).json({
+      success: false,
+      error: "Erreur interne du serveur",
+      code: "INTERNAL_SERVER_ERROR",
+    });
   }
 });
 
 /**
- * POST /api/auth/logout
- * Déconnexion — suppression du cookie JWT
+ * POST /auth/logout
+ * Déconnexion - suppression du cookie JWT
+ *
+ * Response: { success: boolean, message: string }
  */
 router.post("/logout", (req, res) => {
-  res.clearCookie("jwt_token", {
+  res.clearCookie('jwt_token', {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "lax",
-    path: "/",
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'lax',
+    path: '/',
   });
-  return sendSuccess(res, null, { message: "Déconnexion réussie" });
+  res.json({ success: true, message: 'Déconnexion réussie' });
 });
 
 /**
- * POST /api/auth/verify
+ * POST /auth/verify
  * Vérification d'un token JWT existant
+ *
+ * Headers: Authorization: Bearer <token>
+ * Response: { valid: boolean, user?: object, error?: string }
  */
 router.post("/verify", jwtAuth.authenticateToken.bind(jwtAuth), (req, res) => {
   try {
-    return sendSuccess(res, {
+    res.json({
       valid: true,
       user: {
         id: req.user.id,
         issuer: req.user.issuer,
-        security_level: req.user.securityLevel,
+        security_level: req.user.security_level,
         issued_at: req.user.issuedAt,
         expires_at: req.user.expiresAt,
       },
-    }, { message: "Token valide" });
+      message: "Token valide",
+    });
   } catch (error) {
     console.error("Erreur lors de la vérification du token:", error);
-    return sendInternalError(res);
+
+    res.status(500).json({
+      valid: false,
+      error: "Erreur interne du serveur",
+      code: "INTERNAL_SERVER_ERROR",
+    });
   }
 });
 
 /**
- * GET /api/auth/status
+ * GET /auth/status
  * Statut de la configuration d'authentification
+ *
+ * Response: { configured: boolean, security_level: string, algorithm: string }
  */
 router.get("/status", (req, res) => {
-  return sendSuccess(res, {
+  res.json({
     configured: true,
     message: "Système d'authentification actif",
   });
 });
 
 /**
- * POST /api/auth/refresh
+ * POST /auth/refresh
  * Renouvellement d'un token JWT
+ *
+ * Headers: Authorization: Bearer <token>
+ * Response: { success: boolean, token?: string, error?: string }
  */
 router.post("/refresh", jwtAuth.authenticateToken.bind(jwtAuth), (req, res) => {
   try {
+    // Génération d'un nouveau token avec les mêmes permissions
     const secret = process.env.JWT_SECRET;
-
-    // Revalider le rôle et les permissions depuis la source de vérité
-    // (pas depuis l'ancien token — un admin révoqué ne doit pas pouvoir se rafraîchir)
-    const ROLE_PERMISSIONS = {
-      admin: ["health:read", "health:monitor"],
-    };
-    const role = req.user.role || "admin";
-    const validPermissions = ROLE_PERMISSIONS[role];
-    if (!validPermissions) {
-      return sendUnauthorized(res, "Rôle inconnu ou révoqué");
-    }
-
     const payload = {
       iss: req.user.issuer,
       sub: req.user.id,
       iat: Math.floor(Date.now() / 1000),
-      exp: Math.floor(Date.now() / 1000) + 30 * 60,
-      role,
-      security_level: req.user.securityLevel,
+      exp: Math.floor(Date.now() / 1000) + 30 * 60, // 30 minutes
+      security_level: req.user.security_level,
       algorithm: "sha512",
       iterations: parseInt(process.env.SECURITY_ITERATIONS) || 100000,
-      permissions: validPermissions,
+      permissions: req.user.permissions || ["health:read", "health:monitor"],
     };
 
     const newToken = jwt.sign(payload, secret, { algorithm: "HS512" });
 
+    // Log du renouvellement
     jwtAuth.logSecurityEvent("TOKEN_REFRESHED", {
       user: req.user.id,
       old_expires_at: req.user.expiresAt,
       new_expires_at: new Date(payload.exp * 1000),
     });
 
-    res.cookie("jwt_token", newToken, {
+    // Mettre à jour le cookie HttpOnly avec le nouveau token
+    res.cookie('jwt_token', newToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
-      maxAge: 30 * 60 * 1000,
-      path: "/",
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 30 * 60 * 1000, // 30 minutes
+      path: '/',
     });
 
-    return sendSuccess(res, {
+    res.json({
+      success: true,
       expires_in: "30m",
       permissions: payload.permissions,
       security_level: payload.security_level,
-    }, { message: "Token renouvelé avec succès" });
+      message: "Token renouvelé avec succès",
+    });
   } catch (error) {
     console.error("Erreur lors du renouvellement du token:", error);
-    return sendInternalError(res);
+
+    res.status(500).json({
+      success: false,
+      error: "Erreur interne du serveur",
+      code: "INTERNAL_SERVER_ERROR",
+    });
   }
 });
 

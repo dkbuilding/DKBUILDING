@@ -1,5 +1,6 @@
 # ============================================
 # GITIGNORE - DK BUILDING Monorepo
+# Architecture GovTech Zero-Cost
 # ============================================
 
 # ============================================
@@ -12,7 +13,6 @@
 *.key
 *.p12
 *.pfx
-*.bak
 
 # ============================================
 # DEPENDENCIES
@@ -43,11 +43,9 @@ out/
 *.db
 *.db-shm
 *.db-wal
-*.db-journal
 *.sqlite
 *.sqlite3
-/apps/data/
-/apps/backend/data/
+data/
 
 # ============================================
 # STORAGE LOCAL (Remplacé par Cloudinary)
@@ -85,11 +83,19 @@ lerna-debug.log*
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
-!.vscode/css.customData.json
 .idea/
 *.swp
 *.swo
 *~
+.DS_Store
+Thumbs.db
+
+# ============================================
+# TESTING
+# ============================================
+coverage/
+.nyc_output/
+*.lcov
 
 # ============================================
 # OS
@@ -101,14 +107,6 @@ lerna-debug.log*
 .Trashes
 ehthumbs.db
 Desktop.ini
-Thumbs.db
-
-# ============================================
-# TESTING
-# ============================================
-coverage/
-.nyc_output/
-*.lcov
 
 # ============================================
 # TEMPORARY & BACKUPS
@@ -116,6 +114,8 @@ coverage/
 tmp/
 temp/
 *.tmp
+*.bak
+*.backup
 _backup/
 
 # ============================================
@@ -134,11 +134,6 @@ apps/docs/confidentials/
 .vercel
 
 # ============================================
-# BRAIN (Artifacts AI)
+# BRAIN (Artifacts Antigravity)
 # ============================================
 .gemini/
-
-# ============================================
-# LOCK ACCESS CONFIG (Sensible)
-# ============================================
-lockaccess-config.json

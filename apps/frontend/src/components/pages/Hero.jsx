@@ -5,13 +5,13 @@ import {
   useEffect,
   useCallback,
 } from "react";
-import { gsap } from "../../utils/gsapConfig";
+import { gsap, ScrollTrigger } from "../../utils/gsapConfig";
 import { motionTokens } from "../../utils/motion";
 import { useSmartNavigation } from "../../hooks/useSmartNavigation";
 import { video as logVideo, nav as logNav } from "../../utils/logger";
 import NoiseOverlay from "../ui/NoiseOverlay";
 import AnimatedGradientText from "../ui/AnimatedGradientText";
-import { Phone, ArrowRight } from "lucide-react";
+import { Stars } from "lucide-react";
 
 const Hero = () => {
   const heroRef = useRef(null);
@@ -21,7 +21,7 @@ const Hero = () => {
   const subtitleRef = useRef(null);
   const ctaRef = useRef(null);
   const scrollIndicatorRef = useRef(null);
-
+  const backgroundElementsRef = useRef([]);
   const videoRef = useRef(null);
   // États pour la gestion de la vidéo
   const [videoLoaded, setVideoLoaded] = useState(false);
@@ -307,9 +307,46 @@ const Hero = () => {
         animated={false}
       />
 
+      {/* Overlay de test temporaire pour vérifier la visibilité */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          backgroundImage: `
+            radial-gradient(circle at 1px 1px, rgba(255,255,255,0.5) 1px, transparent 0),
+            radial-gradient(circle at 2px 2px, rgba(255,255,255,0.3) 1px, transparent 0),
+            radial-gradient(circle at 3px 3px, rgba(255,255,255,0.2) 1px, transparent 0)
+          `,
+          backgroundSize: "4px 4px, 6px 6px, 8px 8px",
+          backgroundPosition: "0 0, 1px 1px, 2px 2px",
+          opacity: 0.15,
+          filter: "contrast(2) brightness(1.3)",
+          mixBlendMode: "overlay",
+        }}
+      />
 
-
-
+      {/* Overlay de test très visible pour debug */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          backgroundImage: `url(
+            "data:image/svg+xml,%3Csvg viewBox='0 0 100 100' 
+            xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter 
+            id='noiseFilter'%3E%3CfeTurbulence 
+            type='fractalNoise' 
+            baseFrequency='0.9' 
+            numOctaves='4' 
+            stitchTiles='stitch'/%3E%3C/filter%3E%3Crect 
+            width='100%25' 
+            height='100%25' 
+            filter='url(%23noiseFilter)' 
+            opacity='0.8'/%3E%3C/svg%3E")
+          )`,
+          backgroundSize: "100px 100px",
+          opacity: 0.2,
+          filter: "contrast(2) brightness(1.2)",
+          mixBlendMode: "soft-light",
+        }}
+      />
 
       {/* Overlay dégradé DK BUILDING */}
       <div
@@ -326,7 +363,7 @@ const Hero = () => {
         <div ref={logoRef} className="mb-6 xs:mb-8">
           <div className="inline-block">
             <img
-              src="/images/logos/Logo — DK BUILDING — Structure 2.png"
+              src="/src/assets/images/logos/Logo — DK BUILDING — Structure 2.png"
               alt="DK BUILDING Logo"
               className="w-24 h-24 xs:w-28 xs:h-28 sm:w-32 sm:h-32 lg:w-40 lg:h-40 mx-auto"
             />
@@ -398,24 +435,6 @@ const Hero = () => {
             <span className="bg-white/5 backdrop-blur-sm rounded-full px-3 py-1 text-dk-gray-300 text-xs xs:text-sm font-medium border border-white/10 hidden md:inline">
               #Terrassement
             </span>
-          </div>
-
-          {/* CTA principaux — Von Restorff : le CTA doit se démarquer */}
-          <div ref={ctaRef} className="flex flex-col xs:flex-row items-center gap-3 xs:gap-4">
-            <a
-              href="#contact"
-              className="btn btn-primary btn--lg touch-target font-foundation-black shadow-[0_10px_30px_rgba(243,231,25,0.25)] hover:shadow-[0_15px_40px_rgba(243,231,25,0.35)] transition-all duration-300 text-base xs:text-lg"
-            >
-              <Phone className="w-5 h-5" />
-              Demander un devis gratuit
-            </a>
-            <a
-              href="#portfolio"
-              className="btn btn-secondary touch-target font-foundation-bold text-sm xs:text-base"
-            >
-              Nos réalisations
-              <ArrowRight className="w-4 h-4" />
-            </a>
           </div>
         </div>
       </div>
