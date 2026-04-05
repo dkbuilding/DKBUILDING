@@ -6,7 +6,7 @@
 const express = require("express");
 const router = express.Router();
 const jwt = require("jsonwebtoken");
-const JWTAuthMiddleware = require("../middleware/jwtAuth");
+const { jwtAuth } = require("../middleware/jwtAuth");
 const validateZod = require("../middleware/validateZod");
 const { authHealthSchema } = require("../validators/schemas");
 const {
@@ -15,8 +15,6 @@ const {
   sendUnauthorized,
   sendInternalError,
 } = require("../utils/apiResponse");
-
-const jwtAuth = new JWTAuthMiddleware();
 
 /**
  * POST /api/auth/health

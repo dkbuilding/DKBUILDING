@@ -14,7 +14,7 @@ const projetsRoutes = require("./routes/projets");
 const mediaRoutes = require("./routes/media");
 const adminRoutes = require("./routes/admin");
 const emailService = require("./utils/emailService");
-const JWTAuthMiddleware = require("./middleware/jwtAuth");
+const { jwtAuth } = require("./middleware/jwtAuth");
 const { initDatabase, isDatabaseInitialized } = require("./utils/dbInit");
 const { loadConfig } = require("./utils/lockAccessConfig");
 const { sendError, sendNotFound } = require("./utils/apiResponse");
@@ -130,9 +130,6 @@ app.use(sanitizeInput);
 app.use("/api", publicLimiter);
 
 // ============================================
-
-// Initialisation du middleware JWT
-const jwtAuth = new JWTAuthMiddleware();
 
 // Initialisation de la base de données (async — Turso)
 (async () => {

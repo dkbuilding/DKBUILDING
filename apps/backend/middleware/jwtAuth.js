@@ -352,4 +352,8 @@ class JWTAuthMiddleware {
   }
 }
 
+// Singleton — une seule instance partagée par tout le backend
+const jwtAuthInstance = new JWTAuthMiddleware();
+
 module.exports = JWTAuthMiddleware;
+module.exports.jwtAuth = jwtAuthInstance;

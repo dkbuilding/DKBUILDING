@@ -124,8 +124,7 @@ router.get("/status", (req, res) => {
  *
  * Validation : Zod (lockAccessConfigSchema)
  */
-const JWTAuthMiddleware = require("../middleware/jwtAuth");
-const jwtAuth = new JWTAuthMiddleware();
+const { jwtAuth } = require("../middleware/jwtAuth");
 
 router.patch(
   "/config",

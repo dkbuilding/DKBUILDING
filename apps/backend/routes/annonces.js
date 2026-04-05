@@ -1,10 +1,8 @@
 const express = require("express");
 const router = express.Router();
 const AnnoncesController = require("../controllers/annoncesController");
-const JWTAuthMiddleware = require("../middleware/jwtAuth");
+const { jwtAuth } = require("../middleware/jwtAuth");
 const { uploadFields, handleUploadError } = require("../middleware/upload");
-
-const jwtAuth = new JWTAuthMiddleware();
 
 // Routes publiques (sans authentification)
 router.get("/public", AnnoncesController.getPublic);

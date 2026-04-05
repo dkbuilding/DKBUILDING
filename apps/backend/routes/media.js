@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const MediaController = require("../controllers/mediaController");
-const JWTAuthMiddleware = require("../middleware/jwtAuth");
+const { jwtAuth } = require("../middleware/jwtAuth");
 const { upload, handleUploadError } = require("../middleware/upload");
 const { uploadLimiter } = require("../middleware/rateLimiter");
 const {
@@ -10,8 +10,6 @@ const {
   sendBadRequest,
   sendInternalError,
 } = require("../utils/apiResponse");
-
-const jwtAuth = new JWTAuthMiddleware();
 
 /**
  * Routes Media — Version Cloudinary
