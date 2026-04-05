@@ -1,0 +1,240 @@
+{
+  "100": {
+    "title": "Chargement en cours",
+    "message": "Les informations sont en cours de traitement...",
+    "description": "Veuillez patienter quelques instants pendant que nous préparons votre contenu.",
+    "category": "informational",
+    "actions": ["refresh", "wait"]
+  },
+  "101": {
+    "title": "Changement de protocole",
+    "message": "Redirection vers une nouvelle méthode de communication...",
+    "description": "Nous adaptons notre système pour vous offrir une meilleure expérience.",
+    "category": "informational",
+    "actions": ["wait", "refresh"]
+  },
+  "102": {
+    "title": "Traitement en arrière-plan",
+    "message": "Votre demande est en cours de traitement...",
+    "description": "Nous travaillons sur votre requête. Vous serez informé dès que le traitement sera terminé.",
+    "category": "informational",
+    "actions": ["wait", "refresh"]
+  },
+  "200": {
+    "title": "Succès",
+    "message": "Opération terminée avec succès !",
+    "description": "Votre demande a été traitée correctement.",
+    "category": "success",
+    "actions": ["continue", "home"]
+  },
+  "201": {
+    "title": "Ressource créée",
+    "message": "Votre demande a été enregistrée avec succès !",
+    "description": "Un nouvel élément a été créé selon vos spécifications.",
+    "category": "success",
+    "actions": ["view", "continue"]
+  },
+  "202": {
+    "title": "Demande acceptée",
+    "message": "Votre commande est prise en compte !",
+    "description": "Nous avons bien reçu votre demande et nous en occupons.",
+    "category": "success",
+    "actions": ["track", "home"]
+  },
+  "204": {
+    "title": "Opération terminée",
+    "message": "L'opération s'est déroulée sans problème !",
+    "description": "Votre demande a été traitée avec succès.",
+    "category": "success",
+    "actions": ["home", "continue"]
+  },
+  "300": {
+    "title": "Choix multiples",
+    "message": "Plusieurs options sont disponibles...",
+    "description": "Veuillez choisir parmi les différentes possibilités qui s'offrent à vous.",
+    "category": "redirection",
+    "actions": ["choose", "home"]
+  },
+  "301": {
+    "title": "Page déplacée définitivement",
+    "message": "Cette page a été déplacée vers une nouvelle adresse !",
+    "description": "Le contenu que vous cherchez se trouve maintenant à un autre endroit.",
+    "category": "redirection",
+    "actions": ["redirect", "search"]
+  },
+  "302": {
+    "title": "Page déplacée temporairement",
+    "message": "Cette page est temporairement disponible ailleurs !",
+    "description": "Le contenu a été temporairement déplacé. Vous serez redirigé automatiquement.",
+    "category": "redirection",
+    "actions": ["redirect", "wait"]
+  },
+  "303": {
+    "title": "Voir autre ressource",
+    "message": "Regardez à un autre endroit !",
+    "description": "Le contenu que vous cherchez se trouve dans une autre section.",
+    "category": "redirection",
+    "actions": ["redirect", "search"]
+  },
+  "304": {
+    "title": "Contenu inchangé",
+    "message": "Le contenu est déjà à jour !",
+    "description": "Aucune modification n'a été apportée depuis votre dernière visite.",
+    "category": "redirection",
+    "actions": ["refresh", "continue"]
+  },
+  "400": {
+    "title": "Oups, il y a un problème avec votre demande",
+    "message": "Les informations que vous avez saisies ne sont pas valides.",
+    "description": "Vérifiez que tous les champs sont correctement remplis et réessayez. Si le problème persiste, notre équipe est là pour vous aider au +33 7 68 11 38 39.",
+    "category": "client",
+    "actions": ["retry", "home"]
+  },
+  "401": {
+    "title": "Accès non autorisé",
+    "message": "Vous devez vous identifier pour accéder à cette ressource !",
+    "description": "Cette page nécessite une authentification. Veuillez vous connecter.",
+    "category": "client",
+    "actions": ["login", "home"]
+  },
+  "403": {
+    "title": "Accès interdit",
+    "message": "Vous n'avez pas les permissions nécessaires !",
+    "description": "Cette ressource est protégée et vous n'avez pas les droits d'accès.",
+    "category": "client",
+    "actions": ["back", "home"]
+  },
+  "404": {
+    "title": "Oups, cette page n'existe pas",
+    "message": "La page que vous recherchez a peut-être été déplacée ou supprimée.",
+    "description": "Pas de panique ! Utilisez la recherche ci-dessous pour trouver ce que vous cherchez, ou retournez à l'accueil pour découvrir nos services.",
+    "category": "client",
+    "actions": ["search", "home", "back"]
+  },
+  "405": {
+    "title": "Méthode non autorisée",
+    "message": "Cette action n'est pas permise !",
+    "description": "La méthode utilisée pour accéder à cette ressource n'est pas supportée.",
+    "category": "client",
+    "actions": ["retry", "home"]
+  },
+  "408": {
+    "title": "La demande a pris trop de temps",
+    "message": "Votre demande n'a pas pu être traitée dans les temps impartis.",
+    "description": "Cela peut arriver si votre connexion est lente ou si le serveur est temporairement surchargé. Vérifiez votre connexion internet et réessayez. Si le problème persiste, notre équipe est là pour vous aider au +33 7 68 11 38 39.",
+    "category": "client",
+    "actions": ["retry", "home"]
+  },
+  "409": {
+    "title": "Conflit détecté",
+    "message": "Il y a un conflit avec votre demande !",
+    "description": "Votre demande entre en conflit avec l'état actuel du système.",
+    "category": "client",
+    "actions": ["retry", "home"]
+  },
+  "410": {
+    "title": "Ressource supprimée",
+    "message": "Cette page n'existe plus !",
+    "description": "Le contenu que vous cherchez a été définitivement supprimé.",
+    "category": "client",
+    "actions": ["search", "home"]
+  },
+  "413": {
+    "title": "Demande trop volumineuse",
+    "message": "Votre demande dépasse la taille autorisée !",
+    "description": "Les données envoyées sont trop importantes. Veuillez réduire la taille.",
+    "category": "client",
+    "actions": ["retry", "home"]
+  },
+  "414": {
+    "title": "URL trop longue",
+    "message": "L'adresse demandée est trop longue !",
+    "description": "L'URL saisie dépasse la limite autorisée. Veuillez la raccourcir.",
+    "category": "client",
+    "actions": ["retry", "home"]
+  },
+  "415": {
+    "title": "Format non supporté",
+    "message": "Ce format de données n'est pas accepté !",
+    "description": "Le type de fichier ou de données envoyé n'est pas supporté.",
+    "category": "client",
+    "actions": ["retry", "home"]
+  },
+  "429": {
+    "title": "Trop de demandes simultanées",
+    "message": "Vous avez effectué trop de demandes en peu de temps.",
+    "description": "Pour protéger nos serveurs, attendez quelques instants avant de réessayer. Si vous avez besoin d'aide rapidement, contactez-nous au +33 7 68 11 38 39.",
+    "category": "client",
+    "actions": ["wait", "retry"]
+  },
+  "500": {
+    "title": "Oups, un problème technique s'est produit",
+    "message": "Notre serveur rencontre une difficulté temporaire.",
+    "description": "Notre équipe technique a été informée et travaille déjà sur la résolution. Réessayez dans quelques instants, ou contactez-nous directement au +33 7 68 11 38 39 si le problème persiste.",
+    "category": "server",
+    "actions": ["retry", "report", "home"]
+  },
+  "501": {
+    "title": "Fonctionnalité non implémentée",
+    "message": "Cette fonction n'est pas encore disponible !",
+    "description": "Cette fonctionnalité est en cours de développement.",
+    "category": "server",
+    "actions": ["alternative", "home"]
+  },
+  "502": {
+    "title": "Passerelle incorrecte",
+    "message": "Problème de communication entre serveurs !",
+    "description": "Un problème de liaison entre nos serveurs empêche le traitement de votre demande.",
+    "category": "server",
+    "actions": ["retry", "report"]
+  },
+  "503": {
+    "title": "Service temporairement indisponible",
+    "message": "Nous effectuons une maintenance pour améliorer votre expérience.",
+    "description": "Le service sera bientôt disponible. En attendant, contactez-nous directement au +33 7 68 11 38 39 ou par e-mail à contact@dkbuilding.fr. Nous sommes là pour vous aider.",
+    "category": "server",
+    "actions": ["retry", "home"]
+  },
+  "504": {
+    "title": "Délai de réponse dépassé",
+    "message": "Le serveur met trop de temps à répondre !",
+    "description": "Le serveur n'a pas pu traiter votre demande dans les temps impartis.",
+    "category": "server",
+    "actions": ["retry", "report"]
+  },
+  "505": {
+    "title": "Version HTTP non supportée",
+    "message": "Cette version n'est pas compatible !",
+    "description": "Votre navigateur utilise une version HTTP non supportée.",
+    "category": "server",
+    "actions": ["update", "home"]
+  },
+  "507": {
+    "title": "Espace de stockage insuffisant",
+    "message": "Plus assez d'espace pour traiter votre demande !",
+    "description": "Le serveur n'a plus assez d'espace pour traiter votre demande.",
+    "category": "server",
+    "actions": ["retry", "report"]
+  },
+  "508": {
+    "title": "Boucle détectée",
+    "message": "Une boucle infinie a été détectée !",
+    "description": "Le traitement de votre demande a créé une boucle infinie.",
+    "category": "server",
+    "actions": ["retry", "report"]
+  },
+  "510": {
+    "title": "Extension non implémentée",
+    "message": "Cette fonctionnalité avancée n'est pas disponible !",
+    "description": "Cette fonctionnalité nécessite une extension non encore implémentée.",
+    "category": "server",
+    "actions": ["alternative", "home"]
+  },
+  "511": {
+    "title": "Authentification réseau requise",
+    "message": "Vous devez vous connecter au réseau !",
+    "description": "Cette ressource nécessite une authentification réseau.",
+    "category": "server",
+    "actions": ["login", "home"]
+  }
+}

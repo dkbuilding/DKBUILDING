@@ -46,7 +46,8 @@ out/
 *.db-journal
 *.sqlite
 *.sqlite3
-data/
+/apps/data/
+/apps/backend/data/
 
 # ============================================
 # STORAGE LOCAL (Remplacé par Cloudinary)
